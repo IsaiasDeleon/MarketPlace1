@@ -15,8 +15,6 @@ export const RoutesApp = () =>{
 
     return (
         <>
-       
-            
             <Routes>
                 <Route  path="Inicio" element={<Inicio data={data} setData={setData}/>} />
                 <Route path="/*" element={<Navigate to={"Inicio"}/> } />

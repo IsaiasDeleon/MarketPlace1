@@ -7,7 +7,7 @@ const cors = require('cors')
 //Obtenemos los variables globales para no ponerlos en codigo
 require('dotenv').config();
 //Archivo donde hacemos las peticiones a la DB
-const {read, readEspesifica} = require("./options")
+const { read, readEspesifica, addCarrito } = require("./options")
 
 //Politicas cross
 app.use(cors());
@@ -44,14 +44,19 @@ app.get('/read', (req, res)=>{
         res.json(result)
     })
 })
+//Url de la busqueda con espcificaciones
 app.post('/PruebasBusqueda',(req, res)=> {
-    console.log(req.body)
     readEspesifica(pool, req.body ,(result) => {
         res.json(result)
     })
 
 })
-
+//Url para actualizar el carrito
+app.post('/carrito',(req, res)=>{
+    addCarrito(pool, req.body, (result) => {
+        res.json(result)
+    })
+})
 
 //Levantamos el servidor en el puesto que necesitemos
 app.listen(3020,()=>{

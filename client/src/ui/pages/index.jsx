@@ -7,11 +7,20 @@ const URLServer = "http://192.168.100.20:3020/"
 
 
 export const Inicio = ({data,setData}) => {
-    
+
+    const [idCard, setIdCard] = useState();
+
+    useEffect(()=>{
+       
+        if(idCard != undefined){
+            axios.post(URLServer+"carrito",{"Num":idCard}).then((response) => {
+                console.log(response.data)
+            })
+        }
+    },[idCard])
     //Hacemos una peticion para obtener los primero resultados que mostraremos
     useEffect(()=>{
         axios.get(URLServer+"read").then((response) => {
-           
             //Si la respuesta es correacta modificaremos el array con los objetos que obtenga desde la busqueda
             setData(response.data)
           });
@@ -80,7 +89,7 @@ export const Inicio = ({data,setData}) => {
                     <h2 className="TtitulosIndex">Articulos mas vendidos</h2>
                     <div className="d-flex ProbandoScroll contenedorCards" style={{ "overflowX":"scroll" }}>
                     {data.map((data) => (
-                        <Card key={data.id} {...data} />
+                        <Card key={data.id} {...data} setIdCard={setIdCard} />
                         ))}
                     </div>
                 </div>

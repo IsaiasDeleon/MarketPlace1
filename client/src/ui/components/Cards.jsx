@@ -1,4 +1,7 @@
-export const Card = ({img,empresa,descripcion,estrellas,monto}) =>{
+export const Card = ({id,img,empresa,descripcion,estrellas,monto, setIdCard}) =>{
+    function Carrito(id){
+        setIdCard(id);
+    }
     return(
         <div className="card contenedorC">
             <div className="text-center divImgMT">
@@ -15,7 +18,7 @@ export const Card = ({img,empresa,descripcion,estrellas,monto}) =>{
                 <div className="d-flex justify-content-between">
                     <h6 >${monto} </h6>
                     <div  className="text-center text-white IconTextCard">
-                    <i className="bi bi-bag-plus"></i>
+                        <i className="bi bi-bag-plus" onClick={()=>{Carrito(id)}}></i>
                     </div>
                     
                 </div>
