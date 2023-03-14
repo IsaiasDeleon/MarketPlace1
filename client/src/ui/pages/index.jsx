@@ -2,28 +2,43 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 import { Card } from "../components/Cards";
+import { Noti } from '../components/Notificaciones';
 
-const URLServer = "http://192.168.100.20:3020/"
+const URLServer = "http://192.168.100.22:3020/"
 
 
-export const Inicio = ({data,setData}) => {
+export const Inicio = ({data,setData,NumElementsCarrito}) => {
 
     const [idCard, setIdCard] = useState();
+    const [notiCarrito, setNotiCarrito] = useState();
+    const [activeNoti, setActiveNoti] = useState();
+    
+    
 
     useEffect(()=>{
-       
+        //Comrpobamos que el idCard no venga vacio
         if(idCard != undefined){
+            //Peticion para agregar un nuevo producto al carrito
             axios.post(URLServer+"carrito",{"Num":idCard}).then((response) => {
-                console.log(response.data)
+                //Actualizamos el mensaje que nos envio el server para mostarr la alerta
+                setNotiCarrito(response.data)
+                //Activamos y desactivamos la alerta para tener una animacion
+                setActiveNoti(true)
+                setTimeout(() => {
+                    setActiveNoti(false)
+                }, 4000);
+                NumElementsCarrito()
             })
         }
     },[idCard])
     //Hacemos una peticion para obtener los primero resultados que mostraremos
     useEffect(()=>{
+        //Peticion para obtener los productos en inicio
         axios.get(URLServer+"read").then((response) => {
             //Si la respuesta es correacta modificaremos el array con los objetos que obtenga desde la busqueda
             setData(response.data)
-          });
+        });
+     
     },[])
     
     
@@ -104,6 +119,7 @@ export const Inicio = ({data,setData}) => {
                 
 
             </div>
+            <Noti notiCarrito={notiCarrito} activeNoti={activeNoti} />
         </div>
 
     )

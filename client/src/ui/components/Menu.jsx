@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack';
 function valuetext(value) {
     return `${value}`;
 }
-const URLServer = "http://192.168.100.20:3020/"
+const URLServer = "http://192.168.100.22:3020/"
 export const Menu = ({estado, setEstadoMenu ,setData}) => {
 
     const [value, setValue] = useState([1000, 4000]);

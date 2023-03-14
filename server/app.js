@@ -7,7 +7,7 @@ const cors = require('cors')
 //Obtenemos los variables globales para no ponerlos en codigo
 require('dotenv').config();
 //Archivo donde hacemos las peticiones a la DB
-const { read, readEspesifica, addCarrito } = require("./options")
+const { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem } = require("./options")
 
 //Politicas cross
 app.use(cors());
@@ -57,8 +57,26 @@ app.post('/carrito',(req, res)=>{
         res.json(result)
     })
 })
+//Url para obtener cuantos articulos se encuentran en el carrito de compras
+app.get('/GetNumCarrito',(req, res)=>{
+    ElementsToCar( pool, (result) => {
+        res.json(result)
+    })
+})
+//Url para obtener los elementos del carrito
+app.get('/readCarrito', (req, res)=>{
+    readCarrito( pool, (result) => {
+        res.json(result)
+    })
+})
+//Url para eliminar el item que el usuario ya no quiere en su carrito
+app.post('/deleteItem', (req, res)=>{
+    deleteItem( pool, req.body,( result) => {
+        res.json(result)
+    })
+})
 
 //Levantamos el servidor en el puesto que necesitemos
 app.listen(3020,()=>{
-    console.log("servidor en puesto 3020");
+    console.log("servidor en puerto 3020");
 })
