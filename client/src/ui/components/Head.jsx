@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+import { Link } from "react-router-dom"
 
 export const Head = ({setEstadoMenu, numArticulos}) => {
     const onSubmitShowMenu = () =>{
@@ -10,7 +11,7 @@ export const Head = ({setEstadoMenu, numArticulos}) => {
                 <div className="d-flex justify-content-around ContendorHeight">
                     <div className="d-flex justify-content-around ContenedorWidthH">
                         <i className="bi bi-list menuShow" onClick={()=> { onSubmitShowMenu()}  }></i>
-                        <a className="nav-link fw-bold TextShadowH HeadEnlaces paginasHead"  >Inicio</a>
+                        <Link to={"/Inicio"} className="nav-link fw-bold TextShadowH HeadEnlaces paginasHead"  >Inicio</Link>
                         {/* <a className="nav-link fw-bold TextSinShadowH HeadEnlaces paginasHead"  >Productos nuevos</a> */}
                         <div className="input-group justify-content-center BuscadorH" >
                             <input type="text" className="form-control align-middle" placeholder="Buscar producto..." aria-label="Recipient's username" aria-describedby="button-addon2" />
@@ -23,8 +24,9 @@ export const Head = ({setEstadoMenu, numArticulos}) => {
                                 <div  className="text-center Notificaciones"><p style={{ "marginTop": "-3px", "color": "#fff" }} >1</p></div></a>
                         </div>
                         <div>
-                            <a className="nav-link" > <i className="bi bi-bag h5"></i>
-                                <div className="text-center Notificaciones"><p style={{ "marginTop": "-3px", "color": "#fff" }} > {numArticulos} </p></div></a>
+                            <Link to={"/Carrito"} className="nav-link" > <i className="bi bi-bag h5"></i>
+                                <div className="text-center Notificaciones"><p style={{ "marginTop": "-3px", "color": "#fff" }} > {numArticulos} </p></div></Link>
+                            
                         </div>
                         <div style={{ "alignItems": "center" }} className="d-flex">
                             <div className="dropdown">

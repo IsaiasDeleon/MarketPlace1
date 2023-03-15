@@ -6,9 +6,13 @@ export const Noti = ({notiCarrito,activeNoti}) => {
         message="El producto fue agregado a tu carrito."
         color = "success"
     }
-    if(notiCarrito == "Existe"){
+    else if(notiCarrito == "Existe"){
         message="El producto ya se encuntra en tu carrito."
         color= "warning"
+    }
+    else if(notiCarrito == "Eliminado"){
+        message="El producto fue elimando de tu carrito."
+        color="danger"
     }
     return (
         <div style={{"position": "fixed","right": "20px", "top": "80px","zIndex": "1","display":"block"}} className={`toast align-items-center text-bg-${color} border-0 animate__animated ${(activeNoti)? 'animate__fadeInRight' : 'animate__fadeOutRight'} `} role="alert" aria-live="assertive" aria-atomic="true">

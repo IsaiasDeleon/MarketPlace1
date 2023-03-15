@@ -1,6 +1,17 @@
-export const CardCarrito = ({id,img,empresa,descripcion,estrellas,monto,DeletItem}) => {
+import { useEffect } from "react"
+import { useForm } from "../../hooks/useForm"
+
+export const CardCarrito = ({id,img,empresa,descripcion,estrellas,monto,DeletItem, variable, Totales}) => {
+    const { onInputChange, v} = useForm({
+        v:1
+    })
+
+    function cambios(e){
+        onInputChange(e)
+        Totales();
+    } 
     return (
-        <div className="d-flex align-items-center" style={{ "padding": "20px", "width": "100%", "borderBottom": "2px dashed #D7DBDD" }}>
+        <div className="d-flex align-items-center FilaCarritoItem" >
             <div >
                 <img src={`./assets/Art${img}.png`} alt="IMGCompra" className="ImgCard2" />
             </div>
@@ -10,10 +21,10 @@ export const CardCarrito = ({id,img,empresa,descripcion,estrellas,monto,DeletIte
                         <h5>Empresa:</h5>
                         <h6 className="text-secondary">{empresa}</h6>
                     </div>
-                    <div className="d-flex" style={{ "width": "40%" }}>
+                    <div className="d-flex ContenedorCantidadDineroEstrellas">
                         <div className="col-sm">
                             <h5>Cantidad:</h5>
-                            <input type="Number" style={{ "padding": "2px", "width": "50%" }} className="form-control text-center" />
+                            <input name={`v`} id={variable}  value={v} onChange={(e)=>cambios(e)}  type="Number"  className="form-control text-center FilaInput" />
                         </div>
                         <div className="col-sm">
                             <h5>Precio C/U:</h5>
@@ -32,7 +43,7 @@ export const CardCarrito = ({id,img,empresa,descripcion,estrellas,monto,DeletIte
                 </div>
                 <h5>Descripción:</h5>
                 <h6 className="text-secondary" >{descripcion}</h6>
-                <i style={{ "float": "right", "marginRight": "20px", "fontSize": "30px", "color": "#E63939", "cursor" : "pointer" }} className="bi bi-trash" onClick={()=>{DeletItem(id)}}></i>
+                <i className="bi bi-trash IconoBasura" onClick={()=>{DeletItem(id)}}></i>
             </div>
 
         </div>

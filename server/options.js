@@ -168,16 +168,21 @@ function deleteItem(pool, data, callback){
             for( let i = 0; i < articulos.length; i++){
                 //Validamos que sea mayor a 0 ya que si se encuentra vacio aqui lo podremos eliminar
                 if(articulos[i] > 0){
-               
                    newArr.push(`${articulos[i]}`);
                }
            }
          
            if(newArr.length > 0){
             // el update va aqui
+            let valuesArticulos = newArr.toString();
+            //Una ves ya teniendo los artivulos haremos una actualizacion en la DB
+            connection.query(`UPDATE carrito SET IdArticulos = '${valuesArticulos}' where idUsuario = 1`, function(err,result){
+                if(err) throw err;
+                callback("Eliminado")
+            })
            }
             
-            
+           connection.release(); 
         })
     })
 }

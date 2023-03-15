@@ -111,6 +111,7 @@ code {
   width: 50px;
   height: 50px;
   border-radius: 50px;
+  cursor: pointer;
 }
 
 .contenedorM {
@@ -271,11 +272,38 @@ code {
   height: 5px;
 }
 .ImgCard2 {
-  max-width: 75%;
+  max-width: 150px;
   max-height: 220px;
   filter: drop-shadow(2px 5px 2px rgba(68, 68, 68, .8))
 }
-
+/* Estilos para pagina de carrito */
+.ContenedorBottonTotales{
+  position: absolute;
+  background-color: #f1f1f1;
+  bottom: 0;
+  left: 20%;
+  width: 80%;
+  height: 120px;
+}
+.FilaCarritoItem{
+  padding: 20px;
+  width: 100%;
+  border-bottom: 2px dashed #D7DBDD;
+}
+.ContenedorCantidadDineroEstrellas{
+  width: 40%;
+}
+.FilaInput{
+  padding: 2px;
+  width: 50%;
+}
+.IconoBasura{
+  float: right;
+  margin-right: 20px;
+  font-size: 30px;
+  color: #E63939;
+  cursor: pointer;
+}
 /* Track */
 ::-webkit-scrollbar-track {
   background: #f1f1f1;

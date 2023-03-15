@@ -32,7 +32,7 @@ export const RoutesApp = () =>{
         <>
             <Routes>
                 <Route  path="Inicio" element={<Inicio data={data} setData={setData} NumElementsCarrito={NumElementsCarrito} />} />
-                <Route path="Carrito" element={<Carrito/>} />
+                <Route path="Carrito" element={<Carrito NumElementsCarrito={NumElementsCarrito} />} />
                 <Route path="/*" element={<Navigate to={"Inicio"}/> } />
             </Routes>
             
