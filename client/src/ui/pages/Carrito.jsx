@@ -4,7 +4,7 @@ import { CardCarrito } from '../components/CardCarrito';
 import { Noti } from '../components/Notificaciones';
 const URLServer = "http://192.168.100.22:3020/"
 
-export const Carrito = ({ NumElementsCarrito }) => {
+export const Carrito = ({ NumElementsCarrito,setMenu }) => {
     const [elementsCarrito, setElementsCarrito] = useState([]);
     const [numArticulos, setNumArticulos] = useState(0);
     const [totalPrecio, setTotalPrecio] = useState(0);
@@ -26,6 +26,7 @@ export const Carrito = ({ NumElementsCarrito }) => {
         //Peticion para obtener los elemtos del carrito
         getItemCarrito();
         Totales()
+        setMenu(false)
     }, [])
 
     function DeletItem(id) {
@@ -61,6 +62,7 @@ export const Carrito = ({ NumElementsCarrito }) => {
                 if (element == "") {
                     element = 0;
                 }
+
                 // Lo parseamos ya que necesitamos un tipo numerico
                 element = parseInt(element);
                 let multi = elementsCarrito.monto * element;
@@ -89,12 +91,12 @@ export const Carrito = ({ NumElementsCarrito }) => {
                 <hr style={{ "width": "95%", "margin": "0", "marginLeft": "2.5%" }} />
                 <div className="d-flex justify-content-evenly align-items-center" style={{ "height": "95%" }}>
                     <div className=" text-center">
-                        <h5>Total de productos:</h5>
-                        <h4 className="fw-bold text-secondary">{numArticulos}</h4>
+                        <h5 className='TotalesFont text-white'>Total de productos:</h5>
+                        <h4 className="fw-bold text-secondary TotalesFont  text-white">{numArticulos}</h4>
                     </div>
                     <div className=" text-center">
-                        <h5>Precio total:</h5>
-                        <h4 className=" fw-bold text-success">${totalPrecio}</h4>
+                        <h5 className='TotalesFont text-white'>Precio total:</h5>
+                        <h4 className=" fw-bold text-success TotalesFont">${totalPrecio}</h4>
                     </div>
                     <div className=" text-center">
                         <button className="btn btn-success btn-lg">Comprar</button>

@@ -14,10 +14,10 @@ import './index.css';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
-    <HashRouter>
-      <RoutesApp/>
-    </HashRouter>
-    
+  <HashRouter>
+    <RoutesApp />
+  </HashRouter>
+
   // </React.StrictMode>
 );
 

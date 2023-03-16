@@ -1,21 +1,21 @@
 import 'animate.css';
-export const Noti = ({notiCarrito,activeNoti}) => {
+export const Noti = ({ notiCarrito, activeNoti }) => {
     let message = "";
     let color = "";
-    if(notiCarrito == "Agregado"){
-        message="El producto fue agregado a tu carrito."
+    if (notiCarrito == "Agregado") {
+        message = "El producto fue agregado a tu carrito."
         color = "success"
     }
-    else if(notiCarrito == "Existe"){
-        message="El producto ya se encuntra en tu carrito."
-        color= "warning"
+    else if (notiCarrito == "Existe") {
+        message = "El producto ya se encuntra en tu carrito."
+        color = "warning"
     }
-    else if(notiCarrito == "Eliminado"){
-        message="El producto fue elimando de tu carrito."
-        color="danger"
+    else if (notiCarrito == "Eliminado") {
+        message = "El producto fue elimando de tu carrito."
+        color = "danger"
     }
     return (
-        <div style={{"position": "fixed","right": "20px", "top": "80px","zIndex": "1","display":"block"}} className={`toast align-items-center text-bg-${color} border-0 animate__animated ${(activeNoti)? 'animate__fadeInRight' : 'animate__fadeOutRight'} `} role="alert" aria-live="assertive" aria-atomic="true">
+        <div style={{ "position": "fixed", "right": "20px", "top": "80px", "zIndex": "1", "display": "block" }} className={`toast align-items-center text-bg-${color} border-0 animate__animated ${(activeNoti) ? 'animate__fadeInRight' : 'animate__fadeOutRight'} `} role="alert" aria-live="assertive" aria-atomic="true">
             <div className="d-flex">
                 <div className="toast-body">
                     {message}

@@ -1,17 +1,14 @@
-import { useEffect } from "react"
 import { Link } from "react-router-dom"
 
-export const Head = ({ setEstadoMenu, numArticulos }) => {
-    const onSubmitShowMenu = () => {
-        setEstadoMenu(true)
-    }
+export const Head2 = ({  numArticulos }) => {
+    
     return (
         <>
-            <div className="text-center contenedorH">
+            <div className="text-center contenedorH2">
                 <div className="d-flex justify-content-around ContendorHeight">
                     <div className="d-flex justify-content-around ContenedorWidthH">
-                        <i className="bi bi-list menuShow" onClick={() => { onSubmitShowMenu() }}></i>
-                        <Link to={"/Inicio"} className="nav-link fw-bold TextShadowH HeadEnlaces paginasHead"  >Inicio</Link>
+                        {/* <i className="bi bi-list menuShow" onClick={() => { onSubmitShowMenu() }}></i> */}
+                        <Link to={"/Inicio"} className="nav-link fw-bold TextShadowH HeadEnlaces "  >Inicio</Link>
                         {/* <a className="nav-link fw-bold TextSinShadowH HeadEnlaces paginasHead"  >Productos nuevos</a> */}
                         <div className="input-group justify-content-center BuscadorH" >
                             <input type="text" className="form-control align-middle" placeholder="Buscar producto..." aria-label="Recipient's username" aria-describedby="button-addon2" />
