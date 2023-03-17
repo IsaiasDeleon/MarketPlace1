@@ -208,5 +208,16 @@ function getMunicipio(pool, data, callback){
         
     })
 }
+function getDatosGenerales(pool, data, callback){
+    const idUsuario = data.IdUsuario;
+    pool.getConnection(function (err, connection){
+        if(err) throw err;
+        connection.query(`select dg.telefono, dg.pais, dg.estado, dg.municipio, dg.Direccion, dg.CP, u.Nombre, u.Correo, u.Password, u.img from datosgenerales dg, usuarios u where u.id = ${idUsuario} and dg.idusuario = ${idUsuario}`, function (err, result){
+            if(err) throw err;
+            callback(result);
+            connection.release();
+        })
+    })
+}
 //Exportamos las funciones que utilizaremos para la comunicacion con el front 
-module.exports = { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio }
+module.exports = { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales }
