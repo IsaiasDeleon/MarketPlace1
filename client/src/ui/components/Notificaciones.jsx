@@ -14,6 +14,14 @@ export const Noti = ({ notiCarrito, activeNoti }) => {
         message = "El producto fue elimando de tu carrito."
         color = "danger"
     }
+    else if (notiCarrito == "Guardada") {
+        message = "Ubicación guardada.";
+        color = "success"
+    }
+    else if (notiCarrito == "UbicacionError") {
+        message = "Activa la ubicación.";
+        color = "danger";
+    }
     return (
         <div style={{ "position": "fixed", "right": "20px", "top": "80px", "zIndex": "1", "display": "block" }} className={`toast align-items-center text-bg-${color} border-0 animate__animated ${(activeNoti) ? 'animate__fadeInRight' : 'animate__fadeOutRight'} `} role="alert" aria-live="assertive" aria-atomic="true">
             <div className="d-flex">

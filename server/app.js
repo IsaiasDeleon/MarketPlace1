@@ -7,7 +7,7 @@ const cors = require('cors')
 //Obtenemos los variables globales para no ponerlos en codigo
 require('dotenv').config();
 //Archivo donde hacemos las peticiones a la DB
-const { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales } = require("./options")
+const { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras } = require("./options")
 
 //Politicas cross
 app.use(cors());
@@ -91,6 +91,30 @@ app.post('/getMunicipio', (req, res) => {
 app.post('/getDatosGenerales', (req, res) => {
     getDatosGenerales(pool,req.body,(result) => {
         res.json(result)
+    })
+})
+//Url para obtener el nombre del estado seleccionado
+app.post('/getNameEstado', (req, res) => {
+    getNameEstado(pool, req.body, (result) => {
+        res.json(result);
+    })
+})
+//Url para obtener el nombre del municipio seleccionado
+app.post('/getNameMunicipio', (req, res) => {
+    getNameMunicipio(pool, req.body, (result) => {
+        res.json(result);
+    })
+})
+//Url para guardar la ubicacion del cliente
+app.post('/saveUbicacion', (req, res) => {
+    saveUbicacion(pool, req.body, (result) => {
+        res.json(result);
+    })
+})
+//Url para obtener el historico de compras
+app.post('/getCompras', (req, res) => {
+    getCompras(pool, req.body, (result) => {
+        res.json(result);
     })
 })
 //Levantamos el servidor en el puesto que necesitemos

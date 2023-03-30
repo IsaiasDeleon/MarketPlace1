@@ -10,7 +10,7 @@ import { Head2 } from "../ui/components/Head2";
 import { EditarPerfil } from "../ui/pages/EditarPerfil";
 
 
-const URLServer = "http://192.168.100.22:3020/"
+const URLServer = "http://192.168.100.10:3020/"
 export const RoutesApp = () => {
     //Global estado de menu
     const [estadoMenu, setEstadoMenu] = useState(false);
@@ -40,7 +40,7 @@ export const RoutesApp = () => {
             <Routes>
                 <Route path="Inicio" element={<Inicio data={data} dataFiltrado={dataFiltrado} setData={setData} NumElementsCarrito={NumElementsCarrito} setMenu={setMenu} />} />
                 <Route path="Carrito" element={<Carrito NumElementsCarrito={NumElementsCarrito} setMenu={setMenu} />} />
-                <Route path="Perfil" element={<EditarPerfil/>} />
+                <Route path="Perfil" element={<EditarPerfil numArticulos={numArticulos} setMenu={setMenu} />} />
                 <Route path="/*" element={<Navigate to={"Inicio"} />} />
             </Routes>
             {

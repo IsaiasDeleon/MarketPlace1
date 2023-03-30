@@ -18,7 +18,11 @@ export const Card = ({ id, img, empresa, descripcion, estrellas, monto, setIdCar
                 <div className="d-flex justify-content-between">
                     <h6 >${monto} </h6>
                     <div className="text-center text-white IconTextCard">
-                        <i className="bi bi-bag-plus" onClick={() => { Carrito(id) }}></i>
+                        <button onClick={() => { Carrito(id) }} className="btnCarrito">
+                            <i className="bi bi-cart-fill"></i> 
+                                Agregar
+                        </button>
+                       
                     </div>
 
                 </div>

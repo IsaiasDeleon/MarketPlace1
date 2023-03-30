@@ -21,7 +21,7 @@ export const Head2 = ({  numArticulos }) => {
                                 <div className="text-center Notificaciones"><p style={{ "marginTop": "-3px", "color": "#fff" }} >1</p></div></a>
                         </div>
                         <div>
-                            <Link to={"/Carrito"} className="nav-link" > <i className="bi bi-bag h5"></i>
+                            <Link to={"/Carrito"} className="nav-link" > <i className="bi bi-cart h5"></i>
                                 <div className="text-center Notificaciones"><p style={{ "marginTop": "-3px", "color": "#fff" }} > {numArticulos} </p></div></Link>
 
                         </div>
@@ -29,7 +29,7 @@ export const Head2 = ({  numArticulos }) => {
                             <div className="dropdown">
                                 <div className=" col-2 dropdown-toggle UserIcon" data-bs-toggle="dropdown" aria-expanded="false"></div>
                                 <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a className="dropdown-item" >Editar perfil</a></li>
+                                    <li><Link to={"/Perfil"} className="dropdown-item" >Editar perfil</Link></li>
                                     <li><a className="dropdown-item" >Cerrar sesion</a></li>
 
                                 </ul>
