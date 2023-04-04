@@ -7,7 +7,7 @@ const cors = require('cors')
 //Obtenemos los variables globales para no ponerlos en codigo
 require('dotenv').config();
 //Archivo donde hacemos las peticiones a la DB
-const { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras } = require("./options")
+const { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear } = require("./options")
 
 //Politicas cross
 app.use(cors());
@@ -58,14 +58,14 @@ app.post('/carrito', (req, res) => {
     })
 })
 //Url para obtener cuantos articulos se encuentran en el carrito de compras
-app.get('/GetNumCarrito', (req, res) => {
-    ElementsToCar(pool, (result) => {
+app.post('/GetNumCarrito', (req, res) => {
+    ElementsToCar(pool, req.body, (result) => {
         res.json(result)
     })
 })
 //Url para obtener los elementos del carrito
-app.get('/readCarrito', (req, res) => {
-    readCarrito(pool, (result) => {
+app.post('/readCarrito', (req, res) => {
+    readCarrito(pool, req.body,(result) => {
         res.json(result)
     })
 })
@@ -114,6 +114,12 @@ app.post('/saveUbicacion', (req, res) => {
 //Url para obtener el historico de compras
 app.post('/getCompras', (req, res) => {
     getCompras(pool, req.body, (result) => {
+        res.json(result);
+    })
+})
+//Url para login
+app.post('/Login', (req, res) => {
+    Loguear(pool, req.body, (result) => {
         res.json(result);
     })
 })

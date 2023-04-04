@@ -1,10 +1,21 @@
-import { useEffect } from "react"
-import { Link } from "react-router-dom"
+import { useContext, useEffect } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import { AuthContext } from "../../auth/AuthContext"
 
 export const Head = ({ setEstadoMenu, numArticulos }) => {
     const onSubmitShowMenu = () => {
         setEstadoMenu(true)
     }
+
+    const { LogOut, user } = useContext(AuthContext); 
+    const navigate = useNavigate(); 
+    const onLogout = () =>{
+        LogOut();
+        navigate('/Login',{
+            replace:true
+        })
+    }
+    let img = user?.img;
     return (
         <>
             <div className="text-center contenedorH">
@@ -30,10 +41,10 @@ export const Head = ({ setEstadoMenu, numArticulos }) => {
                         </div>
                         <div style={{ "alignItems": "center" }} className="d-flex">
                             <div className="dropdown">
-                                <div className=" col-2 dropdown-toggle UserIcon" data-bs-toggle="dropdown" aria-expanded="false"></div>
+                                <div className=" col-2 dropdown-toggle UserIcon" style={{"backgroundImage": `url(./assets/${img}.jpg)`}} data-bs-toggle="dropdown" aria-expanded="false"></div>
                                 <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                     <li><Link to={"/Perfil"} className="dropdown-item" >Editar perfil</Link></li>
-                                    <li><a className="dropdown-item" >Cerrar sesion</a></li>
+                                    <li><a onClick={ onLogout } className="dropdown-item" >Cerrar sesion</a></li>
 
                                 </ul>
                             </div>

@@ -1,8 +1,9 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { Card } from "../components/Cards";
 import { Noti } from '../components/Notificaciones';
+import { AuthContext } from '../../auth/AuthContext';
 
 const URLServer = "http://192.168.100.10:3020/"
 
@@ -12,14 +13,14 @@ export const Inicio = ({ data, setData, NumElementsCarrito, dataFiltrado, setMen
     const [idCard, setIdCard] = useState();
     const [notiCarrito, setNotiCarrito] = useState();
     const [activeNoti, setActiveNoti] = useState();
-
-
+    const { user } = useContext(AuthContext)
+    let idU = user?.id;
 
     useEffect(() => {
         //Comrpobamos que el idCard no venga vacio
         if (idCard != undefined) {
             //Peticion para agregar un nuevo producto al carrito
-            axios.post(URLServer + "carrito", { "Num": idCard }).then((response) => {
+            axios.post(URLServer + "carrito", { "idU": idU,"Num": idCard }).then((response) => {
                 //Actualizamos el mensaje que nos envio el server para mostarr la alerta
                 setNotiCarrito(response.data)
                 //Activamos y desactivamos la alerta para tener una animacion

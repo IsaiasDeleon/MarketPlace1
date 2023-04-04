@@ -1,11 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { CardCarrito } from '../components/CardCarrito';
 import { Noti } from '../components/Notificaciones';
+import { AuthContext } from '../../auth/AuthContext';
 const URLServer = "http://192.168.100.10:3020/"
-// HOllaaa
+
 
 export const Carrito = ({ NumElementsCarrito,setMenu }) => {
+    const { user } = useContext(AuthContext);
+    let idU = user?.id;
     const [elementsCarrito, setElementsCarrito] = useState([]);
     const [numArticulos, setNumArticulos] = useState(0);
     const [totalPrecio, setTotalPrecio] = useState(0);
@@ -14,7 +17,7 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
 
     //Function para obtener los elementos en el carrito
     function getItemCarrito() {
-        axios.get(URLServer + "readCarrito").then((response) => {
+        axios.post(URLServer + "readCarrito",{"idU": idU}).then((response) => {
             //Si la respuesta es correacta modificaremos el array con los objetos que obtenga desde la busqueda
             setElementsCarrito(response.data)
         });
@@ -30,7 +33,7 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
 
     //Funcion para eliminar elemento del carrito enviamos el id del elemento clickeado
     function DeletItem(id) {
-        axios.post(URLServer + "deleteItem", { "id": id }).then((response) => {
+        axios.post(URLServer + "deleteItem", {"idU":idU, "id": id }).then((response) => {
             //Si la operacion se hizo correctamente nos regresara Eliminado
             if (response.data == "Eliminado") {
                 //Mandamos a llamar a la funcion de getItemCarrito para obtener la actualizacion de los elementos 
@@ -50,7 +53,7 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
     }
     function Totales() {
 //Hacemos la peticion de los datos al modelo  el cual obtendra los elementos y su precio 
-        axios.get(URLServer + "readCarrito").then((response) => {
+        axios.post(URLServer + "readCarrito",{"idU":idU}).then((response) => {
 
             let num = 0;
             let total = 0;

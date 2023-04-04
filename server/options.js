@@ -57,16 +57,20 @@ function readEspesifica(pool, data, callback) {
 //Añadimos el articulo al carrito
 function addCarrito(pool, data, callback) {
     const data2 = data.Num;
+    const idU = data.idU;
     pool.getConnection(function (err, connection) {
         if (err) throw err;
 
         //Validamos que exista el usuario en el carrito
-        connection.query(`SELECT id, count(id) as num, IdArticulos FROM carrito where idUsuario = 1`, function (err, result) {
+        connection.query(`SELECT id, count(id) as num, IdArticulos FROM carrito where idUsuario = ${idU}`, function (err, result) {
             // console.log(result[0].num)
             if (err) throw err;
             if (result[0].num == 0) {
-                // si no se encontro el usuario debera insertar un nuevo carrito
-                callback("Registar")
+                connection.query(`INSERT INTO carrito values(default, ${idU},${data2})`, function (err, result) {
+                    if(err) throw err;
+                    callback("Agregado");
+                })
+                
             }
             if (result[0].num == 1) {
                 ///Si existe el carrito del usuario validaremos que no este el articulo ya registrado en su carrito
@@ -107,29 +111,33 @@ function addCarrito(pool, data, callback) {
 }
 
 //Obtenemos el numero de elementos en el carrito
-function ElementsToCar(pool, callback) {
+function ElementsToCar(pool, data ,callback) {
+    const id = data.id;
     pool.getConnection(function (err, connection) {
         if (err) throw err;
-        connection.query("SELECT IdArticulos FROM carrito where idUsuario = 1 ", function (err, result) {
+        connection.query(`SELECT IdArticulos FROM carrito where idUsuario = ${id} `, function (err, result) {
             if (err) throw err;
-            let articulos = result[0].IdArticulos.split(',');
-            let suma = 0;
-            for (let i = 0; i < articulos.length; i++) {
-                //Validamos que sea mayor a 0 ya que si se encuentra vacio aqui lo podremos eliminar
-                if (articulos[i] > 0) {
-                    suma++;
+            if(result[0]){
+                let articulos = result[0].IdArticulos.split(',');
+                let suma = 0;
+                for (let i = 0; i < articulos.length; i++) {
+                    //Validamos que sea mayor a 0 ya que si se encuentra vacio aqui lo podremos eliminar
+                    if (articulos[i] > 0) {
+                        suma++;
+                    }
                 }
+                callback(suma);
+                connection.release();
             }
-            callback(suma);
-            connection.release();
         })
     })
 }
 //Obtenemos los articulos en el carrito
-function readCarrito(pool, callback) {
+function readCarrito(pool, data, callback) {
+    const id = data.idU;
     pool.getConnection(function (err, connection) {
         if (err) throw err;
-        connection.query("select IdArticulos from carrito where idUsuario = 1", function (err, result) {
+        connection.query(`select IdArticulos from carrito where idUsuario = ${id}`, function (err, result) {
             if (err) throw err;
             let articulos = result[0].IdArticulos.split(',');
             let newArr = [];
@@ -158,9 +166,10 @@ function readCarrito(pool, callback) {
 //Eliminamos el articulo seleccionado del carrtio
 function deleteItem(pool, data, callback) {
     const iden = data.id;
+    const idU = data.idU;
     pool.getConnection(function (err, connection) {
         if (err) throw err;
-        connection.query('select IdArticulos From carrito where idUsuario = 1', function (err, result) {
+        connection.query(`select IdArticulos From carrito where idUsuario = ${idU}`, function (err, result) {
             if (err) throw err;
             let articulos = result[0].IdArticulos.split(',');
             articulos = articulos.filter((item) => item !== `${iden}`)
@@ -176,7 +185,7 @@ function deleteItem(pool, data, callback) {
                 // el update va aqui
                 let valuesArticulos = newArr.toString();
                 //Una ves ya teniendo los artivulos haremos una actualizacion en la DB
-                connection.query(`UPDATE carrito SET IdArticulos = '${valuesArticulos}' where idUsuario = 1`, function (err, result) {
+                connection.query(`UPDATE carrito SET IdArticulos = '${valuesArticulos}' where idUsuario = ${idU}`, function (err, result) {
                     if (err) throw err;
                     callback("Eliminado")
                 })
@@ -258,7 +267,6 @@ function saveUbicacion(pool, data, callback){
         })
     })
 }
-
 function getCompras(pool, data, callback){
     const idUsuario = data.idUsuario;
     let arrayCompras = [];
@@ -292,5 +300,17 @@ function getCompras(pool, data, callback){
         })
     })
 }
+function Loguear(pool, data, callback){
+    const correo = data.user;
+    const pass = data.pass;
+    pool.getConnection(function (err, connection){
+        if(err) throw err;
+        connection.query(`SELECT id, Nombre, img from usuarios where Correo = '${correo}' and Password = '${pass}'`, function (err, result) {
+            if(err) throw err;
+            callback(result);
+            connection.release();
+        })
+    })
+}
 //Exportamos las funciones que utilizaremos para la comunicacion con el front 
-module.exports = { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras }
+module.exports = { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear }
