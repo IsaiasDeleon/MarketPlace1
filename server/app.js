@@ -7,7 +7,7 @@ const cors = require('cors')
 //Obtenemos los variables globales para no ponerlos en codigo
 require('dotenv').config();
 //Archivo donde hacemos las peticiones a la DB
-const { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear } = require("./options")
+const { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser } = require("./options")
 
 //Politicas cross
 app.use(cors());
@@ -120,6 +120,12 @@ app.post('/getCompras', (req, res) => {
 //Url para login
 app.post('/Login', (req, res) => {
     Loguear(pool, req.body, (result) => {
+        res.json(result);
+    })
+})
+//Guardar detalles del usuario 
+app.post('/SaveDetailsUser', (req, res) => {
+    SaveDetailsUser(pool, req.body, (result) => {
         res.json(result);
     })
 })

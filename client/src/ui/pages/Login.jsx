@@ -4,7 +4,7 @@ import { types } from "../../types/types";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { Noti } from "../components/Notificaciones";
-const URLServer = "http://192.168.100.10:3020/"
+const URLServer = "http://192.168.100.19:3020/"
 export const Login = () => {
     const { Log } = useContext(AuthContext); 
     const navigate = useNavigate(); 
@@ -27,14 +27,24 @@ export const Login = () => {
     const [activeNoti, setActiveNoti] = useState();
 
     const onLogin = (e) =>{
+        e.preventDefault();
         // vamos a validar elñ correo que no venga vacio
-    //    if(correo == ""){
-    //         setNotiCarrito("UsuarioIncorrecto");
-    //         setActiveNoti(true)
-    //         setTimeout(() => {
-    //             setActiveNoti(false)
-    //         }, 5000);
-    //    }
+       if(correo == ""){
+            setNotiCarrito("CorreoVacio");
+            setActiveNoti(true)
+            setTimeout(() => {
+                setActiveNoti(false)
+            }, 5000);
+            return;
+       }
+       if(pass == ""){
+            setNotiCarrito("PassVacio");
+            setActiveNoti(true)
+            setTimeout(() => {
+                setActiveNoti(false)
+            }, 5000);
+            return;
+       }
        
         axios.post(URLServer+"Login",{"user":correo,"pass":pass}).then((response) => {
             console.log(response.data)
@@ -54,7 +64,7 @@ export const Login = () => {
                 }, 5000);
             }
         })
-        e.preventDefault();
+
     }
     return (
         <>

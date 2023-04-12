@@ -4,16 +4,16 @@ import axios from 'axios';
 import { useForm } from "../../hooks/useForm"
 import { Noti } from '../components/Notificaciones';
 import { AuthContext } from '../../auth/AuthContext';
-const URLServer = "http://192.168.100.10:3020/"
+const URLServer = "http://192.168.100.19:3020/"
 
 export const EditarPerfil = ({ numArticulos, setMenu }) => {
 
     const { user } = useContext(AuthContext);
     let idU = user?.id;
+    let imgU = user?.img;
 
     const [valuesEstado, setValueEstado] = useState([]);
     const [valueMunicipio, setValueMunicipio] = useState([]);
-    const [dataGeneral, setDataGeneral] = useState([]);
     const [nameEstado, setNameEstado] = useState("");
     const [nameMunicipio, setNameMunicipio] = useState("");
     const [elementsCarrito, setElementsCarrito] = useState(2);
@@ -168,13 +168,27 @@ export const EditarPerfil = ({ numArticulos, setMenu }) => {
         getNameMunicipio();
     }, [municipio]);
 
+    //Guardar los detalles del usuario
+    function SaveDetailsUser(){
+       axios.post(URLServer + "SaveDetailsUser", {"idU":idU,"Nombre":Nombre,"Telefono":Telefono,"Password":pass,"Direccion":direccion,"CP":CP,"Estado":estado,"Municipio":municipio }).then((response) => {
+        if(response.data == "Actualizado"){
+            setNotiCarrito(response.data);
+            setActiveNoti(true)
+            setTimeout(() => {
+                setActiveNoti(false)
+            }, 4000);
+        }
+        console.log(response)
+       })
+    }
+
     return (
         <>
             <div className="cardPerfil contenedorPerfil" >
                 <div className="PrimeraSeccion text-center heightMin"  >
                     <div style={{"height":"100%","overflowX": "auto" }}>
                         <div className="marginPerfil">
-                            <img src={`./assets/IconUsuario.png`} style={{ "borderRadius": "20px" }} alt="IMGUsuario" className="ImgCard" />
+                            <img src={`./assets/${imgU}.jpg`} style={{ "borderRadius": "20px" }} alt="IMGUsuario" className="ImgCard" />
                             <h4 className="NombrePerfil">{Nombre}</h4>
                             <hr style={{ "width": "95%", "margin": "0", "marginLeft": "2.5%" }} />
                             <div className="text-start marginPerfil">
@@ -197,14 +211,18 @@ export const EditarPerfil = ({ numArticulos, setMenu }) => {
                                 <h6 className='datosPerfil' >{direccion}</h6>
                                 <h6 className="text-secondary datosPerfil">CP:</h6>
                                 <h6 className='datosPerfil' >{CP}</h6>
-                                <button style={{ "float": "right", "marginBottom":"10px" }} className="btn btn-dark" onClick={Mapa}>Ver MAPA</button>
+                                <div className='text-end' style={{"width":"100%"}}>
+                                    <button  className="btn btn-dark mb-2" onClick={Mapa}>Ver MAPA</button>
+                                </div>
                             </div>
 
                         </div>
                     </div>
                 </div>
-                <div className="PrimeraSeccion text-center"style={{ "height": "min-content"}} >
+                <div className="PrimeraSeccion text-center heightMin">
+                <div style={{"height":"100%","overflowX": "auto" }}>
                     <div className="marginPerfil">
+                        
                         <h4 className='NombrePerfil'>Editar datos</h4>
                         <div className="text-start">
                             <h6 className='tituloPerfil'>Actualizar foto:</h6>
@@ -270,11 +288,12 @@ export const EditarPerfil = ({ numArticulos, setMenu }) => {
                                 </div>
                                 <div className='marginBottom'>
                                     <button onClick={UbicaionMessage} className="btn btn-secondary m-2" >Guardar ubicación por GPS</button>
-                                    <button className="btn btn-success m-2" style={{ "float": "right" }}>Guardar datos</button>
+                                    <button onClick={SaveDetailsUser} className="btn btn-success m-2" style={{ "float": "right" }}>Guardar datos</button>
                                 </div>
                             </div>
 
                         </div>
+                    </div>
                     </div>
                 </div>
                 <div className="PrimeraSeccion text-center" style={{ "height": "min-content"}} >

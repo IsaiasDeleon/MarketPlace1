@@ -312,5 +312,26 @@ function Loguear(pool, data, callback){
         })
     })
 }
+function SaveDetailsUser(pool, data, callback){
+    const idU = data.idU;
+    const nombre = data.Nombre;
+    const telefono = data.Telefono;
+    const password = data.Password;
+    const direccion = data.Direccion;
+    const CP = data.CP;
+    const estado = data.Estado;
+    const municipio = data.Municipio;
+    pool.getConnection(function (err, connection){
+        if(err) throw err;
+        connection.query(`UPDATE usuarios set Nombre = '${nombre}', Password = '${password}' where id = ${idU}`, function (err, result) {
+            if(err) throw err;
+            connection.query(`UPDATE datosgenerales set telefono = '${telefono}', Direccion = '${direccion}', CP = '${CP}', estado = '${estado}', municipio = '${municipio}' where idusuario = ${idU}`, function (err, result) {
+                if(err) throw err;
+                callback("Actualizado");
+                connection.release();
+            })
+        })
+    })
+}
 //Exportamos las funciones que utilizaremos para la comunicacion con el front 
-module.exports = { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear }
+module.exports = { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser }

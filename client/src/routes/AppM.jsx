@@ -12,7 +12,7 @@ import { Login } from "../ui/pages/Login";
 import { AuthContext } from "../auth/AuthContext";
 
 
-const URLServer = "http://192.168.100.10:3020/"
+const URLServer = "http://192.168.100.19:3020/"
 export const AppM = () => {
     //Obtenemos el id logueado
     const { user } = useContext( AuthContext );
