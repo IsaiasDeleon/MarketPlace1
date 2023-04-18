@@ -25,6 +25,14 @@ export const Noti = ({ notiCarrito, activeNoti }) => {
         message = "El producto fue agregado a tu carrito."
         color = "success"
     }
+    else if( notiCarrito == "AgregadoGustos") {
+        message = "El producto fue agregado a tus gustos."
+        color = "success"
+    }
+    else if( notiCarrito == "ExisteGustos"){
+        message = "El producto ya se encuntra en tus gustos."
+        color = "warning"
+    }
     else if (notiCarrito == "Existe") {
         message = "El producto ya se encuntra en tu carrito."
         color = "warning"
@@ -49,13 +57,21 @@ export const Noti = ({ notiCarrito, activeNoti }) => {
         message = "El correo es un compo obligatorio";
         color = "warning"
     }
+    else if(notiCarrito == "NombreVacio"){
+        message = "El nombre es un campo obligatorio";
+        color = "warning";
+    }
     else if(notiCarrito == "PassVacio"){
         message = "La contraseña es un campo obligatorio";
         color = "warning"
     }
     else if( notiCarrito == "Actualizado"){
-        message = "EL usuario fue actualizado";
+        message = "El usuario fue actualizado";
         color = "success";
+    }
+    else if(notiCarrito == "EliminadoGusto"){
+        message = "El producto fue eliminado de tus guardados";
+        color = "danger";
     }
     return (
         <div style={{ "position": "fixed", "right": "20px", "top": "80px", "zIndex": "1", "display": "block" }} className={`toast align-items-center text-bg-${color} border-0 animate__animated ${(activeNoti) ? 'animate__fadeInRight' : 'animate__fadeOutRight'} `} role="alert" aria-live="assertive" aria-atomic="true">

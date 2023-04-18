@@ -1,3 +1,19 @@
+:root {
+    --primary-color: #F7F9F9;
+    --secundary-color: #04AA6D;
+    --text-color: rgb(80, 78, 78);
+    --title-color: #000;
+    --font-text: Comic Sans MS, Arial, Verdana;
+    --big-font-size: 2rem;
+    --h1-font-size: 1.5rem;
+    --h2-font-size: 1.25rem;
+    --h3-font-size: 1.125rem;
+    --h4-font-size:1.05rem;
+    --normal-font-size: .938rem;
+    --small-font-size: .813rem;
+    --smaller-font-size: .75rem;
+    --color-input: rgb(230, 235, 243);
+  }
 body {
     background-color: #fdfdfd;
     width: 100%;
@@ -36,6 +52,9 @@ body {
     transform: translate(50%, -50%);
     width: 70%;
 }
+picture img {
+    width:80%
+}
 
 .contentLog {
     position: relative;
@@ -58,6 +77,78 @@ input {
     padding: 7px;
     border-radius: 5px;
 }
+.switch {
+    font-size: var(--h4-font-size);
+    position: relative;
+    display: inline-block;
+    width: 80%;
+    height: 2em;
+    margin-top: 40px;
+}
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    color: #000;
+    font-weight: 600;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    transition: .4s;
+    
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "Tengo cuenta";
+    height: 90%;
+   
+    width: 48%;
+    left: 2%;
+    border-radius: 5px;
+    background-color: #303030;
+    color: #fff;
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 -1px 0 0 rgba(0, 0, 0, 0.1) inset, 0 -1.31em 1.31em -1.31em rgba(0, 0, 0, 0.3) inset, 0 0 1px 0 rgba(0, 0, 0, 0.1);
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.15);
+    transition: .4s;
+  }
+  
+  .slider:after {
+    content: "";
+    position: absolute;
+    top: -7px;
+    left: -7px;
+    right: -7px;
+    bottom: -7px;
+    border-radius: 5px;
+    background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.1));
+    z-index: -1;
+  }
+  
+  .switch input:checked + .slider {
+    
+    color: #000;
+  }
+  
+  .switch input:checked + .slider:before {
+    content: "Registrarse";
+    transform: translateX(100%);
+   
+  }
+  
+  .switch input {
+    display: none;
+  }
 
 @media (max-width: 1230px) {
     .contenedor {
@@ -70,39 +161,49 @@ input {
     .contentLog .form {
         width: 80%;
     }
+    .switch {
+        font-size: var(--normal-font-size);
+    }
 }
 
 @media (max-width: 769px) {
     .contenedor {
-        left: 4%;
-        width: 92%;
+        left: 2%;
+        width: 96%;
     }
 }
 
 @media (max-width: 650px) {
     .contenedor {
         display: block;
-        height: 90%;
-        top: 5%;
+        height: 98%;
+        top: 1%;
+       
     }
 
     .contentImg {
         width: 100%;
-        height: 40%;
+        height: 25%;
     }
 
     .contentImg picture {
         width: 50%;
     }
-
+    picture img {
+        width:60%
+    }
     .contentLog {
         width: 100%;
-        height: 60%;
+        height: 75%;
     }
 
     .contentLog .form {
         width: 90%;
     }
+    .switch {
+        font-size: var(--h4-font-size);
+    }
+
 }
 
 @media (max-width: 450px) {
@@ -128,5 +229,8 @@ input {
 
     .contentLog .form {
         width: 95%;
+    }
+    .switch {
+        font-size: var(--normal-font-size);
     }
 }

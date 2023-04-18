@@ -4,23 +4,34 @@ import { useContext, useEffect, useState } from 'react';
 import { Card } from "../components/Cards";
 import { Noti } from '../components/Notificaciones';
 import { AuthContext } from '../../auth/AuthContext';
+import { useNavigate } from 'react-router';
+import { CardHorizontal } from '../components/CardsHorizontal';
 
-const URLServer = "http://192.168.100.19:3020/"
+const URLServer = "http://192.168.100.13:3020/"
 
 
-export const Inicio = ({ data, setData, NumElementsCarrito, dataFiltrado, setMenu }) => {
+export const Inicio = ({ data = [], setData, NumElementsCarrito = [], dataFiltrado = [], setMenu, ElementsGustos, NumElementsGustos }) => {
 
     const [idCard, setIdCard] = useState();
     const [notiCarrito, setNotiCarrito] = useState();
     const [activeNoti, setActiveNoti] = useState();
+    const [acomodoCars, setAcomodoCards] = useState(false);
+    console.log(dataFiltrado)
     const { user } = useContext(AuthContext)
     let idU = user?.id;
-
+    const navigate = useNavigate(); 
     useEffect(() => {
+        
         //Comrpobamos que el idCard no venga vacio
         if (idCard != undefined) {
+            if(idU == undefined){
+                navigate("/Login",{
+                    replace:true
+                })
+                return;
+            }
             //Peticion para agregar un nuevo producto al carrito
-            axios.post(URLServer + "carrito", { "idU": idU,"Num": idCard }).then((response) => {
+            axios.post(URLServer + "gustos", { "idU": idU,"Num": idCard }).then((response) => {
                 //Actualizamos el mensaje que nos envio el server para mostarr la alerta
                 setNotiCarrito(response.data)
                 //Activamos y desactivamos la alerta para tener una animacion
@@ -28,12 +39,16 @@ export const Inicio = ({ data, setData, NumElementsCarrito, dataFiltrado, setMen
                 setTimeout(() => {
                     setActiveNoti(false)
                 }, 4000);
-                NumElementsCarrito()
+                // NumElementsCarrito();
+                NumElementsGustos();
+                ElementsGustos();
+
             })
         }
     }, [idCard])
     //Hacemos una peticion para obtener los primero resultados que mostraremos
     useEffect(() => {
+       
         //Peticion para obtener los productos en inicio
         axios.get(URLServer + "read").then((response) => {
             //Si la respuesta es correacta modificaremos el array con los objetos que obtenga desde la busqueda
@@ -41,7 +56,7 @@ export const Inicio = ({ data, setData, NumElementsCarrito, dataFiltrado, setMen
         });
         setMenu(true);
     }, [])
-
+   
 
     const data2 = [
         {
@@ -80,7 +95,7 @@ export const Inicio = ({ data, setData, NumElementsCarrito, dataFiltrado, setMen
 
     return (
         <div className="contenedorIndex">
-            <div className="padding4 contendorPrincipalIndex">
+            {/* <div className="padding4 contendorPrincipalIndex">
                 <h2 className="TtitulosIndex">Ofertas especiales</h2>
                 <div className="padding3Index contendorPrincipalIndexGrid">
                     <div className=" text-white padding3Index divImg">
@@ -99,17 +114,43 @@ export const Inicio = ({ data, setData, NumElementsCarrito, dataFiltrado, setMen
                     </div>
                 </div>
 
-            </div>
+            </div> */}
+           
             <div className="padding4 contendorArticulo" >
+            <button className='btn btn-dark '>Todos</button>
+            <button className='btn btn-dark m-2'>Ofertas</button>
+            <div className="form-floating SelectEstadoProducto" style={{"display":"inline-block","position":"absolute"}}>
+                <select className="form-select" id="floatingSelect" aria-label="Floating label select example">
+                    <option value="1" selected>Cualquier estado</option>
+                    <option value="2">Nuevo</option>
+                    <option value="3">Usado</option>
+                </select>
+                <label htmlFor="floatingSelect" className='fw-bold'>Estado del producto:</label>
+            </div>
+            <div className='OrdenarProductos' >
+                {
+                    !acomodoCars ?
+                        <label className='fw-bold'>Ordenar por lista <button className='btn btn-dark' onClick={ (e) => setAcomodoCards(!acomodoCars)}><i class="bi bi-list-ol"></i></button></label>
+                        :<label className='fw-bold'>Ordenar por galeria <button className='btn btn-dark' onClick={ (e) => setAcomodoCards(!acomodoCars)}><i class="bi bi-card-text"></i></button></label>
+                }
+                
+                
+            </div>
+            
                 <div className='m-2'>
-                    <h2 className="TtitulosIndex">Articulos filtrados</h2>
-                    <div className="d-flex ProbandoScroll contenedorCards" style={{ "overflowX": "scroll" }}>
-                        {dataFiltrado.map((data) => (
-                            <Card key={data.id} {...data} setIdCard={setIdCard} />
-                        ))}
+                    {/* <h2 className="TtitulosIndex">Articulos filtrados</h2> */}
+                    <div className={!acomodoCars ? "contenedorCards" : "contenedorCardsList"} >
+                        {!acomodoCars?
+                            dataFiltrado.map((data) => (
+                                <Card key={data.id} {...data} setIdCard={setIdCard} />
+                            ))
+                            :dataFiltrado.map((data) => (
+                                <CardHorizontal key={data.id} {...data} setIdCard={setIdCard} />
+                            ))
+                        }
                     </div>
                 </div>
-                <div className="m-2" >
+                {/* <div className="m-2" >
                     <h2 className="TtitulosIndex">Articulos mas vendidos</h2>
                     <div className="d-flex ProbandoScroll contenedorCards" style={{ "overflowX": "scroll" }}>
                         {data.map((data) => (
@@ -124,7 +165,7 @@ export const Inicio = ({ data, setData, NumElementsCarrito, dataFiltrado, setMen
                             <Card key={d.id} {...d} />
                         ))}
                     </div>
-                </div>
+                </div> */}
 
 
             </div>

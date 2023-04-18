@@ -2,8 +2,9 @@ import { useContext } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { AuthContext } from "../../auth/AuthContext"
 import { types } from "../../types/types";
+import { CardGustos } from "./CardGustos";
 
-export const Head2 = ({  numArticulos }) => {
+export const Head2 = ({  numArticulos, numGustos, elemntsGustos, DeleteItemGustos }) => {
     const { LogOut, user } = useContext(AuthContext); 
     const navigate = useNavigate(); 
     const onLogout = () =>{
@@ -12,7 +13,9 @@ export const Head2 = ({  numArticulos }) => {
             replace:true
         })
     }
+    let idU = user?.id;
     let img = user?.img;
+    img = (img) ? img : "Ge";
     return (
         <>
             <div className="text-center contenedorH2">
@@ -27,9 +30,53 @@ export const Head2 = ({  numArticulos }) => {
                         </div>
                     </div>
                     <div className="d-flex justify-content-around InconosRight">
-                        <div>
+                    {
+                            idU ?
+                                <>
+                                    <div>
+                                        <Link className="nav-link">
+                                        </Link>
+                                    </div>
+                                    <div>
+                                        <Link className="nav-link">
+                                        </Link>
+                                    </div>
+
+                                </>
+                                :
+                                <>
+                                    <div>
+                                        <Link className="nav-link">
+                                            <div className="text-center"><p style={{ "margin": "0" }}>Crea tu cuenta</p></div>
+                                        </Link>
+                                    </div>
+                                    <div>
+                                        <Link className="nav-link">
+                                            <div className="text-center"><p style={{ "margin": "0" }}>Ingresar</p></div>
+                                        </Link>
+                                    </div>
+                                </>
+                        }
+                         <div>
                             <a className="nav-link" ><i className="bi bi-bell h5"></i>
                                 <div className="text-center Notificaciones"><p style={{ "marginTop": "-3px", "color": "#fff" }} >1</p></div></a>
+                        </div>
+                        <div >
+                            <div className="dropdown">
+                                <div className="nav-link  col-2 dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false" title="Articulos que te gustaron">
+                                    <i class="bi bi-heart h5"></i>
+                                    <div className="text-center Notificaciones"><p style={{ "marginTop": "-3px", "color": "#fff" }} > {numGustos} </p>
+                                    </div>
+                                    <ul style={{ "width": "500px","maxHeight":"375px", "overflowY":"auto" }} className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                       {
+                                        elemntsGustos.map((data) => (
+                                            <CardGustos key={data.id} {...data} DeleteItemGustos={DeleteItemGustos} />
+                                        ))
+                                       }
+                                     
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                         <div>
                             <Link to={"/Carrito"} className="nav-link" > <i className="bi bi-cart h5"></i>

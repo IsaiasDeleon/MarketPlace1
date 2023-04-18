@@ -7,7 +7,7 @@ const cors = require('cors')
 //Obtenemos los variables globales para no ponerlos en codigo
 require('dotenv').config();
 //Archivo donde hacemos las peticiones a la DB
-const { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser } = require("./options")
+const { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser, RegistrarUsuario, addGustos, ElementsToGustos, GetElementsGustos, deleteItemGustos } = require("./options")
 
 //Politicas cross
 app.use(cors());
@@ -60,6 +60,12 @@ app.post('/carrito', (req, res) => {
 //Url para obtener cuantos articulos se encuentran en el carrito de compras
 app.post('/GetNumCarrito', (req, res) => {
     ElementsToCar(pool, req.body, (result) => {
+        res.json(result)
+    })
+})
+//Url para obtener cuantos articulos se encuentran en los gustos
+app.post('/GetNumGustos', (req, res) => {
+    ElementsToGustos(pool, req.body, (result) => {
         res.json(result)
     })
 })
@@ -127,6 +133,30 @@ app.post('/Login', (req, res) => {
 app.post('/SaveDetailsUser', (req, res) => {
     SaveDetailsUser(pool, req.body, (result) => {
         res.json(result);
+    })
+})
+//Registrar un nuevo usuario
+app.post('/Registrar', (req, res) => {
+    RegistrarUsuario(pool, req.body, (result) => {
+        res.json(result);
+    })
+})
+//Url para actualizar los gustos
+app.post('/gustos', (req, res) => {
+    addGustos(pool, req.body, (result) => {
+        res.json(result)
+    })
+})
+//Url para obtener los elementos en la tabla de gustos
+app.post('/GetElementsGustos',(req, res) => {
+    GetElementsGustos(pool, req.body, (result) => {
+        res.json(result);
+    })
+})
+//Url para eliminar el item que el usuario ya no quiere en su guardados
+app.post('/deleteItemGustos', (req, res) => {
+    deleteItemGustos(pool, req.body, (result) => {
+        res.json(result)
     })
 })
 //Levantamos el servidor en el puesto que necesitemos

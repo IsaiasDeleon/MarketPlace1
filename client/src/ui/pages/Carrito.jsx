@@ -3,7 +3,7 @@ import axios from 'axios';
 import { CardCarrito } from '../components/CardCarrito';
 import { Noti } from '../components/Notificaciones';
 import { AuthContext } from '../../auth/AuthContext';
-const URLServer = "http://192.168.100.19:3020/"
+const URLServer = "http://192.168.100.13:3020/"
 
 
 export const Carrito = ({ NumElementsCarrito,setMenu }) => {

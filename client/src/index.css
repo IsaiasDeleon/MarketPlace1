@@ -46,6 +46,9 @@
 .TtitulosIndex {
   font-size: var(--big-font-size);
 }
+.EstadoProducto{
+  font-size: var(--h4-font-size);
+}
 
 body {
   margin: 0;
@@ -106,7 +109,7 @@ code {
 
 .InconosRight {
   align-items: center;
-  width: 15%;
+  width: 28%;
 }
 
 .Notificaciones {
@@ -150,10 +153,10 @@ code {
 }
 
 .contenedorC {
-  width: 20%;
+  width: 95%;
   min-width: 20%;
   margin: 20px;
-  cursor: pointer;
+  /* cursor: pointer; */
   border: none;
   border-radius: 20px;
   margin-top: 35px;
@@ -164,16 +167,22 @@ code {
 
 .divImgMT {
   margin-top: -40px;
+  height: 150px;
 }
 
 .ImgCard {
   max-width: 50%;
   max-height: 180px;
-  filter: drop-shadow(2px 5px 2px rgba(68, 68, 68, .8))
+  filter: drop-shadow(2px 5px 2px rgba(68, 68, 68, .8));
+  cursor: pointer;
 }
 
 .TextCard {
   padding: 20px
+}
+.TextCardSeccion{
+  display: grid;
+  grid-template-columns: 40% 60%;
 }
 
 /* .IconTextCard {
@@ -232,8 +241,18 @@ code {
   position: absolute;
   left: 20%;
   height: auto;
+  min-height: calc(100% - 60px);
   top: 60px;
   width: 80%;
+  background: rgb(245, 245, 245);
+}
+.contenedorCards{
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  padding: 4px;
+}
+.contenedorCardsList{
+  display: block;
 }
 
 .contenedorCarrito {
@@ -258,6 +277,7 @@ code {
 .contendorArticulo {
   background: rgb(245, 245, 245);
   width: 100%;
+  /* height: 93vh; */
 }
 
 .divImg {
@@ -334,6 +354,16 @@ code {
   max-width: 220px;
   max-height: 220px;
   filter: drop-shadow(2px 5px 2px rgba(68, 68, 68, .8))
+}
+.GustosIMG {
+  max-width: 100px;
+  max-height: 100px;
+  filter: drop-shadow(2px 5px 2px rgba(68, 68, 68, .8))
+}
+.ProductoImg {
+  max-width: 420px;
+  max-height: 420px;
+  filter: drop-shadow(4px 10px 4px rgba(68, 68, 68, .8))
 }
 
 /* Estilos para pagina de carrito */
@@ -435,6 +465,16 @@ code {
  .formularioPerfil{
   display: flex;
  }
+ .SelectEstadoProducto{
+  width: 20%;
+ }
+ .OrdenarProductos{
+  float: right;
+ }
+ .BorderImagenSelect{
+  border:3px solid #000;
+  border-radius:5px;
+ }
 @media (max-width: 1440px) {
   .contenedorC {
     flex-basis: 25%;
@@ -479,7 +519,7 @@ code {
   }
 
   .InconosRight {
-    width: 20%;
+    width: 45%;
   }
 
   .contendorPrincipalIndex {
@@ -556,6 +596,9 @@ code {
    .FechasPerfil{
     font-size: var(--small-font-size);
    }
+   .divImgMT {
+    height: 100px;
+  }
 }
 
 @media (max-width: 1170px) {
@@ -570,6 +613,14 @@ code {
   .marginPerfil{
     margin: 6px;
   }
+  .TextCardSeccion{
+    grid-template-columns: 40% 60%;
+  }
+ 
+  .contenedorCards{
+    grid-template-columns: 33% 33% 33%;
+
+  }
 }
 
 @media (max-width: 1100px) {
@@ -578,7 +629,7 @@ code {
   }
 
   .InconosRight {
-    width: 25%;
+    width: 55%;
   }
 
   .TextShadowH {
@@ -669,6 +720,12 @@ code {
   .marginPerfil{
     margin: 5px;
   }
+  .divImgMT {
+    height: 120px;
+  }
+  .SelectEstadoProducto{
+    width: 30%;
+  }
 }
 
 @media (max-width: 960px) {
@@ -707,6 +764,12 @@ code {
     padding: 2px;
     width: 65%;
   }
+  .divImgMT {
+    height: 90px;
+  }
+  .EstadoProducto{
+    font-size: var(--normal-font-size);
+  }
 }
 
 @media (max-width: 770px) {
@@ -741,7 +804,7 @@ code {
   }
 
   .InconosRight {
-    width: 30%;
+    width: 65%;
   }
 
   .contenedorC {
@@ -751,7 +814,13 @@ code {
   .TotalesFont {
     font-size: var(--h3-font-size);
   }
- 
+  .divImgMT {
+    height: 130px;
+  }
+  .contenedorCards{
+    grid-template-columns: 50% 50%;
+
+  }
 }
 
 @media (max-width: 707px) {
@@ -824,6 +893,9 @@ code {
   .selectoresPerfil{
     display: block;
   }
+  .divImgMT {
+    height: 110px;
+  }
 }
 
 @media (max-width: 602px) {
@@ -839,6 +911,14 @@ code {
   .w100 {
     width: 100%;
   }
+  .SelectEstadoProducto{
+    width: 35%;
+  }
+  .OrdenarProductos{
+    display: block;
+    float: initial;
+    margin-top: 10px;
+   }
 }
 
 @media (max-width: 550px) {
@@ -848,7 +928,7 @@ code {
   }
 
   .InconosRight {
-    width: 40%;
+    width: 70%;
   }
 
   .menuShow {
@@ -857,6 +937,16 @@ code {
 
   .TotalesFont {
     font-size: var(--normal-font-size);
+  }
+  .contenedorCards{
+    grid-template-columns: 100%;
+
+  }
+  .divImgMT {
+    height: 140px;
+  }
+  .AcomodoText{
+    text-align: end;
   }
 }
 
@@ -887,6 +977,9 @@ code {
   .formularioPerfil{
     display: block;
    }
+   .SelectEstadoProducto{
+    width: 40%;
+   }
 }
 
 @media (max-width: 425px) {
@@ -900,7 +993,7 @@ code {
   }
 
   .InconosRight {
-    width: 80%;
+    width: 90%;
   }
 
   .ContenedorWidthH {
@@ -908,6 +1001,9 @@ code {
   }
   .PrimeraSeccion{
     margin: 15px 20px;
+  }
+  .SelectEstadoProducto{
+    width: 50%;
   }
 }
 
@@ -947,5 +1043,15 @@ code {
     --bs-btn-padding-x: .5rem;
     --bs-btn-font-size: 1rem;
     --bs-btn-border-radius: 0.4rem;
+  }
+  .divImgMT {
+    height: 110px;
+  }
+}
+@media (max-width: 365px) {
+
+  .contenedorCards{
+    display: block;
+
   }
 }

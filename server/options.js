@@ -333,5 +333,160 @@ function SaveDetailsUser(pool, data, callback){
         })
     })
 }
+function RegistrarUsuario(pool, data, callback){
+    const nombre = data.nombre;
+    const correo = data.correo;
+    const pass = data.pass;
+    pool.getConnection(function (err, connection){
+        if(err) throw err;
+        connection.query(`insert into usuarios values (default,'${nombre}','${correo}','${pass}', null, default)`, function (err, result) {
+            if(err) throw err;
+            connection.query(`insert into datosgenerales values(default, ${result.insertId},null,null,null,null,null,null,null,null)`,function (err, result) {
+                if(err) throw err;
+                callback("RegistroUsuario");
+                connection.release();
+            })
+        })
+    })
+
+}
+
+//Añadimos el articulo al carrito
+function addGustos(pool, data, callback) {
+    const Nume = data.Num;
+    const idU = data.idU;
+    pool.getConnection(function (err, connection) {
+        if (err) throw err;
+
+        //Validamos que exista el usuario en el carrito
+        connection.query(`SELECT id, count(id) as num, IdArticulos FROM gustosarticulos where idUsuario = ${idU}`, function (err, result) {
+            // console.log(result[0].num)
+            if (err) throw err;
+            if (result[0].num == 0) {
+                connection.query(`INSERT INTO gustosarticulos values(default, ${idU},${Nume})`, function (err, result) {
+                    if(err) throw err;
+                    callback("AgregadoGustos");
+                })
+                
+            }
+            if (result[0].num == 1) {
+                ///Si existe el carrito del usuario validaremos que no este el articulo ya registrado en su carrito
+                let articulos = result[0].IdArticulos.split(',');
+                let suma = 0;
+                console.log(articulos)
+                //Obtenemos los articulos ya registrados en la DB
+                for (let i = 0; i < articulos.length; i++) {
+                    //Validamos uno por uno para evr si ya se encuentra en su carrito
+                    if (articulos[i] == `${Nume}`) {
+                        suma++;
+                        //Una vez que lo encuentre sumaremos la variable suma para no coorrer el siguinte codigo ademas ponemos un retur para que ya no siga validando 
+                        break;
+                    }
+                }
+
+                if (suma == 0) {
+                    //Seguimos utilizando el arreglo ya que es mas facil agregarlo con sus respectivas separaciones
+                    articulos.push(`${Nume}`);
+                    let valuesArticulos = articulos.toString();
+                    //Una ves ya teniendo los artivulos haremos una actualizacion en la DB
+                    connection.query(`UPDATE gustosarticulos SET IdArticulos = '${valuesArticulos}' where id = ${result[0].id}`, function (err, result) {
+                        if (err) throw err;
+                        callback("AgregadoGustos");
+
+                    })
+                } else {
+                    callback("ExisteGustos")
+                }
+            }
+
+            connection.release();
+        })
+    })
+}
+
+//Obtenemos el numero de elementos en el carrito
+function ElementsToGustos(pool, data ,callback) {
+    const id = data.id;
+    pool.getConnection(function (err, connection) {
+        if (err) throw err;
+        connection.query(`SELECT IdArticulos FROM gustosarticulos where idUsuario = ${id} `, function (err, result) {
+            if (err) throw err;
+            if(result[0]){
+                let articulos = result[0].IdArticulos.split(',');
+                let suma = 0;
+                for (let i = 0; i < articulos.length; i++) {
+                    //Validamos que sea mayor a 0 ya que si se encuentra vacio aqui lo podremos eliminar
+                    if (articulos[i] > 0) {
+                        suma++;
+                    }
+                }
+                callback(suma);
+                connection.release();
+            }
+        })
+    })
+}
+//Obtenemos los articulos en el carrito
+function GetElementsGustos(pool, data, callback) {
+    const id = data.id;
+    pool.getConnection(function (err, connection) {
+        if (err) throw err;
+        connection.query(`select IdArticulos from gustosarticulos where idUsuario = ${id}`, function (err, result) {
+            if (err) throw err;
+            let articulos = result[0].IdArticulos.split(',');
+            let newArr = [];
+
+            for (let i = 0; i < articulos.length; i++) {
+                //Validamos que sea mayor a 0 ya que si se encuentra vacio aqui lo podremos eliminar
+                if (articulos[i] > 0) {
+
+                    newArr.push(`${articulos[i]}`);
+                }
+            }
+
+            if (newArr.length > 0) {
+
+                let valuesArticulos = newArr.toString();
+                connection.query(`Select * from articulos where id in (${valuesArticulos})`, function (err, result) {
+                    if (err) throw err;
+                    callback(result);
+                    connection.release();
+                })
+            }
+
+        })
+    })
+}
+function deleteItemGustos(pool, data, callback){
+    const iden = data.id;
+    const idU = data.idU;
+    pool.getConnection(function (err, connection) {
+        if (err) throw err;
+        connection.query(`select IdArticulos From gustosarticulos where idUsuario = ${idU}`, function (err, result) {
+            if (err) throw err;
+            let articulos = result[0].IdArticulos.split(',');
+            articulos = articulos.filter((item) => item !== `${iden}`)
+            let newArr = [];
+            for (let i = 0; i < articulos.length; i++) {
+                //Validamos que sea mayor a 0 ya que si se encuentra vacio aqui lo podremos eliminar
+                if (articulos[i] > 0) {
+                    newArr.push(`${articulos[i]}`);
+                }
+            }
+
+            if (newArr.length > 0) {
+                // el update va aqui
+                let valuesArticulos = newArr.toString();
+                //Una ves ya teniendo los artivulos haremos una actualizacion en la DB
+                connection.query(`UPDATE gustosarticulos SET IdArticulos = '${valuesArticulos}' where idUsuario = ${idU}`, function (err, result) {
+                    if (err) throw err;
+                    callback("EliminadoGusto")
+                })
+            }
+
+            connection.release();
+        })
+    })
+}
 //Exportamos las funciones que utilizaremos para la comunicacion con el front 
-module.exports = { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser }
+module.exports = { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser, RegistrarUsuario, addGustos, ElementsToGustos, GetElementsGustos, deleteItemGustos }
