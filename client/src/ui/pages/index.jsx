@@ -7,16 +7,15 @@ import { AuthContext } from '../../auth/AuthContext';
 import { useNavigate } from 'react-router';
 import { CardHorizontal } from '../components/CardsHorizontal';
 
-const URLServer = "http://192.168.100.13:3020/"
+const URLServer = "http://192.168.100.9:3020/"
 
 
-export const Inicio = ({ data = [], setData, NumElementsCarrito = [], dataFiltrado = [], setMenu, ElementsGustos, NumElementsGustos }) => {
+export const Inicio = ({ data = [], setData, NumElementsCarrito = [], dataFiltrado = [], setMenu, ElementsGustos, NumElementsGustos, setClickProducto }) => {
 
     const [idCard, setIdCard] = useState();
     const [notiCarrito, setNotiCarrito] = useState();
     const [activeNoti, setActiveNoti] = useState();
     const [acomodoCars, setAcomodoCards] = useState(false);
-    console.log(dataFiltrado)
     const { user } = useContext(AuthContext)
     let idU = user?.id;
     const navigate = useNavigate(); 
@@ -53,6 +52,7 @@ export const Inicio = ({ data = [], setData, NumElementsCarrito = [], dataFiltra
         axios.get(URLServer + "read").then((response) => {
             //Si la respuesta es correacta modificaremos el array con los objetos que obtenga desde la busqueda
             setData(response.data)
+            console.log(response.data)
         });
         setMenu(true);
     }, [])
@@ -119,19 +119,19 @@ export const Inicio = ({ data = [], setData, NumElementsCarrito = [], dataFiltra
             <div className="padding4 contendorArticulo" >
             <button className='btn btn-dark '>Todos</button>
             <button className='btn btn-dark m-2'>Ofertas</button>
-            <div className="form-floating SelectEstadoProducto" style={{"display":"inline-block","position":"absolute"}}>
+            {/* <div className="form-floating SelectEstadoProducto" style={{"display":"inline-block","position":"absolute"}}>
                 <select className="form-select" id="floatingSelect" aria-label="Floating label select example">
                     <option value="1" selected>Cualquier estado</option>
                     <option value="2">Nuevo</option>
                     <option value="3">Usado</option>
                 </select>
                 <label htmlFor="floatingSelect" className='fw-bold'>Estado del producto:</label>
-            </div>
+            </div> */}
             <div className='OrdenarProductos' >
                 {
                     !acomodoCars ?
-                        <label className='fw-bold'>Ordenar por lista <button className='btn btn-dark' onClick={ (e) => setAcomodoCards(!acomodoCars)}><i class="bi bi-list-ol"></i></button></label>
-                        :<label className='fw-bold'>Ordenar por galeria <button className='btn btn-dark' onClick={ (e) => setAcomodoCards(!acomodoCars)}><i class="bi bi-card-text"></i></button></label>
+                        <label className='fw-bold'>Ordenar por lista <button className='btn btn-dark' onClick={ (e) => setAcomodoCards(!acomodoCars)}><i className="bi bi-list-ol"></i></button></label>
+                        :<label className='fw-bold'>Ordenar por galeria <button className='btn btn-dark' onClick={ (e) => setAcomodoCards(!acomodoCars)}><i className="bi bi-card-text"></i></button></label>
                 }
                 
                 
@@ -142,7 +142,7 @@ export const Inicio = ({ data = [], setData, NumElementsCarrito = [], dataFiltra
                     <div className={!acomodoCars ? "contenedorCards" : "contenedorCardsList"} >
                         {!acomodoCars?
                             dataFiltrado.map((data) => (
-                                <Card key={data.id} {...data} setIdCard={setIdCard} />
+                                <Card key={data.id} {...data} setIdCard={setIdCard} setClickProducto={setClickProducto} />
                             ))
                             :dataFiltrado.map((data) => (
                                 <CardHorizontal key={data.id} {...data} setIdCard={setIdCard} />

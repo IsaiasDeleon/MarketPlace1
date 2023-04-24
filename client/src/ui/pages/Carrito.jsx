@@ -3,7 +3,7 @@ import axios from 'axios';
 import { CardCarrito } from '../components/CardCarrito';
 import { Noti } from '../components/Notificaciones';
 import { AuthContext } from '../../auth/AuthContext';
-const URLServer = "http://192.168.100.13:3020/"
+const URLServer = "http://192.168.100.9:3020/"
 
 
 export const Carrito = ({ NumElementsCarrito,setMenu }) => {
@@ -20,6 +20,7 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
         axios.post(URLServer + "readCarrito",{"idU": idU}).then((response) => {
             //Si la respuesta es correacta modificaremos el array con los objetos que obtenga desde la busqueda
             setElementsCarrito(response.data)
+            console.log(response.data)
         });
     }
 
@@ -83,10 +84,18 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
             setTotalPrecio(total)
 
         })
+    }
+    function Cotizar() {
+        let ids = [];
+        let cantidadByProducto = [];
+        elementsCarrito.map((element) => {
+            ids.push(element.id);
+            let elements = document.getElementById(`VItem${element.id}`).value;
+            cantidadByProducto.push(elements);
+        });
+        axios.post(URLServer+"GeneratePDFArticulos",{"idProduct":ids, "cantidades": cantidadByProducto}).then((response) => {
 
-
-
-
+        })
     }
     return (
         <>
@@ -107,7 +116,8 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
                         <h4 className=" fw-bold text-success TotalesFont">${totalPrecio}</h4>
                     </div>
                     <div className=" text-center">
-                        <button className="btn btn-success btn-lg">Comprar</button>
+                        <button className="btn btn-success btn-lg m-2">Comprar</button>
+                        <button className="btn btn-light btn-lg m-2" onClick={ () => Cotizar()}>Cotizar</button>
                     </div>
                 </div>
             </div>

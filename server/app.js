@@ -7,8 +7,8 @@ const cors = require('cors')
 //Obtenemos los variables globales para no ponerlos en codigo
 require('dotenv').config();
 //Archivo donde hacemos las peticiones a la DB
-const { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser, RegistrarUsuario, addGustos, ElementsToGustos, GetElementsGustos, deleteItemGustos } = require("./options")
-
+const { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser, RegistrarUsuario, addGustos, ElementsToGustos, GetElementsGustos, deleteItemGustos, GetProducto } = require("./options")
+const { GeneratePDF, GeneratePDFArticulos }  = require("./PDF")
 //Politicas cross
 app.use(cors());
 app.use(bodyParser.urlencoded({
@@ -157,6 +157,23 @@ app.post('/GetElementsGustos',(req, res) => {
 app.post('/deleteItemGustos', (req, res) => {
     deleteItemGustos(pool, req.body, (result) => {
         res.json(result)
+    })
+})
+//OBTENEMOS LOS DATOS DEL PRODUCTO
+app.post('/GetProducto', (req, res) => {
+    GetProducto(pool, req.body, (result) => {
+        res.json(result)
+    })
+})
+//GENERATE PDF
+app.post('/GeneratePDF',(req, res) => {
+    GeneratePDF(pool, req.body, (result) => {
+        res.json(result)
+    })
+})
+app.post('/GeneratePDFArticulos', (req, res) => {
+    GeneratePDFArticulos(pool, req.body, (result) => {
+        console.log(result)
     })
 })
 //Levantamos el servidor en el puesto que necesitemos

@@ -488,5 +488,15 @@ function deleteItemGustos(pool, data, callback){
         })
     })
 }
+function GetProducto(pool, data, callback){
+    const idProducto = data.idProduct;
+    pool.getConnection(function (err, connection) {
+        if(err) throw err;
+        connection.query(`SELECT * from articulos where id = ${idProducto}`, function (err, result) {
+            if(err) throw err;
+            callback(result);
+        })
+    })
+}
 //Exportamos las funciones que utilizaremos para la comunicacion con el front 
-module.exports = { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser, RegistrarUsuario, addGustos, ElementsToGustos, GetElementsGustos, deleteItemGustos }
+module.exports = { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser, RegistrarUsuario, addGustos, ElementsToGustos, GetElementsGustos, deleteItemGustos, GetProducto }

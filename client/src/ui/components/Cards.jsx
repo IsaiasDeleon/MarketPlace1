@@ -1,13 +1,22 @@
-export const Card = ({ id, img, empresa, descripcion, estrellas, monto, setIdCard, Estado }) => {
+import { Link, useNavigate } from "react-router-dom";
+
+export const Card = ({ id, img, empresa, descripcion, estrellas, monto, setIdCard, Estado, setClickProducto }) => {
+    const navigate = useNavigate();
     function Gusto(id) {
         setIdCard(id);
+    }
+    
+    function ProductoShow(id) {
+        setClickProducto(id)
+        navigate('/Producto', {
+            replace: true
+        })
     }
     return (
         <div className="card contenedorC">
             <h6 style={{"position":"absolute","left":"10px","top":"10px"}} className={`fw-bold ${Estado == "1" ? "text-success" :"text-primary"} `}>{Estado == "1" ? "Nuevo" : "Semi-Nuevo"}</h6>
             <div className="text-center divImgMT">
-                <img src={`./assets/Art${img}.png`} alt="IMGCompra" className="ImgCard" />
-
+                    <img src={`./assets/Art${img}.png`} onClick={() => ProductoShow(id)} alt="IMGCompra" className="ImgCard" />
             </div>
             <div className="content-txt TextCard">
                 <div className="TextCardSeccion" >
@@ -20,7 +29,7 @@ export const Card = ({ id, img, empresa, descripcion, estrellas, monto, setIdCar
                         <i style={{ "margin": "3px" }} className={`bi bi-star-fill ${(estrellas >= 5) ? 'text-warning' : ''}`}></i>
                     </div>
                 </div>
-                <h6 style={{"cursor":"pointer"}}>{descripcion}</h6>
+                <h6 onClick={() => ProductoShow(id)} style={{"cursor":"pointer"}}>{descripcion}</h6>
                 
                 <div className="d-flex justify-content-between">
                     <h6 >${monto} </h6>

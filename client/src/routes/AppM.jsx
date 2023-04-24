@@ -13,8 +13,8 @@ import { AuthContext } from "../auth/AuthContext";
 import { Producto } from "../ui/pages/Producto";
 import { Noti } from "../ui/components/Notificaciones";
 
-
-const URLServer = "http://192.168.100.13:3020/"
+//ESTE YA NO SIRVE
+const URLServer = "http://192.168.100.21:3020/"
 export const AppM = () => {
     //Obtenemos el id logueado
     const { user } = useContext( AuthContext );
@@ -35,6 +35,8 @@ export const AppM = () => {
      const [elemntsGustos, setElementsGustos] = useState([]);
      const [notiCarrito, setNotiCarrito] = useState();
      const [activeNoti, setActiveNoti] = useState();
+     //ELemento clickeado PRODUCTO
+    const [clickProducto, setClickProducto] = useState();
 
      const [idCard, setIdCard] = useState();
      const [idCard2, setIdCard2] = useState();
