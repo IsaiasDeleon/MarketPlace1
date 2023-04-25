@@ -7,7 +7,7 @@ import { AuthContext } from '../../auth/AuthContext';
 import { useNavigate } from 'react-router';
 import { CardHorizontal } from '../components/CardsHorizontal';
 
-const URLServer = "http://192.168.100.9:3020/"
+const URLServer = "http://192.168.100.7:3020/"
 
 
 export const Inicio = ({ data = [], setData, NumElementsCarrito = [], dataFiltrado = [], setMenu, ElementsGustos, NumElementsGustos, setClickProducto }) => {
@@ -19,32 +19,32 @@ export const Inicio = ({ data = [], setData, NumElementsCarrito = [], dataFiltra
     const { user } = useContext(AuthContext)
     let idU = user?.id;
     const navigate = useNavigate(); 
-    useEffect(() => {
+    // useEffect(() => {
         
-        //Comrpobamos que el idCard no venga vacio
-        if (idCard != undefined) {
-            if(idU == undefined){
-                navigate("/Login",{
-                    replace:true
-                })
-                return;
-            }
-            //Peticion para agregar un nuevo producto al carrito
-            axios.post(URLServer + "gustos", { "idU": idU,"Num": idCard }).then((response) => {
-                //Actualizamos el mensaje que nos envio el server para mostarr la alerta
-                setNotiCarrito(response.data)
-                //Activamos y desactivamos la alerta para tener una animacion
-                setActiveNoti(true)
-                setTimeout(() => {
-                    setActiveNoti(false)
-                }, 4000);
-                // NumElementsCarrito();
-                NumElementsGustos();
-                ElementsGustos();
+    //     //Comrpobamos que el idCard no venga vacio
+    //     if (idCard != undefined) {
+    //         if(idU == undefined){
+    //             navigate("/Login",{
+    //                 replace:true
+    //             })
+    //             return;
+    //         }
+    //         //Peticion para agregar un nuevo producto al carrito
+    //         axios.post(URLServer + "gustos", { "idU": idU,"Num": idCard }).then((response) => {
+    //             //Actualizamos el mensaje que nos envio el server para mostarr la alerta
+    //             setNotiCarrito(response.data)
+    //             //Activamos y desactivamos la alerta para tener una animacion
+    //             setActiveNoti(true)
+    //             setTimeout(() => {
+    //                 setActiveNoti(false)
+    //             }, 4000);
+    //             // NumElementsCarrito();
+    //             NumElementsGustos();
+    //             ElementsGustos();
 
-            })
-        }
-    }, [idCard])
+    //         })
+    //     }
+    // }, [idCard])
     //Hacemos una peticion para obtener los primero resultados que mostraremos
     useEffect(() => {
        

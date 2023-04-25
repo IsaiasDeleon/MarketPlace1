@@ -14,7 +14,7 @@ import { Producto } from "../ui/pages/Producto";
 import { Noti } from "../ui/components/Notificaciones";
 
 //ESTE YA NO SIRVE
-const URLServer = "http://192.168.100.21:3020/"
+const URLServer = "http://192.168.100.7:3020/"
 export const AppM = () => {
     //Obtenemos el id logueado
     const { user } = useContext( AuthContext );

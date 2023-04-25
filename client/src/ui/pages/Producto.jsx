@@ -2,13 +2,14 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../auth/AuthContext";
 import { useEffect } from "react";
 import axios from "axios";
-const URLServer = "http://192.168.100.9:3020/"
+const URLServer = "http://192.168.100.7:3020/"
 export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClickProducto}) => {
     
 
     const [imagenes, setImagenes] = useState(`Art${clickProducto}.png`);
     const [onClickImagen, setOnClickImagen] = useState(1);
     const [datosProducto, setDatosProducto] = useState([]);
+    const [valueOferta, setValueOferta] = useState(0);
 
     const { user } = useContext(AuthContext)
     let idU = user?.id;
@@ -25,12 +26,28 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
             setImagenes(`Art${clickProducto}.png`);
             axios.post(URLServer + "GetProducto", {"idProduct":clickProducto}).then((response) => {
                 setDatosProducto(response.data)
-                console.log(datosProducto?.[0])
+                setValueOferta(response.data[0]?.monto - 1 )
+                
             })
         }
-    },[clickProducto])
+    },[clickProducto]);
+    function createMail(){
+        axios.post(URLServer+"mailNode",{"idProduct":clickProducto, "idUser": idU, "Oferta" : valueOferta }).then((response) => {
+            console.log(response.data)
+        })
+    }
+    const onInputChange2 = ({ target }) => {
+        const { name, value } = target;
+        switch (name) {
+            case 'Oferta':
+                setValueOferta(value);
+                break;
+           
+        }
+    }
+       
     function CreatePDF(){
-        axios.post(URLServer+"GeneratePDF",{"idProduct":clickProducto}).then((response) => {
+        axios.post(URLServer+"GeneratePDF",{"idProduct":clickProducto, "idUser":idU}).then((response) => {
             let url = response.data;
             // var a = document.createElement('a');
             // var linkText = document.createTextNode("my title text");
@@ -88,7 +105,7 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
                         </div>
                         <div className="text-end">
                             <button className="btn btn-success m-2">¡Cómpralo ahora!</button>
-                            <button className="btn btn-primary m-2">Hacer oferta</button>
+                            <button className="btn btn-primary m-2"  data-bs-toggle="modal" data-bs-target="#exampleModal">Hacer oferta</button>
                             <button className="btn btn-dark m-2" onClick={(e) => {setIdCard2(clickProducto)}}>Agregar al carrito de compras</button>
                             <button className="btn btn-secondary m-2" onClick={(e) => { setIdCard(clickProducto)}}>Agregar a lista de favoritos</button>
                             <button className="btn btn-secondary m-2" onClick={() => CreatePDF()}>Cotizar</button>
@@ -106,6 +123,25 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
                     
                 </div>
            </div>
+          
+            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div className="modal-dialog">
+                <div className="modal-content">
+                <div className="modal-header">
+                    <h1 className="modal-title fs-5" id="exampleModalLabel">Ofertar por el producto</h1>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div className="modal-body">
+                    <label>Oferta:</label>
+                    <input name="Oferta" value={valueOferta} onChange={(e) => onInputChange2(e)}  className="form-control" type="number"/>
+                </div>
+                <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" onClick={() => createMail()} className="btn btn-primary">Ofertar</button>
+                </div>
+                </div>
+            </div>
+            </div>
            <a href={`https://isc.isaiasdeleon.robo-tics-slp.net/resources/Cotizacion.pdf`} download={"file.pdf"}>Descargar</a>
          </div>
             

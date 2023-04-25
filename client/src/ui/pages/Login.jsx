@@ -4,7 +4,7 @@ import { types } from "../../types/types";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { Noti } from "../components/Notificaciones";
-const URLServer = "http://192.168.100.9:3020/"
+const URLServer = "http://192.168.100.7:3020/"
 export const Login = () => {
     const { Log } = useContext(AuthContext); 
     const navigate = useNavigate(); 

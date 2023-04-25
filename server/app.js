@@ -8,7 +8,8 @@ const cors = require('cors')
 require('dotenv').config();
 //Archivo donde hacemos las peticiones a la DB
 const { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser, RegistrarUsuario, addGustos, ElementsToGustos, GetElementsGustos, deleteItemGustos, GetProducto } = require("./options")
-const { GeneratePDF, GeneratePDFArticulos }  = require("./PDF")
+const { GeneratePDF, GeneratePDFArticulos }  = require("./PDF");
+const { mailNode }=require("./mail");
 //Politicas cross
 app.use(cors());
 app.use(bodyParser.urlencoded({
@@ -173,6 +174,11 @@ app.post('/GeneratePDF',(req, res) => {
 })
 app.post('/GeneratePDFArticulos', (req, res) => {
     GeneratePDFArticulos(pool, req.body, (result) => {
+        console.log(result)
+    })
+})
+app.post('/mailNode',(req, res) => {
+    mailNode(pool, req.body, (result) => {
         console.log(result)
     })
 })

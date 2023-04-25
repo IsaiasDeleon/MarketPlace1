@@ -3,9 +3,10 @@ const pdf = require('html-pdf');
 
 function GeneratePDF(pool, data, callback) {
     const idProducto = data.idProduct;
+    const idUser = data.idUser;
     pool.getConnection(function (err, connection) {
         if (err) throw err;
-        connection.query(`SELECT  articulos.img, articulos.descripcion,articulos.monto, usuarios.Nombre, usuarios.Correo, datosgenerales.telefono, datosgenerales.estado, datosgenerales.municipio, estados.estado as nameEsta, municipios.municipio as nameMuni, datosgenerales.Direccion, datosgenerales.CP FROM articulos, usuarios, datosgenerales, estados, municipios where articulos.id = ${idProducto} and usuarios.id = 1 and datosgenerales.idusuario = 1 and estados.id = datosgenerales.estado and municipios.id = datosgenerales.municipio`, function (err, result) {
+        connection.query(`SELECT  articulos.img, articulos.descripcion,articulos.monto, usuarios.Nombre, usuarios.Correo, datosgenerales.telefono, datosgenerales.estado, datosgenerales.municipio, estados.estado as nameEsta, municipios.municipio as nameMuni, datosgenerales.Direccion, datosgenerales.CP FROM articulos, usuarios, datosgenerales, estados, municipios where articulos.id = ${idProducto} and usuarios.id = ${idUser} and datosgenerales.idusuario = 1 and estados.id = datosgenerales.estado and municipios.id = datosgenerales.municipio`, function (err, result) {
             if (err) throw err;
             const today = new Date();
             const day = today.getDate();
@@ -143,7 +144,7 @@ function GeneratePDF(pool, data, callback) {
         </html>`;
             const options = { format: 'Letter' };
             //../client//Cotizacion.pdf
-            pdf.create(html, options).toFile('../client/src/CotizacionesUnitarias/Cotizacion.pdf', function (err, res) {
+            pdf.create(html, options).toFile('./Cotizacion.pdf', function (err, res) {
                 if (err) return console.log(err);
                 callback(res);
             });
@@ -155,10 +156,11 @@ function GeneratePDF(pool, data, callback) {
 function GeneratePDFArticulos(pool, data, callback) {
     const idProductos = data.idProduct;
     const cantidades = data.cantidades;
+    const idUser= data.idUser;
     console.log(cantidades.toString());
     pool.getConnection(function (err, connection) {
         if (err) throw err;
-        connection.query(`SELECT  articulos.img, articulos.descripcion,articulos.monto, usuarios.Nombre, usuarios.Correo, datosgenerales.telefono, datosgenerales.estado, datosgenerales.municipio, estados.estado as nameEsta, municipios.municipio as nameMuni, datosgenerales.Direccion, datosgenerales.CP FROM articulos, usuarios, datosgenerales, estados, municipios where articulos.id in(${idProductos.toString()}) and usuarios.id = 1 and datosgenerales.idusuario = 1 and estados.id = datosgenerales.estado and municipios.id = datosgenerales.municipio`, function (err, result) {
+        connection.query(`SELECT  articulos.img, articulos.descripcion,articulos.monto, usuarios.Nombre, usuarios.Correo, datosgenerales.telefono, datosgenerales.estado, datosgenerales.municipio, estados.estado as nameEsta, municipios.municipio as nameMuni, datosgenerales.Direccion, datosgenerales.CP FROM articulos, usuarios, datosgenerales, estados, municipios where articulos.id in(${idProductos.toString()}) and usuarios.id = ${idUser} and datosgenerales.idusuario = 1 and estados.id = datosgenerales.estado and municipios.id = datosgenerales.municipio`, function (err, result) {
             if (err) throw err;
             const today = new Date();
             const day = today.getDate();

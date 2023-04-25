@@ -11,7 +11,7 @@ import { EditarPerfil } from "../ui/pages/EditarPerfil";
 import { Producto } from "../ui/pages/Producto";
 import { Navigate, Route, Routes } from "react-router";
 import { Login } from "../ui/pages/Login";
-const URLServer = "http://192.168.100.9:3020/"
+const URLServer = "http://192.168.100.7:3020/"
 
 export const AppRoute = () => { 
             //Obtenemos el id logueado
@@ -134,7 +134,7 @@ export const AppRoute = () => {
                 <Route path="Perfil" element={<EditarPerfil numArticulos={numArticulos} setMenu={setMenu} />} />
                 <Route path="Producto" element={<Producto setIdCard={setIdCard} setIdCard2={setIdCard2} clickProducto={clickProducto} setClickProducto={setClickProducto} setMenu={setMenu} />} />
                 <Route path="/*" element={<Navigate to={"Inicio"} />} />
-                 <Route path="/Login" element={<Login/>} />
+                <Route path="/Login" element={<Login/>} />
             </Routes>
             {
                 menu 

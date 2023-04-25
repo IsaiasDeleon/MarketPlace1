@@ -3,7 +3,7 @@ import axios from 'axios';
 import { CardCarrito } from '../components/CardCarrito';
 import { Noti } from '../components/Notificaciones';
 import { AuthContext } from '../../auth/AuthContext';
-const URLServer = "http://192.168.100.9:3020/"
+const URLServer = "http://192.168.100.7:3020/"
 
 
 export const Carrito = ({ NumElementsCarrito,setMenu }) => {
@@ -93,7 +93,7 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
             let elements = document.getElementById(`VItem${element.id}`).value;
             cantidadByProducto.push(elements);
         });
-        axios.post(URLServer+"GeneratePDFArticulos",{"idProduct":ids, "cantidades": cantidadByProducto}).then((response) => {
+        axios.post(URLServer+"GeneratePDFArticulos",{"idProduct":ids, "cantidades": cantidadByProducto, "idUser": idU}).then((response) => {
 
         })
     }

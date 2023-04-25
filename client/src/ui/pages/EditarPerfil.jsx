@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useForm } from "../../hooks/useForm"
 import { Noti } from '../components/Notificaciones';
 import { AuthContext } from '../../auth/AuthContext';
-const URLServer = "http://192.168.100.9:3020/"
+const URLServer = "http://192.168.100.7:3020/"
 
 export const EditarPerfil = ({ numArticulos, setMenu }) => {
 
