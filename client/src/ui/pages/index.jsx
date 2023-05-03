@@ -3,48 +3,50 @@ import { useContext, useEffect, useState } from 'react';
 
 import { Card } from "../components/Cards";
 import { Noti } from '../components/Notificaciones';
+import { BtnProducto } from '../components/buttonProducto';
 import { AuthContext } from '../../auth/AuthContext';
 import { useNavigate } from 'react-router';
 import { CardHorizontal } from '../components/CardsHorizontal';
+import { BtnMisProductos } from '../components/butttonMisProductos';
 
-const URLServer = "http://192.168.100.7:3020/"
+const URLServer = "http://192.168.100.18:3020/"
 
 
-export const Inicio = ({ data = [], setData, NumElementsCarrito = [], dataFiltrado = [], setMenu, ElementsGustos, NumElementsGustos, setClickProducto }) => {
+export const Inicio = ({ data = [], setData, NumElementsCarrito = [], dataFiltrado = [], setMenu, ElementsGustos, NumElementsGustos, setClickProducto, acomodoCars, setAcomodoCards }) => {
 
     const [idCard, setIdCard] = useState();
     const [notiCarrito, setNotiCarrito] = useState();
     const [activeNoti, setActiveNoti] = useState();
-    const [acomodoCars, setAcomodoCards] = useState(false);
     const { user } = useContext(AuthContext)
     let idU = user?.id;
+    let tipoUser = user?.tipoUser;
     const navigate = useNavigate(); 
-    // useEffect(() => {
+    useEffect(() => {
         
-    //     //Comrpobamos que el idCard no venga vacio
-    //     if (idCard != undefined) {
-    //         if(idU == undefined){
-    //             navigate("/Login",{
-    //                 replace:true
-    //             })
-    //             return;
-    //         }
-    //         //Peticion para agregar un nuevo producto al carrito
-    //         axios.post(URLServer + "gustos", { "idU": idU,"Num": idCard }).then((response) => {
-    //             //Actualizamos el mensaje que nos envio el server para mostarr la alerta
-    //             setNotiCarrito(response.data)
-    //             //Activamos y desactivamos la alerta para tener una animacion
-    //             setActiveNoti(true)
-    //             setTimeout(() => {
-    //                 setActiveNoti(false)
-    //             }, 4000);
-    //             // NumElementsCarrito();
-    //             NumElementsGustos();
-    //             ElementsGustos();
+        //Comrpobamos que el idCard no venga vacio
+        if (idCard != undefined) {
+            if(idU == undefined){
+                navigate("/Login",{
+                    replace:true
+                })
+                return;
+            }
+            //Peticion para agregar un nuevo producto al carrito
+            axios.post(URLServer + "gustos", { "idU": idU,"Num": idCard }).then((response) => {
+                //Actualizamos el mensaje que nos envio el server para mostarr la alerta
+                setNotiCarrito(response.data)
+                //Activamos y desactivamos la alerta para tener una animacion
+                setActiveNoti(true)
+                setTimeout(() => {
+                    setActiveNoti(false)
+                }, 4000);
+                // NumElementsCarrito();
+                NumElementsGustos();
+                ElementsGustos();
 
-    //         })
-    //     }
-    // }, [idCard])
+            })
+        }
+    }, [idCard])
     //Hacemos una peticion para obtener los primero resultados que mostraremos
     useEffect(() => {
        
@@ -52,47 +54,14 @@ export const Inicio = ({ data = [], setData, NumElementsCarrito = [], dataFiltra
         axios.get(URLServer + "read").then((response) => {
             //Si la respuesta es correacta modificaremos el array con los objetos que obtenga desde la busqueda
             setData(response.data)
-            console.log(response.data)
+    
         });
-        setMenu(true);
+        setMenu(1);
     }, [])
-   
-
-    const data2 = [
-        {
-            id: 1,
-            img: 5,
-            empresa: "Badger",
-            descripcion: "Tenis Puma Junior Unisex St Activate Zapato Deportivo Comodo",
-            estrellas: 4,
-            monto: 200
-        },
-        {
-            id: 2,
-            img: 6,
-            empresa: "Badger",
-            descripcion: "Lentes De Sol Hombre Polarizados Clásicos Uv400 De Piloto",
-            estrellas: 2,
-            monto: 100
-        },
-        {
-            id: 3,
-            img: 7,
-            empresa: "Aplintec",
-            descripcion: "Reloj Tsar Bomba Hombre Lujo Tonneau Cronógrafo Impermeable",
-            estrellas: 5,
-            monto: 100
-        },
-        {
-            id: 4,
-            img: 8,
-            empresa: "Badger",
-            descripcion: "Reloj Tsar Bomba Hombre Lujo Tonneau Cronógrafo Impermeable",
-            estrellas: 5,
-            monto: 700
-        }
-    ];
-
+   useEffect(() => {
+    localStorage.setItem('AcomodoCards', JSON.stringify(acomodoCars))
+   },[acomodoCars])
+console.log(dataFiltrado)
     return (
         <div className="contenedorIndex">
             {/* <div className="padding4 contendorPrincipalIndex">
@@ -140,35 +109,30 @@ export const Inicio = ({ data = [], setData, NumElementsCarrito = [], dataFiltra
                 <div className='m-2'>
                     {/* <h2 className="TtitulosIndex">Articulos filtrados</h2> */}
                     <div className={!acomodoCars ? "contenedorCards" : "contenedorCardsList"} >
+                        
                         {!acomodoCars?
                             dataFiltrado.map((data) => (
+                               
                                 <Card key={data.id} {...data} setIdCard={setIdCard} setClickProducto={setClickProducto} />
                             ))
                             :dataFiltrado.map((data) => (
-                                <CardHorizontal key={data.id} {...data} setIdCard={setIdCard} />
+                                <CardHorizontal key={data.id} {...data} setIdCard={setIdCard} setClickProducto={setClickProducto} />
                             ))
                         }
                     </div>
                 </div>
-                {/* <div className="m-2" >
-                    <h2 className="TtitulosIndex">Articulos mas vendidos</h2>
-                    <div className="d-flex ProbandoScroll contenedorCards" style={{ "overflowX": "scroll" }}>
-                        {data.map((data) => (
-                            <Card key={data.id} {...data} setIdCard={setIdCard} />
-                        ))}
-                    </div>
-                </div>
-                <div className="m-2">
-                    <h4>Nuevos articulos</h4>
-                    <div className="d-flex  ProbandoScroll contenedorCards " style={{ "overflowX": "scroll" }}>
-                        {data2.map((d) => (
-                            <Card key={d.id} {...d} />
-                        ))}
-                    </div>
-                </div> */}
-
-
             </div>
+            {
+                tipoUser == "2"?
+                <>
+                    <BtnProducto/>
+                    <BtnMisProductos/>
+                </>
+                    
+                :
+                <></>
+            }
+           
             <Noti notiCarrito={notiCarrito} activeNoti={activeNoti} />
         </div>
 

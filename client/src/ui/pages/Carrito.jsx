@@ -3,7 +3,7 @@ import axios from 'axios';
 import { CardCarrito } from '../components/CardCarrito';
 import { Noti } from '../components/Notificaciones';
 import { AuthContext } from '../../auth/AuthContext';
-const URLServer = "http://192.168.100.7:3020/"
+const URLServer = "http://192.168.100.18:3020/"
 
 
 export const Carrito = ({ NumElementsCarrito,setMenu }) => {
@@ -17,11 +17,12 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
 
     //Function para obtener los elementos en el carrito
     function getItemCarrito() {
-        axios.post(URLServer + "readCarrito",{"idU": idU}).then((response) => {
-            //Si la respuesta es correacta modificaremos el array con los objetos que obtenga desde la busqueda
-            setElementsCarrito(response.data)
-            console.log(response.data)
-        });
+        if( idU !== undefined ){
+            axios.post(URLServer + "readCarrito",{"idU": idU}).then((response) => {
+                //Si la respuesta es correacta modificaremos el array con los objetos que obtenga desde la busqueda
+                setElementsCarrito(response.data)
+            });
+        }
     }
 
     //Hacemos una peticion para obtener los primero resultados que mostraremos
@@ -29,61 +30,65 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
         //Peticion para obtener los elemtos del carrito
         getItemCarrito();
         Totales()
-        setMenu(false)
+        setMenu(2)
     }, [])
 
     //Funcion para eliminar elemento del carrito enviamos el id del elemento clickeado
     function DeletItem(id) {
-        axios.post(URLServer + "deleteItem", {"idU":idU, "id": id }).then((response) => {
-            //Si la operacion se hizo correctamente nos regresara Eliminado
-            if (response.data == "Eliminado") {
-                //Mandamos a llamar a la funcion de getItemCarrito para obtener la actualizacion de los elementos 
-                getItemCarrito()
-                //Llamamos a la funcion NumELementsCarrito para obtener ka actualizacion de los elementos en el carrito
-                NumElementsCarrito()
-                //Enviamos el mensaje a las notificaciones para mostrar la alerta al usuario
-                setNotiCarrito(response.data)
-                setActiveNoti(true)
-                setTimeout(() => {
-                    setActiveNoti(false)
-                }, 4000);
-                //Llamamos a la funcion de totales para actualizar la cantida de productos y el total del precio
-                Totales()
-            }
-        });
+        if( idU !== undefined ){
+            axios.post(URLServer + "deleteItem", {"idU":idU, "id": id }).then((response) => {
+                //Si la operacion se hizo correctamente nos regresara Eliminado
+                if (response.data == "Eliminado") {
+                    //Mandamos a llamar a la funcion de getItemCarrito para obtener la actualizacion de los elementos 
+                    getItemCarrito()
+                    //Llamamos a la funcion NumELementsCarrito para obtener ka actualizacion de los elementos en el carrito
+                    NumElementsCarrito()
+                    //Enviamos el mensaje a las notificaciones para mostrar la alerta al usuario
+                    setNotiCarrito(response.data)
+                    setActiveNoti(true)
+                    setTimeout(() => {
+                        setActiveNoti(false)
+                    }, 4000);
+                    //Llamamos a la funcion de totales para actualizar la cantida de productos y el total del precio
+                    Totales()
+                }
+            });
+        }
     }
     function Totales() {
-//Hacemos la peticion de los datos al modelo  el cual obtendra los elementos y su precio 
-        axios.post(URLServer + "readCarrito",{"idU":idU}).then((response) => {
+        if(idU !== undefined){
+            //Hacemos la peticion de los datos al modelo  el cual obtendra los elementos y su precio 
+            axios.post(URLServer + "readCarrito",{"idU":idU}).then((response) => {
+                let num = 0;
+                let total = 0;
+                //recorremos los datos que nos arrojo para poder hacer una sumatoria del precio y los elementos ya que el usuario tendra la opcion de elegir la cantidad de stock que necesite
+                response.data.map((elementsCarrito) => {
+                    let element;
+                    try {
+                        element = document.getElementById(`VItem${elementsCarrito.id}`).value;
+                    } catch (error) {
+                        element = 1;
+                    }
 
-            let num = 0;
-            let total = 0;
-            //recorremos los datos que nos arrojo para poder hacer una sumatoria del precio y los elementos ya que el usuario tendra la opcion de elegir la cantidad de stock que necesite
-            response.data.map((elementsCarrito) => {
-                let element;
-                try {
-                    element = document.getElementById(`VItem${elementsCarrito.id}`).value;
-                } catch (error) {
-                    element = 1;
-                }
+                    //Validamos que no venga vacio
+                    if (element == "") {
+                        element = 0;
+                    }
 
-                //Validamos que no venga vacio
-                if (element == "") {
-                    element = 0;
-                }
+                    // Lo parseamos ya que necesitamos un tipo numerico
+                    element = parseInt(element);
+                    let multi = elementsCarrito.monto * element;
+                    total = total + multi;
 
-                // Lo parseamos ya que necesitamos un tipo numerico
-                element = parseInt(element);
-                let multi = elementsCarrito.monto * element;
-                total = total + multi;
+                    //Sumamos las cantidades que se píden 
+                    num = num + element;
+                })
+                setNumArticulos(num)
+                setTotalPrecio(total)
 
-                //Sumamos las cantidades que se píden 
-                num = num + element;
             })
-            setNumArticulos(num)
-            setTotalPrecio(total)
-
-        })
+        }
+       
     }
     function Cotizar() {
         let ids = [];
@@ -93,9 +98,12 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
             let elements = document.getElementById(`VItem${element.id}`).value;
             cantidadByProducto.push(elements);
         });
-        axios.post(URLServer+"GeneratePDFArticulos",{"idProduct":ids, "cantidades": cantidadByProducto, "idUser": idU}).then((response) => {
+        if(idU !== undefined){
+            axios.post(URLServer+"GeneratePDFArticulos",{"idProduct":ids, "cantidades": cantidadByProducto, "idUser": idU}).then((response) => {
 
-        })
+            })
+        }
+        
     }
     return (
         <>

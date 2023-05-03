@@ -86,7 +86,7 @@ function GeneratePDF(pool, data, callback) {
                 <tr style="">
                     <td style="width:50%; ">
                         <div style="margin:20px 15px 20px 40px">
-                            <h3>Provedor:</h3>
+                            <h3 style="color: rgb(241, 196, 15)">Provedor:</h3>
                             <b>Badger Automation.</b>
                             <p>ARENAL #6, Int: 15, Industrial Mexicana, 78309 San Luis, S.L.P.</p>
                             <p>Tel: +52 444 459 9207.</p>
@@ -96,7 +96,7 @@ function GeneratePDF(pool, data, callback) {
                     </td>
                     <td style="width:50%; ">
                         <div style="margin:20px 40px 15px 20px">
-                            <h3>Cliente:</h3>
+                            <h3 style="color: rgb(41, 128, 185)" >Cliente:</h3>
                             <b>${result[0].Nombre}</b>
                             <p>${result[0].Direccion}, 
                             ${result[0].nameMuni}, ${result[0].nameEsta}, México C.P. ${result[0].CP}.</p>
@@ -145,8 +145,8 @@ function GeneratePDF(pool, data, callback) {
             const options = { format: 'Letter' };
             //../client//Cotizacion.pdf
             pdf.create(html, options).toFile('./Cotizacion.pdf', function (err, res) {
-                if (err) return console.log(err);
-                callback(res);
+                if (err) return callback("ErrorPDF");
+                callback("PDFcreado");
             });
         })
     })
@@ -311,7 +311,7 @@ function GeneratePDFArticulos(pool, data, callback) {
         </html>`;
         const options = { format: 'Letter' };
         //../client//Cotizacion.pdf
-        pdf.create(html, options).toFile('./Cotizacion.pdf', function (err, res) {
+        pdf.create(html, options).toFile('./CotizacionCarrito.pdf', function (err, res) {
             if (err) return console.log(err);
             callback(res);
         });

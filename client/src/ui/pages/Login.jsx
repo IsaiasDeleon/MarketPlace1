@@ -1,11 +1,11 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "../../auth/AuthContext"
 import { types } from "../../types/types";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { Noti } from "../components/Notificaciones";
-const URLServer = "http://192.168.100.7:3020/"
-export const Login = () => {
+const URLServer = "http://192.168.100.18:3020/"
+export const Login = ({setMenu}) => {
     const { Log } = useContext(AuthContext); 
     const navigate = useNavigate(); 
     const [nombre, setNombre] = useState("");
@@ -33,6 +33,7 @@ export const Login = () => {
     const [activeNoti, setActiveNoti] = useState();
 
     const onLogin = (e) =>{
+        
         e.preventDefault();
         // vamos a validar elñ correo que no venga vacio
        if(correo == ""){
@@ -57,8 +58,8 @@ export const Login = () => {
             if(response.data[0]){
                 const lastPath = localStorage.getItem('lastPath') || '/';
                 let data = response.data[0];
-                
-                Log(data.Nombre, data.id, data.img);
+                console.log(data)
+                Log(data.Nombre, data.id, data.img, data.tipoUser);
                 navigate(lastPath,{
                     replace:true
                 })
@@ -104,6 +105,9 @@ export const Login = () => {
         console.log(response)
        })
     }
+    useEffect(() => {
+        setMenu(3)
+    },[])
     return (
         <>
             <div className="contenedor">

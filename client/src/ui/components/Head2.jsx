@@ -4,11 +4,18 @@ import { AuthContext } from "../../auth/AuthContext"
 import { types } from "../../types/types";
 import { CardGustos } from "./CardGustos";
 
-export const Head2 = ({  numArticulos, numGustos, elemntsGustos, DeleteItemGustos }) => {
+export const Head2 = ({  numArticulos, numGustos, elemntsGustos, DeleteItemGustos, setMenu, setClickProducto }) => {
     const { LogOut, user } = useContext(AuthContext); 
     const navigate = useNavigate(); 
     const onLogout = () =>{
         LogOut();
+        setMenu(3)
+        navigate('/Login',{
+            replace:true
+        })
+    }
+    const ShowLogin = () => {
+        setMenu(3)
         navigate('/Login',{
             replace:true
         })
@@ -18,7 +25,7 @@ export const Head2 = ({  numArticulos, numGustos, elemntsGustos, DeleteItemGusto
     img = (img) ? img : "Ge";
     return (
         <>
-            <div className="text-center contenedorH2">
+            <div style={{"zIndex":"2"}} className="text-center contenedorH2">
                 <div className="d-flex justify-content-around ContendorHeight">
                     <div className="d-flex justify-content-around ContenedorWidthH">
                         {/* <i className="bi bi-list menuShow" onClick={() => { onSubmitShowMenu() }}></i> */}
@@ -51,7 +58,7 @@ export const Head2 = ({  numArticulos, numGustos, elemntsGustos, DeleteItemGusto
                                         </Link>
                                     </div>
                                     <div>
-                                        <Link className="nav-link">
+                                        <Link onClick={ () => ShowLogin() } className="nav-link">
                                             <div className="text-center"><p style={{ "margin": "0" }}>Ingresar</p></div>
                                         </Link>
                                     </div>
@@ -67,10 +74,10 @@ export const Head2 = ({  numArticulos, numGustos, elemntsGustos, DeleteItemGusto
                                     <i class="bi bi-heart h5"></i>
                                     <div className="text-center Notificaciones"><p style={{ "marginTop": "-3px", "color": "#fff" }} > {numGustos} </p>
                                     </div>
-                                    <ul style={{ "width": "500px","maxHeight":"375px", "overflowY":"auto" }} className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <ul style={{"maxHeight":"375px", "overflowY":"auto" }} className="dropdown-menu ulcarrito" aria-labelledby="dropdownMenuButton1">
                                        {
                                         elemntsGustos.map((data) => (
-                                            <CardGustos key={data.id} {...data} DeleteItemGustos={DeleteItemGustos} />
+                                            <CardGustos key={data.id} {...data} DeleteItemGustos={DeleteItemGustos} setClickProducto={setClickProducto} />
                                         ))
                                        }
                                      

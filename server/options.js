@@ -76,7 +76,6 @@ function addCarrito(pool, data, callback) {
                 ///Si existe el carrito del usuario validaremos que no este el articulo ya registrado en su carrito
                 let articulos = result[0].IdArticulos.split(',');
                 let suma = 0;
-                console.log(articulos)
                 //Obtenemos los articulos ya registrados en la DB
                 for (let i = 0; i < articulos.length; i++) {
                     //Validamos uno por uno para evr si ya se encuentra en su carrito
@@ -118,7 +117,7 @@ function ElementsToCar(pool, data ,callback) {
         connection.query(`SELECT IdArticulos FROM carrito where idUsuario = ${id} `, function (err, result) {
             if (err) throw err;
             if(result[0]){
-                let articulos = result[0].IdArticulos.split(',');
+                let articulos = result[0]?.IdArticulos.split(',');
                 let suma = 0;
                 for (let i = 0; i < articulos.length; i++) {
                     //Validamos que sea mayor a 0 ya que si se encuentra vacio aqui lo podremos eliminar
@@ -305,7 +304,7 @@ function Loguear(pool, data, callback){
     const pass = data.pass;
     pool.getConnection(function (err, connection){
         if(err) throw err;
-        connection.query(`SELECT id, Nombre, img from usuarios where Correo = '${correo}' and Password = '${pass}'`, function (err, result) {
+        connection.query(`SELECT id, Nombre, img, tipoUser from usuarios where Correo = '${correo}' and Password = '${pass}'`, function (err, result) {
             if(err) throw err;
             callback(result);
             connection.release();
@@ -373,7 +372,6 @@ function addGustos(pool, data, callback) {
                 ///Si existe el carrito del usuario validaremos que no este el articulo ya registrado en su carrito
                 let articulos = result[0].IdArticulos.split(',');
                 let suma = 0;
-                console.log(articulos)
                 //Obtenemos los articulos ya registrados en la DB
                 for (let i = 0; i < articulos.length; i++) {
                     //Validamos uno por uno para evr si ya se encuentra en su carrito
@@ -412,7 +410,7 @@ function ElementsToGustos(pool, data ,callback) {
         connection.query(`SELECT IdArticulos FROM gustosarticulos where idUsuario = ${id} `, function (err, result) {
             if (err) throw err;
             if(result[0]){
-                let articulos = result[0].IdArticulos.split(',');
+                let articulos = result[0]?.IdArticulos.split(',');
                 let suma = 0;
                 for (let i = 0; i < articulos.length; i++) {
                     //Validamos que sea mayor a 0 ya que si se encuentra vacio aqui lo podremos eliminar
@@ -433,26 +431,29 @@ function GetElementsGustos(pool, data, callback) {
         if (err) throw err;
         connection.query(`select IdArticulos from gustosarticulos where idUsuario = ${id}`, function (err, result) {
             if (err) throw err;
-            let articulos = result[0].IdArticulos.split(',');
-            let newArr = [];
-
-            for (let i = 0; i < articulos.length; i++) {
-                //Validamos que sea mayor a 0 ya que si se encuentra vacio aqui lo podremos eliminar
-                if (articulos[i] > 0) {
-
-                    newArr.push(`${articulos[i]}`);
+            if(result[0]){
+                let articulos = result[0]?.IdArticulos.split(',');
+                let newArr = [];
+    
+                for (let i = 0; i < articulos.length; i++) {
+                    //Validamos que sea mayor a 0 ya que si se encuentra vacio aqui lo podremos eliminar
+                    if (articulos[i] > 0) {
+    
+                        newArr.push(`${articulos[i]}`);
+                    }
+                }
+    
+                if (newArr.length > 0) {
+    
+                    let valuesArticulos = newArr.toString();
+                    connection.query(`Select * from articulos where id in (${valuesArticulos})`, function (err, result) {
+                        if (err) throw err;
+                        callback(result);
+                        connection.release();
+                    })
                 }
             }
-
-            if (newArr.length > 0) {
-
-                let valuesArticulos = newArr.toString();
-                connection.query(`Select * from articulos where id in (${valuesArticulos})`, function (err, result) {
-                    if (err) throw err;
-                    callback(result);
-                    connection.release();
-                })
-            }
+           
 
         })
     })
@@ -498,5 +499,78 @@ function GetProducto(pool, data, callback){
         })
     })
 }
+function getMyProducts(pool, data, callback){
+    const idProv = data.idProv;
+    let prove = "Badger";
+    if(idProv == 12){
+        prove = "Badger";
+    }
+    pool.getConnection(function (err, connection) {
+        if(err) throw err;
+        connection.query(`SELECT * FROM articulos where empresa = "${prove}"`, function (err, result) {
+            if(err) throw err;
+            callback(result);
+        })
+    })
+}
+function updateProducto(pool, data, callback){
+    //Tenemos que separar los datos para poder insertar en la tabla
+    const Categoria = data.Categoria;
+    const Estado = data.Estado;
+    const Estatus = data.Estatus;
+    const Oferta = data.Oferta;
+    const Stock = data.Stock;
+    const descripcion = data.descripcion;
+    const estrellas = data.estrellas;
+    const id = data.id;
+    const img = data.img;
+    const monto = data.monto;
+    const montoOferta = data.montoOferta;
+    const nombre = data.nombre;
+    const marca = data.marca;
+    const codigo = data.codigo;
+    const peso = data.peso;
+    const tiempoEn = data.TiempoEn;
+    const tiempoEnAg = data.TiempoEnAg;
+    const pdf = data.PDF;
+
+    pool.getConnection(function (err, connection) {
+        if(err) throw err;
+        connection.query(`UPDATE articulos set nombre = '${nombre}', descripcion = '${descripcion}', monto = ${monto}, montoOferta = ${montoOferta}, Categoria = '${Categoria}', Stock = ${Stock}, Estado = '${Estado}', Oferta = ${Oferta}, Marca = '${marca}', CodigoProveedor = '${codigo}', Peso = '${peso}',TempodeEntrega = '${tiempoEn}',TempoDdeEntregaAgotado = '${tiempoEnAg}', PDF = '${pdf}'  where id = ${id}`, function (err, result) {
+            if(err) throw err;
+            callback("Actualizado")
+        })
+    })
+}
+function updateProductos(pool, data, callback){
+    console.log(data)
+    pool.getConnection(function (err, connection) {
+        if(err) throw err;
+        let Elementos = data.length;
+        let suma = 0;
+        data.map((element) => {
+            let query;
+            if(element.PDF ==  1){
+                query = ``
+            }else{
+                query = `UPDATE articulos set nombre = '${element.Nombre}', descripcion = '${element.Descripcion}', monto = ${element.Precio}, montoOferta = ${element.PrecioOferta}, Categoria = '${element.Categoria}', Stock = ${element.Stock}, Estado = '${element.Estado}', Oferta = ${element.Oferta}, Marca ='${element.Marca}', CodigoProveedor = '${element.CodigoProveedor}', Peso = '${element.Peso}', TempodeEntrega='${element.TempodeEntrega}', TempoDdeEntregaAgotado = '${element.TempoDdeEntregaAgotado}', PDF = '${element.PDF}' where id = ${element.id}`
+            }
+            connection.query(`UPDATE articulos set nombre = '${element.Nombre}', descripcion = '${element.Descripcion}', monto = ${element.Precio}, montoOferta = ${element.PrecioOferta}, Categoria = '${element.Categoria}', Stock = ${element.Stock}, Estado = '${element.Estado}', Oferta = ${element.Oferta}, Marca ='${element.Marca}', CodigoProveedor = '${element.CodigoProveedor}', Peso = '${element.Peso}', TempodeEntrega='${element.TempodeEntrega}', TempoDdeEntregaAgotado = '${element.TempoDdeEntregaAgotado}' where id = ${element.id}`, function (err, result) {
+                if(err) throw err;
+                // console.log(result)
+                suma++;
+                if(Elementos == suma){
+                    callback("ElementosActualizados")
+                }
+            })
+        })
+    })
+    
+   
+}
+function updatePro(pool, data, callback){
+    console.log(data)
+
+}
 //Exportamos las funciones que utilizaremos para la comunicacion con el front 
-module.exports = { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser, RegistrarUsuario, addGustos, ElementsToGustos, GetElementsGustos, deleteItemGustos, GetProducto }
+module.exports = { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser, RegistrarUsuario, addGustos, ElementsToGustos, GetElementsGustos, deleteItemGustos, GetProducto, getMyProducts, updateProducto, updateProductos, updatePro }

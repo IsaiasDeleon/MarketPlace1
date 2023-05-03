@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { AuthContext } from "../../auth/AuthContext"
 import { CardGustos } from "./CardGustos"
 
-export const Head = ({ setEstadoMenu, numArticulos, numGustos, elemntsGustos, DeleteItemGustos }) => {
+export const Head = ({ setEstadoMenu, numArticulos, numGustos, elemntsGustos, DeleteItemGustos, setMenu, setClickProducto }) => {
     const onSubmitShowMenu = () => {
         setEstadoMenu(true)
     }
@@ -12,6 +12,7 @@ export const Head = ({ setEstadoMenu, numArticulos, numGustos, elemntsGustos, De
     const navigate = useNavigate();
     const onLogout = () => {
         LogOut();
+        setMenu(3);
         navigate('/Login', {
             replace: true
         })
@@ -22,7 +23,7 @@ export const Head = ({ setEstadoMenu, numArticulos, numGustos, elemntsGustos, De
     img = (img) ? img : "Ge";
     return (
         <>
-            <div className="text-center contenedorH">
+            <div style={{"zIndex":"2"}} className="text-center contenedorH">
                 <div className="d-flex justify-content-around ContendorHeight">
                     <div className="d-flex justify-content-around ContenedorWidthH">
                         <i className="bi bi-list menuShow" onClick={() => { onSubmitShowMenu() }}></i>
@@ -37,10 +38,10 @@ export const Head = ({ setEstadoMenu, numArticulos, numGustos, elemntsGustos, De
                         {
                             idU ?
                                 <>
-                                    <div>
+                                    {/* <div>
                                         <Link className="nav-link">
                                         </Link>
-                                    </div>
+                                    </div> */}
                                     <div>
                                         <Link className="nav-link">
                                         </Link>
@@ -49,13 +50,13 @@ export const Head = ({ setEstadoMenu, numArticulos, numGustos, elemntsGustos, De
                                 </>
                                 :
                                 <>
-                                    <div>
+                                    {/* <div>
                                         <Link className="nav-link">
                                             <div className="text-center"><p style={{ "margin": "0" }}>Crea tu cuenta</p></div>
                                         </Link>
-                                    </div>
+                                    </div> */}
                                     <div>
-                                        <Link className="nav-link">
+                                        <Link to={"/Login"} className="nav-link">
                                             <div className="text-center"><p style={{ "margin": "0" }}>Ingresar</p></div>
                                         </Link>
                                     </div>
@@ -72,10 +73,10 @@ export const Head = ({ setEstadoMenu, numArticulos, numGustos, elemntsGustos, De
                                     <i class="bi bi-heart h5"></i>
                                     <div className="text-center Notificaciones"><p style={{ "marginTop": "-3px", "color": "#fff" }} > {numGustos} </p>
                                     </div>
-                                    <ul style={{ "width": "500px","maxHeight":"375px", "overflowY":"auto" }} className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <ul style={{"maxHeight":"375px", "overflowY":"auto" }} className="dropdown-menu ulcarrito" aria-labelledby="dropdownMenuButton1">
                                        {
                                         elemntsGustos.map((data) => (
-                                            <CardGustos key={data.id} {...data} DeleteItemGustos={DeleteItemGustos} />
+                                            <CardGustos key={data.id} {...data} DeleteItemGustos={DeleteItemGustos} setClickProducto={setClickProducto} />
                                         ))
                                        }
                                      

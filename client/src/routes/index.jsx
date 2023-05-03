@@ -11,7 +11,9 @@ import { EditarPerfil } from "../ui/pages/EditarPerfil";
 import { Producto } from "../ui/pages/Producto";
 import { Navigate, Route, Routes } from "react-router";
 import { Login } from "../ui/pages/Login";
-const URLServer = "http://192.168.100.7:3020/"
+import { MyProducts } from "../ui/pages/myProducts";
+import { NewProduct } from "../ui/pages/NewProduct";
+const URLServer = "http://192.168.100.18:3020/"
 
 export const AppRoute = () => { 
             //Obtenemos el id logueado
@@ -34,56 +36,73 @@ export const AppRoute = () => {
             const [activeNoti, setActiveNoti] = useState();
     
             //Identificador para ver si quitamos el menu y cambiamos de head
-            const [menu, setMenu] = useState(false);
+            const [menu, setMenu] = useState(1);
             //ELemento clickeado PRODUCTO
             const [clickProducto, setClickProducto] = useState();
     
             const [idCard, setIdCard] = useState();
             const [idCard2, setIdCard2] = useState();
+
+            //Acomodo de productos en pantalla Inicio
+            const [acomodoCars, setAcomodoCards] = useState(false);
            
             function NumElementsGustos(){
-                axios.post(URLServer + "GetNumGustos",{"id":idU}).then((response) => {
-                    setNumGustos(response.data)
-                })
+                setNumGustos(0)
+                if(idU !== undefined){
+                    axios.post(URLServer + "GetNumGustos",{"id":idU}).then((response) => {
+                        setNumGustos(response.data)
+                    })
+                }
+               
             }
             function NumElementsCarrito() {
-                //Peticion para obtener el numero de productosque tiene en el carrito
-                axios.post(URLServer + "GetNumCarrito",{"id":idU}).then((response) => {
-                    setNumArticulos(response.data)
-                })
+                setNumArticulos(0)
+                if(idU !== undefined){
+                    //Peticion para obtener el numero de productosque tiene en el carrito
+                    axios.post(URLServer + "GetNumCarrito",{"id":idU}).then((response) => {
+                        setNumArticulos(response.data)
+                    })
+                } 
             }
             function ElementsGustos(){
-                axios.post(URLServer + "GetElementsGustos", {"id":idU}).then((response) => {
-                    setElementsGustos(response.data);
-                })
+                setElementsGustos([])
+                if(idU !== undefined){
+                    axios.post(URLServer + "GetElementsGustos", {"id":idU}).then((response) => {
+                        setElementsGustos(response.data);
+                    })
+                }
             }
             function DeleteItemGustos(id) {
-                axios.post(URLServer + "deleteItemGustos", {"idU":idU, "id": id }).then((response) => {
-                    //Si la operacion se hizo correctamente nos regresara Eliminado
-                    if (response.data == "EliminadoGusto") {
-                        //Mandamos a llamar a la funcion de getItemCarrito para obtener la actualizacion de los elementos 
-                        ElementsGustos()
-                        //Llamamos a la funcion NumELementsCarrito para obtener ka actualizacion de los elementos en el carrito
-                        NumElementsGustos()
-                        //Enviamos el mensaje a las notificaciones para mostrar la alerta al usuario
-                        setNotiCarrito(response.data)
-                        setActiveNoti(true)
-                        setTimeout(() => {
-                            setActiveNoti(false)
-                        }, 4000);
-                    }
-                });
+                if( idU !== undefined ){
+                    axios.post(URLServer + "deleteItemGustos", {"idU":idU, "id": id }).then((response) => {
+                        //Si la operacion se hizo correctamente nos regresara Eliminado
+                        if (response.data == "EliminadoGusto") {
+                            //Mandamos a llamar a la funcion de getItemCarrito para obtener la actualizacion de los elementos 
+                            ElementsGustos()
+                            //Llamamos a la funcion NumELementsCarrito para obtener ka actualizacion de los elementos en el carrito
+                            NumElementsGustos()
+                            //Enviamos el mensaje a las notificaciones para mostrar la alerta al usuario
+                            setNotiCarrito(response.data)
+                            setActiveNoti(true)
+                            setTimeout(() => {
+                                setActiveNoti(false)
+                            }, 4000);
+                        }
+                    });
+                }
+                
             }
             useEffect(() => {
                 if(clickProducto !== undefined){
                     localStorage.setItem('idProduct', JSON.stringify(clickProducto))
                 }
-               
             },[clickProducto])
             useEffect(() => {
-                NumElementsCarrito();
-                NumElementsGustos();
-                ElementsGustos();
+                if(idU !== undefined){
+                    NumElementsCarrito();
+                    NumElementsGustos();
+                    ElementsGustos();
+                }
             }, [idU])
         
             useEffect(() => {
@@ -108,7 +127,7 @@ export const AppRoute = () => {
             }, [idCard])
         
             useEffect(() => {
-                console.log("Entro")
+               
                 //Comprobamos que el idCar2 no este vacio
                 if(idCard2 !== undefined){
                     if(idU === undefined){
@@ -129,23 +148,38 @@ export const AppRoute = () => {
     return (
         <>
             <Routes>
-                <Route path="Inicio" element={<Inicio data={data} dataFiltrado={dataFiltrado} setData={setData} NumElementsCarrito={NumElementsCarrito} setMenu={setMenu} NumElementsGustos={NumElementsGustos} ElementsGustos={ElementsGustos} setClickProducto={setClickProducto} />} />
+                <Route path="Inicio" element={<Inicio data={data} dataFiltrado={dataFiltrado} setData={setData} NumElementsCarrito={NumElementsCarrito} setMenu={setMenu} NumElementsGustos={NumElementsGustos} ElementsGustos={ElementsGustos} setClickProducto={setClickProducto} acomodoCars={acomodoCars} setAcomodoCards={setAcomodoCards} />} />
                 <Route path="Carrito" element={<Carrito NumElementsCarrito={NumElementsCarrito} setMenu={setMenu} />} />
                 <Route path="Perfil" element={<EditarPerfil numArticulos={numArticulos} setMenu={setMenu} />} />
                 <Route path="Producto" element={<Producto setIdCard={setIdCard} setIdCard2={setIdCard2} clickProducto={clickProducto} setClickProducto={setClickProducto} setMenu={setMenu} />} />
                 <Route path="/*" element={<Navigate to={"Inicio"} />} />
-                <Route path="/Login" element={<Login/>} />
+                <Route path="/Login" element={<Login setMenu={setMenu}/>} />
+                <Route path="MisProductos" element={<MyProducts setMenu={setMenu}/>}/>
+                <Route path="ProductoNuevo" element={<NewProduct setMenu={setMenu}/>} />
             </Routes>
             {
-                menu 
+                
+                menu  === 1
                 ? (
                     <>
-                        <Head setEstadoMenu={setEstadoMenu} numArticulos={numArticulos} numGustos={numGustos} elemntsGustos={elemntsGustos} DeleteItemGustos={DeleteItemGustos}/>
+                        <Head setEstadoMenu={setEstadoMenu} numArticulos={numArticulos} numGustos={numGustos} elemntsGustos={elemntsGustos} DeleteItemGustos={DeleteItemGustos} setMenu={setMenu} clickProducto={clickProducto} setClickProducto={setClickProducto}/>
                         <Menu estado={estadoMenu} setEstadoMenu={setEstadoMenu} setDataFiltrado={setDataFiltrado} />
                     </>
                 )
                 :(
-                    <Head2 numArticulos={numArticulos} numGustos={numGustos} elemntsGustos={elemntsGustos} DeleteItemGustos={DeleteItemGustos} />
+                    <></>
+                )
+                
+            }
+            {
+                menu === 2
+                ? (
+                    <>
+                        <Head2 numArticulos={numArticulos} numGustos={numGustos} elemntsGustos={elemntsGustos} DeleteItemGustos={DeleteItemGustos} setMenu={setMenu}  setClickProducto={setClickProducto}/>
+                    </>
+                )
+                :(
+                    <></>
                 )
             }
              <Noti notiCarrito={notiCarrito} activeNoti={activeNoti} />

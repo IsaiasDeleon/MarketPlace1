@@ -2,7 +2,8 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../auth/AuthContext";
 import { useEffect } from "react";
 import axios from "axios";
-const URLServer = "http://192.168.100.7:3020/"
+import { Noti } from "../components/Notificaciones";
+const URLServer = "http://192.168.100.18:3020/"
 export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClickProducto}) => {
     
 
@@ -10,11 +11,13 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
     const [onClickImagen, setOnClickImagen] = useState(1);
     const [datosProducto, setDatosProducto] = useState([]);
     const [valueOferta, setValueOferta] = useState(0);
+    const [notiCarrito, setNotiCarrito] = useState();
+    const [activeNoti, setActiveNoti] = useState();
 
     const { user } = useContext(AuthContext)
     let idU = user?.id;
     useEffect(() => {
-        setMenu(false);
+        setMenu(2);
         if(clickProducto == undefined){
             const idProduct = JSON.parse( localStorage.getItem('idProduct') );
             setClickProducto(idProduct)
@@ -26,6 +29,7 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
             setImagenes(`Art${clickProducto}.png`);
             axios.post(URLServer + "GetProducto", {"idProduct":clickProducto}).then((response) => {
                 setDatosProducto(response.data)
+                console.log(response.data)
                 setValueOferta(response.data[0]?.monto - 1 )
                 
             })
@@ -33,7 +37,12 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
     },[clickProducto]);
     function createMail(){
         axios.post(URLServer+"mailNode",{"idProduct":clickProducto, "idUser": idU, "Oferta" : valueOferta }).then((response) => {
-            console.log(response.data)
+             //Enviamos el mensaje a las notificaciones para mostrar la alerta al usuario
+             setNotiCarrito(response.data)
+             setActiveNoti(true)
+             setTimeout(() => {
+                 setActiveNoti(false)
+             }, 4000);
         })
     }
     const onInputChange2 = ({ target }) => {
@@ -49,6 +58,12 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
     function CreatePDF(){
         axios.post(URLServer+"GeneratePDF",{"idProduct":clickProducto, "idUser":idU}).then((response) => {
             let url = response.data;
+             //Enviamos el mensaje a las notificaciones para mostrar la alerta al usuario
+             setNotiCarrito(response.data)
+             setActiveNoti(true)
+             setTimeout(() => {
+                 setActiveNoti(false)
+             }, 4000);
             // var a = document.createElement('a');
             // var linkText = document.createTextNode("my title text");
             // a.appendChild(linkText);
@@ -66,20 +81,37 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
         })
     }
     
+    const handleDownload = () => {
+        axios.post(URLServer+'download',{
+            pdf:datosProducto?.[0]?.PDF
+        }, {
+            responseType: 'blob'
+        }).then(response => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+    
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'archivo.pdf');
+          
+          document.body.appendChild(link);
+          
+          link.click();
+        });
+      }
     return (
         <>
-         <div style={{ "top": "60px","width":"100%", "height":"100%", "position":"absolute", "padding":"50px 150px"}}>
-           <div style={{"display":"grid", "gridTemplateColumns":"40% 60%"}}>
+         <div className="divProducto">
+           <div className="divGrid">
                 <div className="text-center">
-                    <div  style={{"display": "flex","flexDirection": "column", "position":"absolute", "zIndex":"2"}}>
-                        <img src={`./assets/Art${clickProducto}.png`} onClick={(e) => {setImagenes(`Art${clickProducto}.png`); setOnClickImagen(1)}} alt="IMGCompra" className={`m-1 ${onClickImagen === 1 ? "BorderImagenSelect":"" }`} style={{"width":"70px","height":"50px"}} />
-                        <img src={`./assets/Art${clickProducto}-1.jpg`} onClick={(e) => {setImagenes(`Art${clickProducto}-1.jpg`); setOnClickImagen(2)}} alt="IMGCompra" className={`m-1 ${onClickImagen === 2 ? "BorderImagenSelect":"" }`} style={{"width":"70px","height":"50px" }} />
-                        <img src={`./assets/Art${clickProducto}-2.jpg`} onClick={(e) => {setImagenes(`Art${clickProducto}-2.jpg`); setOnClickImagen(3)}} alt="IMGCompra" className={`m-1 ${onClickImagen === 3 ? "BorderImagenSelect":"" }`} style={{"width":"70px", "height":"50px"}} />
-                        <img src={`./assets/Art${clickProducto}-3.jpg`} onClick={(e) => {setImagenes(`Art${clickProducto}-3.jpg`); setOnClickImagen(4)}} alt="IMGCompra" className={`m-1 ${onClickImagen ===4 ? "BorderImagenSelect":"" }`} style={{"width":"70px", "height":"50px"}} />
+                    <div  style={{"display": "flex","flexDirection": "column", "position":"absolute", "zIndex":"1"}}>
+                        <img src={`./assets/Art${clickProducto}.png`} onClick={(e) => {setImagenes(`Art${clickProducto}.png`); setOnClickImagen(1)}} alt="IMGCompra" className={`m-1 imagenesProductos ${onClickImagen === 1 ? "BorderImagenSelect":"" }`}  />
+                        <img src={`./assets/Art${clickProducto}-1.jpg`} onClick={(e) => {setImagenes(`Art${clickProducto}-1.jpg`); setOnClickImagen(2)}} alt="IMGCompra" className={`m-1 imagenesProductos ${onClickImagen === 2 ? "BorderImagenSelect":"" }`}  />
+                        <img src={`./assets/Art${clickProducto}-2.jpg`} onClick={(e) => {setImagenes(`Art${clickProducto}-2.jpg`); setOnClickImagen(3)}} alt="IMGCompra" className={`m-1 imagenesProductos ${onClickImagen === 3 ? "BorderImagenSelect":"" }`}  />
+                        <img src={`./assets/Art${clickProducto}-3.jpg`} onClick={(e) => {setImagenes(`Art${clickProducto}-3.jpg`); setOnClickImagen(4)}} alt="IMGCompra" className={`m-1 imagenesProductos ${onClickImagen ===4 ? "BorderImagenSelect":"" }`}  />
                     </div>
                     <img src={`./assets/${imagenes}`} alt="IMGCompra" className="ProductoImg" />
                 </div>
-                <div>
+                <div className="mt-2">
                     <h4>{datosProducto?.[0]?.descripcion}</h4>
                     <div className="text-end">
                         <i style={{ "margin": "3px" }} className={`bi bi-star-fill h4 ${(datosProducto?.[0]?.estrellas >= 1) ? 'text-warning' : ''}`}></i>
@@ -89,26 +121,26 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
                         <i style={{ "margin": "3px" }} className={`bi bi-star-fill h4 ${(datosProducto?.[0]?.estrellas >= 5) ? 'text-warning' : ''}`}></i>
                     </div>
                     <hr/>
-                    <h6>Marca/Fabricante: <b className="text-secondary"> FANUC</b></h6>
-                    <h6>Código del proveedor (SKU/ID): <b className="text-secondary"> A60L-0001-0290-LM20</b></h6>
-                    <h6>Peso aproximado:<b className="text-secondary"> 0.01 KG</b></h6>
+                    <h6>Marca/Fabricante: <b className="text-secondary"> {datosProducto?.[0]?.Marca}</b></h6>
+                    <h6>Código del proveedor (SKU/ID): <b className="text-secondary"> {datosProducto?.[0]?.CodigoProveedor}</b></h6>
+                    <h6>Peso aproximado:<b className="text-secondary"> {datosProducto?.[0]?.Peso}</b></h6>
                     <h6>Estado:<b className={`${(datosProducto?.[0]?.Estado === "1")?"text-success":"text-primary"}`}> {(datosProducto?.[0]?.Estado === "1")?"Nuevo":"Semi-nuevo" }</b></h6>
                     <h6>Estatus:<b className="text-secondary"> Disponible</b></h6>
-                    <h6>Tiempo de entrega: <b className="text-secondary"> 14 días habiles</b></h6>
-                    <h6>Tiempo de entrega en caso de agotarse: <b className="text-secondary">31 días habiles</b></h6>
-                    <h6>Ficha técnica: <b onClick={() => CreatePDF()} className="text-danger" style={{"textDecoration":"underline"}}> PDF</b></h6>
+                    <h6>Tiempo de entrega: <b className="text-secondary"> {datosProducto?.[0]?.TempodeEntrega} días habiles</b></h6>
+                    <h6>Tiempo de entrega en caso de agotarse: <b className="text-secondary">{datosProducto?.[0]?.TempoDdeEntregaAgotado} días habiles</b></h6>
+                    <h6>Ficha técnica: <b onClick={() => handleDownload()} className="text-danger" style={{"textDecoration":"underline"}}> {datosProducto?.[0]?.PDF}</b></h6>
                     <hr/>
-                    <div style={{"display":"grid", "gridTemplateColumns":"40% 60%"}}>
+                    <div className="contenedorBotones">
                         <div>
                             <h6>Precio:</h6>
                             <h4 className="fw-bold">${datosProducto?.[0]?.monto} MXN</h4>
                         </div>
                         <div className="text-end">
-                            <button className="btn btn-success m-2">¡Cómpralo ahora!</button>
-                            <button className="btn btn-primary m-2"  data-bs-toggle="modal" data-bs-target="#exampleModal">Hacer oferta</button>
-                            <button className="btn btn-dark m-2" onClick={(e) => {setIdCard2(clickProducto)}}>Agregar al carrito de compras</button>
-                            <button className="btn btn-secondary m-2" onClick={(e) => { setIdCard(clickProducto)}}>Agregar a lista de favoritos</button>
-                            <button className="btn btn-secondary m-2" onClick={() => CreatePDF()}>Cotizar</button>
+                            <button className="btn btn-success m-1">¡Cómpralo ahora!</button>
+                            <button className="btn btn-primary m-1"  data-bs-toggle="modal" data-bs-target="#exampleModal">Hacer oferta</button>
+                            <button className="btn btn-dark m-1" onClick={(e) => {setIdCard2(clickProducto)}}>Agregar al carrito de compras</button>
+                            <button className="btn btn-secondary m-1" onClick={(e) => { setIdCard(clickProducto)}}>Agregar a lista de favoritos</button>
+                            <button className="btn btn-secondary m-1" onClick={() => CreatePDF()}>Cotizar</button>
                         </div>
                         
                     </div>
@@ -137,14 +169,14 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
                 </div>
                 <div className="modal-footer">
                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" onClick={() => createMail()} className="btn btn-primary">Ofertar</button>
+                    <button type="button" onClick={() => createMail()} className="btn btn-primary" data-bs-dismiss="modal">Ofertar</button>
                 </div>
                 </div>
             </div>
             </div>
-           <a href={`https://isc.isaiasdeleon.robo-tics-slp.net/resources/Cotizacion.pdf`} download={"file.pdf"}>Descargar</a>
+           {/* <a href={`https://isc.isaiasdeleon.robo-tics-slp.net/resources/Cotizacion.pdf`} download={"file.pdf"}>Descargar</a> */}
          </div>
-            
+         <Noti notiCarrito={notiCarrito} activeNoti={activeNoti} />
         </>
     )
 }

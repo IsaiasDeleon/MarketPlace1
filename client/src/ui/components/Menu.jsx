@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack';
 function valuetext(value) {
     return `${value}`;
 }
-const URLServer = "http://192.168.100.7:3020/"
+const URLServer = "http://192.168.100.18:3020/"
 export const Menu = ({ estado, setEstadoMenu, setDataFiltrado }) => {
 
     const [value, setValue] = useState([1000, 4000]);
@@ -33,10 +33,14 @@ export const Menu = ({ estado, setEstadoMenu, setDataFiltrado }) => {
         Otros: false,
         value: value
     });
-    useEffect(() => {
+    function busquedas(){
+        console.log("Entro")
         axios.post(URLServer + "PruebasBusqueda", filtros).then((response) => {
             setDataFiltrado(response.data)
         });
+    }
+    useEffect(() => {
+        busquedas()
     }, [filtros])
 
 
@@ -44,7 +48,7 @@ export const Menu = ({ estado, setEstadoMenu, setDataFiltrado }) => {
 
     return (
         <>
-            <div className={`contenedorM ${estado ? 'contenedorMActive' : ''}`} >
+            <div style={{"zIndex":"3"}} className={`contenedorM ${estado ? 'contenedorMActive' : ''}`} >
                 <div style={{ "alignItems": "center" }} className="d-flex text-center  contenedorMHead" >
                     <p className="text-white fw-bold h5 col LogoFont">Market place <b style={{ "color": "#F1C40F" }}>B</b><b style={{ "color": "#2980B9" }}>A</b></p>
                     <i onClick={() => { onSubmitHideMenu() }} className="bi bi-x-square-fill cerrarMenu"></i>

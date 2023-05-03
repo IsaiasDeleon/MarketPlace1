@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useForm } from "../../hooks/useForm"
 import { Noti } from '../components/Notificaciones';
 import { AuthContext } from '../../auth/AuthContext';
-const URLServer = "http://192.168.100.7:3020/"
+const URLServer = "http://192.168.100.18:3020/"
 
 export const EditarPerfil = ({ numArticulos, setMenu }) => {
 
@@ -24,7 +24,7 @@ export const EditarPerfil = ({ numArticulos, setMenu }) => {
 
 
     const [Nombre, setNombre] = useState("");
-    const [Telefono, setTelefono] = useState("");
+    const [Telefono, setTelefono] = useState("1");
     const [pass, setPass] = useState("");
     const [direccion, setDireccion] = useState("");
     const [CP, setCP] = useState("");
@@ -66,28 +66,44 @@ export const EditarPerfil = ({ numArticulos, setMenu }) => {
     }
 
     useEffect(() => {
-        const getD = async () => {
-            let respuesta = await axios.post(URLServer + "getDatosGenerales", { "IdUsuario": idU }).then((response) => {
-                return response.data[0]
-            })
-            console.log(respuesta)
-            setNombre(respuesta.Nombre);
-            setTelefono(respuesta.telefono);
-            setPass(respuesta.Password);
-            setDireccion(respuesta.Direccion);
-            setCP(respuesta.CP);
-            setPais(respuesta.Pais);
-            setEstado(respuesta.estado);
-            setMunicipio(respuesta.municipio);
-            setLatitude(respuesta.latitude);
-            setLongitude(respuesta.longitude);
+        if( idU !== undefined){
+            const getD = async () => {
+                let respuesta = await axios.post(URLServer + "getDatosGenerales", { "IdUsuario": idU }).then((response) => {
+                    console.log(response)
+                    return response?.data[0]
+                })
+                if(respuesta !== undefined){
+                    setNombre(respuesta.Nombre);
+                    setTelefono(respuesta.telefono);
+                    setPass(respuesta.Password);
+                    setDireccion(respuesta.Direccion);
+                    setCP(respuesta.CP);
+                    setPais("Mexico");
+                    setEstado(1);
+                    console.log(respuesta.estado)
+                    if(respuesta.estado !== null){
+                        console.log("Entro")
+                        setEstado(respuesta.estado);
+                    }
+                    setMunicipio(1)
+                    if(respuesta.municipio !== null){
+                        setMunicipio(respuesta.municipio);
+                    }
+                    
+                    
+                    setLatitude(respuesta.latitude);
+                    setLongitude(respuesta.longitude);
+                }
+                
+                
+            }
+    
+            getEstados()
+            getMunicipios()
+            getD()
+            getCompras()
         }
-
-        getEstados()
-        getMunicipios()
-        getD()
-        getCompras()
-        setMenu(false)
+        setMenu(2)
     }, [])
 
     const { onInputChange } = useForm({
@@ -151,13 +167,15 @@ export const EditarPerfil = ({ numArticulos, setMenu }) => {
         window.open(`https://maps.google.com/maps?q=${latitude},${longitude}`, '_blank');
     }
     function getCompras() {
-        axios.post(URLServer + "getCompras", { "idUsuario": idU }).then((response) => {
-            if (response.data == "0Elements") {
-                setElementsCarrito(0)
-            } else {
-                setCompras(response.data)
-            }
-        })
+        if(idU !== undefined){
+            axios.post(URLServer + "getCompras", { "idUsuario": idU }).then((response) => {
+                if (response.data == "0Elements") {
+                    setElementsCarrito(0)
+                } else {
+                    setCompras(response.data)
+                }
+            })
+        }
     }
     useEffect(() => {
         getMunicipios();
@@ -170,16 +188,19 @@ export const EditarPerfil = ({ numArticulos, setMenu }) => {
 
     //Guardar los detalles del usuario
     function SaveDetailsUser(){
-       axios.post(URLServer + "SaveDetailsUser", {"idU":idU,"Nombre":Nombre,"Telefono":Telefono,"Password":pass,"Direccion":direccion,"CP":CP,"Estado":estado,"Municipio":municipio }).then((response) => {
-        if(response.data == "Actualizado"){
-            setNotiCarrito(response.data);
-            setActiveNoti(true)
-            setTimeout(() => {
-                setActiveNoti(false)
-            }, 4000);
+        if(idU !== undefined){
+            axios.post(URLServer + "SaveDetailsUser", {"idU":idU,"Nombre":Nombre,"Telefono":Telefono,"Password":pass,"Direccion":direccion,"CP":CP,"Estado":estado,"Municipio":municipio }).then((response) => {
+                if(response.data == "Actualizado"){
+                    setNotiCarrito(response.data);
+                    setActiveNoti(true)
+                    setTimeout(() => {
+                        setActiveNoti(false)
+                    }, 4000);
+                }
+                console.log(response)
+               })
         }
-        console.log(response)
-       })
+       
     }
 
     return (
@@ -242,7 +263,7 @@ export const EditarPerfil = ({ numArticulos, setMenu }) => {
                                     </div>
                                     <div className="col-sm m-2">
                                         <h6 className='datosPerfil'>Telefono:</h6>
-                                        <input name="Telefono" value={Telefono} onChange={onInputChange2} type="text" className="form-control" />
+                                        <input name="Telefono"  value={Telefono} onChange={onInputChange2} type="text" className="form-control" />
                                     </div>
                                 </div>
                                 <div className="col-sm m-2">

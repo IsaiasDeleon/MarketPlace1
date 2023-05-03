@@ -8,7 +8,7 @@ export const Noti = ({ notiCarrito, activeNoti }) => {
     //         color = "success";
     //         break;
     //     case "Existe":
-    //         message = "El producto ya se encuntra en tu carrito.";
+    //         message = "El producto ya se encuentra en tu carrito.";
     //         color = "warning";
     //         break;
     //     case "Guardada":
@@ -30,11 +30,11 @@ export const Noti = ({ notiCarrito, activeNoti }) => {
         color = "success"
     }
     else if( notiCarrito == "ExisteGustos"){
-        message = "El producto ya se encuntra en tus gustos."
+        message = "El producto ya se encuentra en tus gustos."
         color = "warning"
     }
     else if (notiCarrito == "Existe") {
-        message = "El producto ya se encuntra en tu carrito."
+        message = "El producto ya se encuentra en tu carrito."
         color = "warning"
     }
     else if (notiCarrito == "Eliminado") {
@@ -72,6 +72,30 @@ export const Noti = ({ notiCarrito, activeNoti }) => {
     else if(notiCarrito == "EliminadoGusto"){
         message = "El producto fue eliminado de tus guardados";
         color = "danger";
+    }
+    else if(notiCarrito == "CorreoEnviado"){
+        message = "Tu oferta fue enviada al proveedor";
+        color = "success";
+    }
+    else if( notiCarrito == "errorCorreo"){
+        message = "Algo salio mal porfavor recarga la pagina y vuelve a internatrlo.";
+        color = "danger";
+    }
+    else if(notiCarrito == "PDFcreado"){
+        message = "La cotización fue generada";
+        color = "success";
+    }
+    else if(notiCarrito == "ErrorPDF"){
+        message = "Algo salio mal por favor recarga la pagina y vuelve a intentarlo";
+        color = "danger"
+    }
+    else if(notiCarrito == "ArticuloUpdate"){
+        message = "Articulo actualizado exitosamente"
+        color = "success"
+    }
+    else if( notiCarrito == "ElementosActualizados"){
+        message = "Articulos actualizados";
+        color = "success";
     }
     return (
         <div style={{ "position": "fixed", "right": "20px", "top": "80px", "zIndex": "1", "display": "block" }} className={`toast align-items-center text-bg-${color} border-0 animate__animated ${(activeNoti) ? 'animate__fadeInRight' : 'animate__fadeOutRight'} `} role="alert" aria-live="assertive" aria-atomic="true">

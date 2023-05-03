@@ -2,14 +2,16 @@
 const express = require('express');
 const bodyParser = require("body-parser");
 const app = express();
+const multer = require('multer');
+const fs = require('fs');
 const mysql = require('mysql');
-const cors = require('cors')
+const cors = require('cors');
 //Obtenemos los variables globales para no ponerlos en codigo
 require('dotenv').config();
 //Archivo donde hacemos las peticiones a la DB
-const { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser, RegistrarUsuario, addGustos, ElementsToGustos, GetElementsGustos, deleteItemGustos, GetProducto } = require("./options")
-const { GeneratePDF, GeneratePDFArticulos }  = require("./PDF");
-const { mailNode }=require("./mail");
+const { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser, RegistrarUsuario, addGustos, ElementsToGustos, GetElementsGustos, deleteItemGustos, GetProducto, getMyProducts, updateProducto, updateProductos, updatePro } = require("./options")
+const { GeneratePDF, GeneratePDFArticulos } = require("./PDF");
+const { mailNode } = require("./mail");
 //Politicas cross
 app.use(cors());
 app.use(bodyParser.urlencoded({
@@ -72,7 +74,7 @@ app.post('/GetNumGustos', (req, res) => {
 })
 //Url para obtener los elementos del carrito
 app.post('/readCarrito', (req, res) => {
-    readCarrito(pool, req.body,(result) => {
+    readCarrito(pool, req.body, (result) => {
         res.json(result)
     })
 })
@@ -84,19 +86,19 @@ app.post('/deleteItem', (req, res) => {
 })
 //Url para obtener la lista de los estados
 app.get('/getEstado', (req, res) => {
-    getEstado(pool,(result) => {
+    getEstado(pool, (result) => {
         res.json(result)
     })
 })
 //Url para obtener la lista de los municipios por estado
 app.post('/getMunicipio', (req, res) => {
-    getMunicipio(pool,req.body,(result) => {
+    getMunicipio(pool, req.body, (result) => {
         res.json(result)
     })
 })
 //Url para obtener los datos generales
 app.post('/getDatosGenerales', (req, res) => {
-    getDatosGenerales(pool,req.body,(result) => {
+    getDatosGenerales(pool, req.body, (result) => {
         res.json(result)
     })
 })
@@ -149,7 +151,7 @@ app.post('/gustos', (req, res) => {
     })
 })
 //Url para obtener los elementos en la tabla de gustos
-app.post('/GetElementsGustos',(req, res) => {
+app.post('/GetElementsGustos', (req, res) => {
     GetElementsGustos(pool, req.body, (result) => {
         res.json(result);
     })
@@ -167,21 +169,78 @@ app.post('/GetProducto', (req, res) => {
     })
 })
 //GENERATE PDF
-app.post('/GeneratePDF',(req, res) => {
+app.post('/GeneratePDF', (req, res) => {
     GeneratePDF(pool, req.body, (result) => {
         res.json(result)
     })
 })
+//GENERATE PDF CAR
 app.post('/GeneratePDFArticulos', (req, res) => {
     GeneratePDFArticulos(pool, req.body, (result) => {
-        console.log(result)
+        res.json(result)
     })
 })
-app.post('/mailNode',(req, res) => {
+//GENERATE MAIL
+app.post('/mailNode', (req, res) => {
     mailNode(pool, req.body, (result) => {
-        console.log(result)
+        res.json(result)
     })
 })
+//GET ALL PRODUCTS OF PROVEEDOR
+app.post('/getMyProducts', (req, res) => {
+    getMyProducts(pool, req.body, (result) => {
+        res.json(result)
+    })
+})
+// ACTUALIZAR PRODUCTO INDIVIDUAL
+app.post('/updateProducto', (req, res) => {
+    updateProducto(pool, req.body, (result) => {
+        res.json(result)
+    })
+})
+// ACTUALIZAR PRODUCTOS GLOBAL
+app.post('/updateProductos', (req, res) => {
+    updateProductos(pool, req.body, (result) => {
+        res.json(result)
+    })
+})
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + '.pdf');
+    }
+});
+const upload = multer({ storage: storage });
+
+app.post('/updatePro', upload.single('file'), (req, res) => {
+    const filePath = req.file.filename;
+    res.send({ filePath: filePath });
+});
+
+//DESCARGAR PDF
+app.post('/download', function(req, res) {
+    let enlace = req.body?.pdf;
+    if(enlace !== undefined){
+        const filePath = `./uploads/${enlace}`;
+        const fileName = 'archivo.pdf';
+      
+        fs.readFile(filePath, function(err, data) {
+          if (err) {
+            console.error(err);
+            return res.status(500).send('Error al leer el archivo');
+          }
+      
+          res.setHeader('Content-Type', 'application/pdf');
+          res.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
+      
+          return res.send(data);
+        });
+    }
+    
+  });
 //Levantamos el servidor en el puesto que necesitemos
 app.listen(3020, () => {
     console.log("servidor en puerto 3020");

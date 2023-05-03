@@ -19,41 +19,93 @@ function mailNode(pool, data, callback){
                     pass: "ffkpwptjzakksjmq"
                 }
             });
-            
+
             const mailOptions = {
                 from: 'isaiasdeleonsalazar@gmail.com',
                 to: 'deleonsalazaru@gmail.com',
-                subject: 'Asunto del correo',
+                subject: 'Venta de producto MARKETPLACE',
                 html: `
-                <h1 style="width:100%; text-align:center; background:#221e1d; color:#fff">Market place <b style="color:#F1C40F">B</b><b style="color:#2980B9">A</b></h1>
-                <h2 style="font-weight:400; width:80%; margin-left:10%; color:#000"> Buen día proveedor <b>BADGER AUTOMATION</b> tiene una nueva oferta del usuario: <b> ${result[0].Nombre} </b> sobre el producto <b> ${result[0].descripcion} </b> </h2>
-                <table style="width:100%">
-                    <tr>
-                        <td style="width:40%; text-align:right"><img src="https://isc.isaiasdeleon.robo-tics-slp.net/resources/Art${result[0].img}.png"style="width:280px;"/> </td>
-                        <td style="width:60%">
-                            <h2>Precio inicial: <b style="color:#2980B9">$${result[0].monto} MXN</b></h2>
-                            <h2>Precio ofertado: <b style="color:#27AE60">$${oferta} MXN </b></h2> 
-                            <div style="display: inline">
-                                <a style="padding:14px; font-size:18px; margin:5px; background:#212529; color:#fff; border:none; border-radius:5px; text-decoration:none" href="https://badgerautomation.com/"> Aceptar oferta</a>
-                                <a style="padding:14px; font-size:18px; margin:5px; background:#6c757d; color:#fff; border:none; border-radius:5px;" href=""> Hacer contra oferta </a>
+                <html>
+                <head>
+                    <style>
+                        .conetenedor{
+                            width: 80%;
+                            margin-left:10%;
+                            height:60%
+                        }
+                        h1{
+                            width:100%; text-align:center; background:#221e1d; color:#fff
+                        }
+                        body{
+                            background:#000;
+                        }
+                        .texto{
+                            font-weight:400; width:80%; margin-left:10%; color:#000
+                        }
+                        .tdImagen{
+                            width:40%; text-align:right;
+                        }
+                        .tdTexto{
+                            padding-top: 10px;
+                            padding-left: 10px;
+                            width:57%;
+                        }
+                        .acomodo{
+                            display: flex;
+                        }
+                        
+                        @media (max-width: 1024px) {
+                            .conetenedor{
+                                width: 100%;
+                            }
+                            .texto{
+                                width:90%;  font-size:18px
+                            }
+                            .tdImagen{
+                                width:100%; text-align:center
+                            }
+                            .tdTexto{
+                                width:100%
+                            }
+                            .acomodo{
+                                display: block;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div style="width:100%;">
+                        <div class="conetenedor">
+                            <h1 >Market place <b style="color:#F1C40F">B</b><b style="color:#2980B9">A</b></h1>
+                            <h2 class="texto"> Buen día proveedor <b>BADGER AUTOMATION</b> tiene una nueva oferta del usuario: <b> ${result[0].Nombre} </b> sobre el producto <b> ${result[0].descripcion} </b> </h2>
+                            <div class="acomodo">
+                                <div class="tdImagen">
+                                    <img src="https://isc.isaiasdeleon.robo-tics-slp.net/resources/Art${result[0].img}.png"style="width:220px;"/>
+                                </div>
+                                <div class="tdTexto">
+                                    <h3>Precio inicial: <b style="color:#2980B9">$${result[0].monto} MXN</b></h3>
+                                    <h3>Precio ofertado: <b style="color:#27AE60">$${oferta} MXN </b></h3>
+                                    <a style="padding:10px; font-size:18px; margin:5px; background:#212529; color:#fff; border:none; border-radius:5px; text-decoration:none" href="https://badgerautomation.com/"> Aceptar oferta</a>
+                                    <a style="padding:10px; font-size:18px; margin:5px; background:#565e64; color:#fff; border:none; border-radius:5px; text-decoration:none"> Hacer contra oferta </a>
+                                </div>
                             </div>
-                        <td>
-                    </tr>
-                </table>
+                        </div>
+                    </div>
+                </body>
+            </html>
                 `
-                
             };
-            
+
             transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
-                    console.log(error);
+                    callback("errorCorreo");
                 } else {
-                    console.log('Correo enviado: ' + info.response);
+                    callback('CorreoEnviado');
                 }
             });
         })
     })
-   
+
 }
-//Exportamos las funciones que utilizaremos para la comunicacion con el front 
+//Exportamos las funciones que utilizaremos para la comunicacion con el front
 module.exports = { mailNode }
