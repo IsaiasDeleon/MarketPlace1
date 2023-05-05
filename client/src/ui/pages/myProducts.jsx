@@ -65,7 +65,7 @@ export const MyProducts = ({ setMenu }) => {
     }
     function saveAll() {
         let datos = [];
-        productos.map(async (element) => {
+       const d =  productos.map(async (element) => {
             let id = element.id;
             let Nombre = document.getElementById(`nombreIN${id}`).value;
             let Categoria = document.getElementById(`categoriaIN${id}`).value;
@@ -89,23 +89,27 @@ export const MyProducts = ({ setMenu }) => {
                     formData.set('file', file);
                     const response = await axios.post(URLServer + 'updatePro', formData);
                     arr = { Nombre, Categoria, Estado, Oferta, Descripcion, Precio, PrecioOferta, Stock, id, Marca, CodigoProveedor, Peso, TempodeEntrega, TempoDdeEntregaAgotado, PDF: response.data.filePath };
+                    datos.push(arr)
                 } catch (error) {
                     console.error(error);
                 }
             }else{
                 arr = { Nombre, Categoria, Estado, Oferta, Descripcion, Precio, PrecioOferta, Stock, id, Marca, CodigoProveedor, Peso, TempodeEntrega, TempoDdeEntregaAgotado, PDF:1 };
+                datos.push(arr)
             }
-            datos.push(arr)
+        
+            if(datos.length === productos.length){
+                axios.post(URLServer + "updateProductos", datos).then((response) => {
+                    if(response.data === "ElementosActualizados")
+                        setNotiCarrito("ElementosActualizados");
+                        setActiveNoti(true)
+                        setTimeout(() => {
+                            setActiveNoti(false)
+                        }, 5000);
+                }) 
+            }
         });
-        console.log(datos)
-        axios.post(URLServer + "updateProductos", datos).then((response) => {
-            if(response.data === "ElementosActualizados")
-                setNotiCarrito("ElementosActualizados");
-                setActiveNoti(true)
-                setTimeout(() => {
-                    setActiveNoti(false)
-                }, 5000);
-        }) 
+        
     }
     return (
         <>

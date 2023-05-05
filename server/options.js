@@ -543,7 +543,6 @@ function updateProducto(pool, data, callback){
     })
 }
 function updateProductos(pool, data, callback){
-    console.log(data)
     pool.getConnection(function (err, connection) {
         if(err) throw err;
         let Elementos = data.length;
@@ -551,11 +550,11 @@ function updateProductos(pool, data, callback){
         data.map((element) => {
             let query;
             if(element.PDF ==  1){
-                query = ``
+                query = `UPDATE articulos set nombre = '${element.Nombre}', descripcion = '${element.Descripcion}', monto = ${element.Precio}, montoOferta = ${element.PrecioOferta}, Categoria = '${element.Categoria}', Stock = ${element.Stock}, Estado = '${element.Estado}', Oferta = ${element.Oferta}, Marca ='${element.Marca}', CodigoProveedor = '${element.CodigoProveedor}', Peso = '${element.Peso}', TempodeEntrega='${element.TempodeEntrega}', TempoDdeEntregaAgotado = '${element.TempoDdeEntregaAgotado}' where id = ${element.id}`
             }else{
                 query = `UPDATE articulos set nombre = '${element.Nombre}', descripcion = '${element.Descripcion}', monto = ${element.Precio}, montoOferta = ${element.PrecioOferta}, Categoria = '${element.Categoria}', Stock = ${element.Stock}, Estado = '${element.Estado}', Oferta = ${element.Oferta}, Marca ='${element.Marca}', CodigoProveedor = '${element.CodigoProveedor}', Peso = '${element.Peso}', TempodeEntrega='${element.TempodeEntrega}', TempoDdeEntregaAgotado = '${element.TempoDdeEntregaAgotado}', PDF = '${element.PDF}' where id = ${element.id}`
             }
-            connection.query(`UPDATE articulos set nombre = '${element.Nombre}', descripcion = '${element.Descripcion}', monto = ${element.Precio}, montoOferta = ${element.PrecioOferta}, Categoria = '${element.Categoria}', Stock = ${element.Stock}, Estado = '${element.Estado}', Oferta = ${element.Oferta}, Marca ='${element.Marca}', CodigoProveedor = '${element.CodigoProveedor}', Peso = '${element.Peso}', TempodeEntrega='${element.TempodeEntrega}', TempoDdeEntregaAgotado = '${element.TempoDdeEntregaAgotado}' where id = ${element.id}`, function (err, result) {
+            connection.query(query, function (err, result) {
                 if(err) throw err;
                 // console.log(result)
                 suma++;
@@ -565,12 +564,22 @@ function updateProductos(pool, data, callback){
             })
         })
     })
-    
-   
 }
 function updatePro(pool, data, callback){
     console.log(data)
 
 }
+function InsertarProducto(pool, data, callback){
+    let img = data.img;
+    img = img.toString();
+
+        pool.getConnection(function (err, connection) {
+            if(err) throw err;
+            connection.query(`insert into articulos values(default, '${img}','Badger','${data.nombre}','${data.descripcion}',${data.estrellas}, ${data.monto}, ${data.montoOferta}, '${data.Categoria}', ${data.Stock},'${data.Estatus}',NOW(),'${data.Estado}',${data.Oferta},'${data.marca}','${data.codigo}','${data.peso}', '${data.TiempoEn}','${data.TiempoEnAg}','${data.PDF}')`, function (err, result) { 
+                if(err) throw err;
+                console.log(result)
+            })
+        })
+}
 //Exportamos las funciones que utilizaremos para la comunicacion con el front 
-module.exports = { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser, RegistrarUsuario, addGustos, ElementsToGustos, GetElementsGustos, deleteItemGustos, GetProducto, getMyProducts, updateProducto, updateProductos, updatePro }
+module.exports = { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser, RegistrarUsuario, addGustos, ElementsToGustos, GetElementsGustos, deleteItemGustos, GetProducto, getMyProducts, updateProducto, updateProductos, updatePro, InsertarProducto }

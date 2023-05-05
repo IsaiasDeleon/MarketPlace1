@@ -9,7 +9,7 @@ const cors = require('cors');
 //Obtenemos los variables globales para no ponerlos en codigo
 require('dotenv').config();
 //Archivo donde hacemos las peticiones a la DB
-const { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser, RegistrarUsuario, addGustos, ElementsToGustos, GetElementsGustos, deleteItemGustos, GetProducto, getMyProducts, updateProducto, updateProductos, updatePro } = require("./options")
+const { read, readEspesifica, addCarrito, ElementsToCar, readCarrito, deleteItem, getEstado, getMunicipio, getDatosGenerales, getNameEstado, getNameMunicipio, saveUbicacion, getCompras, Loguear, SaveDetailsUser, RegistrarUsuario, addGustos, ElementsToGustos, GetElementsGustos, deleteItemGustos, GetProducto, getMyProducts, updateProducto, updateProductos, updatePro, InsertarProducto } = require("./options")
 const { GeneratePDF, GeneratePDFArticulos } = require("./PDF");
 const { mailNode } = require("./mail");
 //Politicas cross
@@ -220,6 +220,23 @@ app.post('/updatePro', upload.single('file'), (req, res) => {
     res.send({ filePath: filePath });
 });
 
+const storage2 = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'images/');
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + '.jpg');
+    }
+});
+const upload2 = multer({ storage: storage2 });
+
+app.post('/Images', upload2.single('file'), (req, res) => {
+    const filePath = req.file.filename;
+    res.send({ filePath: filePath });
+});
+
+
 //DESCARGAR PDF
 app.post('/download', function(req, res) {
     let enlace = req.body?.pdf;
@@ -241,6 +258,11 @@ app.post('/download', function(req, res) {
     }
     
   });
+  app.post('/InsertarProducto', (req, res) => {
+    InsertarProducto(pool, req.body, (result) => {
+        res.json(result)
+    })
+  })
 //Levantamos el servidor en el puesto que necesitemos
 app.listen(3020, () => {
     console.log("servidor en puerto 3020");
