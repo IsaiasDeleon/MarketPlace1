@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router";
 
-export const CardHorizontal = ({ id, img, empresa, descripcion, estrellas, monto, setIdCard, Estado, setClickProducto }) => {
+export const CardHorizontal = ({ id, img, empresa, descripcion, estrellas, monto, setIdCard, Estado, setClickProducto, montoOferta, Oferta }) => {
     const navigate = useNavigate();
     function Gusto(id) {
         setIdCard(id);
     }
+    let images = img?.split(','); 
     function ProductoShow(id) {
         setClickProducto(id)
         navigate('/Producto', {
@@ -16,14 +17,17 @@ export const CardHorizontal = ({ id, img, empresa, descripcion, estrellas, monto
             
             <div >
             <h5 style={{"float":"left"}} className={`fw-bold ${Estado == "1" ? "text-success" :"text-primary"} `}>{Estado == "1" ? "Nuevo" : "Semi-Nuevo"}</h5>
-                <img onClick={() => ProductoShow(id)} src={`./assets/Art${img}.png`} alt="IMGCompra" className="ImgCard2" />
+                <img onClick={() => ProductoShow(id)} src={`./assets/${images[0]}`} alt="IMGCompra" className="ImgCard2" />
             </div>
             <div className=" ms-3" style={{ "width": "100%" }}>
                 <div className="d-flex justify-content-between" style={{ "width": "100%" }}>
                     <h6 className="text-secondary TitulosMenu">{empresa}</h6>
                     <div className="d-flex ContenedorCantidadDineroEstrellas">
                         <div className="col-sm w100 AcomodoText">
-                            <h5 className="fw-bold  TitulosMenu">${monto} </h5>
+                        <h5 >${monto} </h5>
+                        {
+                            Oferta == 1 ? <h5> OFERTA: <b className="text-success">${montoOferta} </b></h5> : <></>
+                        }
                         </div>
                         <div className="col-sm w100 divEstrellas">
                             <i style={{ "margin": "3px" }} className={`bi bi-star-fill TitulosMenu ${(estrellas >= 1) ? 'text-warning' : ''}`}></i>

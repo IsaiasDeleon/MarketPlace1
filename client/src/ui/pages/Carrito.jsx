@@ -77,7 +77,13 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
 
                     // Lo parseamos ya que necesitamos un tipo numerico
                     element = parseInt(element);
-                    let multi = elementsCarrito.monto * element;
+                    let multi = 0;
+                    if(elementsCarrito.Oferta === 1){
+                        multi = elementsCarrito.montoOferta * element;
+                    }else{
+                        multi =  elementsCarrito.monto * element;
+                    }
+                    
                     total = total + multi;
 
                     //Sumamos las cantidades que se píden 
@@ -100,7 +106,21 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
         });
         if(idU !== undefined){
             axios.post(URLServer+"GeneratePDFArticulos",{"idProduct":ids, "cantidades": cantidadByProducto, "idUser": idU}).then((response) => {
-
+                axios.post(URLServer+'CotizacionUnitaria',{
+                    pdf:response.data
+                }, {
+                    responseType: 'blob'
+                }).then(response => {
+                  const url = window.URL.createObjectURL(new Blob([response.data]));
+            
+                  const link = document.createElement('a');
+                  link.href = url;
+                  link.setAttribute('download', 'Cotizacion.pdf');
+                    
+                  document.body.appendChild(link);
+                    
+                  link.click();
+                });
             })
         }
         

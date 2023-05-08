@@ -238,31 +238,52 @@ app.post('/Images', upload2.single('file'), (req, res) => {
 
 
 //DESCARGAR PDF
-app.post('/download', function(req, res) {
+app.post('/download', function (req, res) {
     let enlace = req.body?.pdf;
-    if(enlace !== undefined){
+    if (enlace !== undefined) {
         const filePath = `./uploads/${enlace}`;
         const fileName = 'archivo.pdf';
-      
-        fs.readFile(filePath, function(err, data) {
-          if (err) {
-            console.error(err);
-            return res.status(500).send('Error al leer el archivo');
-          }
-      
-          res.setHeader('Content-Type', 'application/pdf');
-          res.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
-      
-          return res.send(data);
+
+        fs.readFile(filePath, function (err, data) {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Error al leer el archivo');
+            }
+
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
+
+            return res.send(data);
         });
     }
-    
-  });
-  app.post('/InsertarProducto', (req, res) => {
+});
+
+//DESCARGAR PDF COTIZACION
+app.post('/CotizacionUnitaria', function (req, res) {
+    let enlace = req.body?.pdf;
+    console.log(enlace)
+    if (enlace !== undefined) {
+        const filePath = `./CotizacionesUnitarias/${enlace}`;
+        const fileName = 'archivo.pdf';
+
+        fs.readFile(filePath, function (err, data) {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Error al leer el archivo');
+            }
+
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
+
+            return res.send(data);
+        });
+    }
+});
+app.post('/InsertarProducto', (req, res) => {
     InsertarProducto(pool, req.body, (result) => {
         res.json(result)
     })
-  })
+})
 //Levantamos el servidor en el puesto que necesitemos
 app.listen(3020, () => {
     console.log("servidor en puerto 3020");

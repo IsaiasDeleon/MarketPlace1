@@ -6,7 +6,7 @@ function GeneratePDF(pool, data, callback) {
     const idUser = data.idUser;
     pool.getConnection(function (err, connection) {
         if (err) throw err;
-        connection.query(`SELECT  articulos.img, articulos.descripcion,articulos.monto, usuarios.Nombre, usuarios.Correo, datosgenerales.telefono, datosgenerales.estado, datosgenerales.municipio, estados.estado as nameEsta, municipios.municipio as nameMuni, datosgenerales.Direccion, datosgenerales.CP FROM articulos, usuarios, datosgenerales, estados, municipios where articulos.id = ${idProducto} and usuarios.id = ${idUser} and datosgenerales.idusuario = 1 and estados.id = datosgenerales.estado and municipios.id = datosgenerales.municipio`, function (err, result) {
+        connection.query(`SELECT  articulos.img, articulos.descripcion,articulos.monto, articulos.Oferta, articulos.montoOferta, usuarios.Nombre, usuarios.Correo, datosgenerales.telefono, datosgenerales.estado, datosgenerales.municipio, estados.estado as nameEsta, municipios.municipio as nameMuni, datosgenerales.Direccion, datosgenerales.CP FROM articulos, usuarios, datosgenerales, estados, municipios where articulos.id = ${idProducto} and usuarios.id = ${idUser} and datosgenerales.idusuario = 1 and estados.id = datosgenerales.estado and municipios.id = datosgenerales.municipio`, function (err, result) {
             if (err) throw err;
             const today = new Date();
             const day = today.getDate();
@@ -52,7 +52,7 @@ function GeneratePDF(pool, data, callback) {
                     break;
             }
             let Fecha = day + " de " + mes + " de " + year;
-            const html = `<html>
+            let html = `<html>
         <style>
             html, body {
                 font-weight: 500;
@@ -119,21 +119,27 @@ function GeneratePDF(pool, data, callback) {
                     <tr style="border:1px solid #000; margin:0">
                         <td style="border:1px solid #000; margin:0"> <img src="https://isc.isaiasdeleon.robo-tics-slp.net/resources/Art${result[0].img}.png" class="ImgCard2"/> </td>
                         <td style="border:1px solid #000; margin:0">1</td>
-                        <td style="border:1px solid #000; margin:0">$${result[0].monto} MXN</td>
+                        <td style="border:1px solid #000; margin:0">$${result[0].Oferta == 1? result[0].montoOferta :result[0].monto} MXN</td>
                         <td style="border:1px solid #000; margin:0; width:60%">${result[0].descripcion}</td>
-                        <td style="border:1px solid #000; margin:0; width:20%">$${result[0].monto} MXN</td>
+                        `;
+                        if(result[0].Oferta == 1){
+                            html += `<td style="border:1px solid #000; margin:0; width:20%">$${result[0].montoOferta} MXN</td>`
+                        }else{
+                            html += `<td style="border:1px solid #000; margin:0; width:20%">$${result[0].monto} MXN</td>`
+                        }
+                        html += `
                     </tr>
                     <tr>
                         <td style="border:1px solid #000; margin:0; text-align: right;" colspan="4">Subtotal (MXN)  </td>
-                        <td style="border:1px solid #000; margin:0">$${result[0].monto} MXN</td>
+                        <td style="border:1px solid #000; margin:0">$${result[0].Oferta == 1 ? result[0].montoOferta : result[0].monto} MXN</td>
                     </tr>
                     <tr>
                         <td style="border:1px solid #000; margin:0; text-align: right;" colspan="4">IVA (MXN)  </td>
-                        <td style="border:1px solid #000; margin:0">$${(result[0].monto / 100) * 16} MXN</td>
+                        <td style="border:1px solid #000; margin:0">$${result[0].Oferta == 1 ? (result[0].montoOferta / 100) * 16 : (result[0].monto / 100) * 16} MXN</td>
                     </tr>
                     <tr>
                         <td style="border:1px solid #000; margin:0; text-align: right;" colspan="4">Total (MXN)  </td>
-                        <td style="border:1px solid #000; margin:0">$${((result[0].monto / 100) * 16) + result[0].monto} MXN</td>
+                        <td style="border:1px solid #000; margin:0">$${result[0].Oferta == 1 ? ((result[0].montoOferta / 100) * 16) + result[0].montoOferta :((result[0].monto / 100) * 16) + result[0].monto} MXN</td>
                     </tr>
                 </table>
             </div>
@@ -143,10 +149,11 @@ function GeneratePDF(pool, data, callback) {
         </body>
         </html>`;
             const options = { format: 'Letter' };
+            const uniquePDF = Date.now() + '-' + Math.round(Math.random() * 1e9);
             //../client//Cotizacion.pdf
-            pdf.create(html, options).toFile('./Cotizacion.pdf', function (err, res) {
+            pdf.create(html, options).toFile(`./CotizacionesUnitarias/Cotizacion-${uniquePDF}.pdf`, function (err, res) {
                 if (err) return callback("ErrorPDF");
-                callback("PDFcreado");
+                callback(`Cotizacion-${uniquePDF}.pdf`);
             });
         })
     })
@@ -160,7 +167,7 @@ function GeneratePDFArticulos(pool, data, callback) {
     console.log(cantidades.toString());
     pool.getConnection(function (err, connection) {
         if (err) throw err;
-        connection.query(`SELECT  articulos.img, articulos.descripcion,articulos.monto, usuarios.Nombre, usuarios.Correo, datosgenerales.telefono, datosgenerales.estado, datosgenerales.municipio, estados.estado as nameEsta, municipios.municipio as nameMuni, datosgenerales.Direccion, datosgenerales.CP FROM articulos, usuarios, datosgenerales, estados, municipios where articulos.id in(${idProductos.toString()}) and usuarios.id = ${idUser} and datosgenerales.idusuario = 1 and estados.id = datosgenerales.estado and municipios.id = datosgenerales.municipio`, function (err, result) {
+        connection.query(`SELECT  articulos.img, articulos.descripcion,articulos.monto, articulos.montoOferta, articulos.Oferta, usuarios.Nombre, usuarios.Correo, datosgenerales.telefono, datosgenerales.estado, datosgenerales.municipio, estados.estado as nameEsta, municipios.municipio as nameMuni, datosgenerales.Direccion, datosgenerales.CP FROM articulos, usuarios, datosgenerales, estados, municipios where articulos.id in(${idProductos.toString()}) and usuarios.id = ${idUser} and datosgenerales.idusuario = 1 and estados.id = datosgenerales.estado and municipios.id = datosgenerales.municipio`, function (err, result) {
             if (err) throw err;
             const today = new Date();
             const day = today.getDate();
@@ -277,11 +284,17 @@ function GeneratePDFArticulos(pool, data, callback) {
                     <tr style="border:1px solid #000; margin:0">
                         <td style="border:1px solid #000; margin:0"> <img src="https://isc.isaiasdeleon.robo-tics-slp.net/resources/Art${result[i].img}.png" class="ImgCard2"/> </td>
                         <td style="border:1px solid #000; margin:0">${cantidades[i]}</td>
-                        <td style="border:1px solid #000; margin:0">$${result[i].monto} MXN</td>
+                        <td style="border:1px solid #000; margin:0">$${result[i].Oferta == 1 ? result[i].montoOferta : result[i].monto}MXN</td>
                         <td style="border:1px solid #000; margin:0; width:60%">${result[i].descripcion}</td>
-                        <td style="border:1px solid #000; margin:0; width:20%">$${result[i].monto * cantidades[i]} MXN</td>
+                        <td style="border:1px solid #000; margin:0; width:20%">$${result[i].Oferta == 1 ? result[i].montoOferta * cantidades[i] : result[i].monto * cantidades[i]} MXN</td>
                     </tr>`
-                    let can = result[i].monto * cantidades[i];
+                    let can = 0;
+                    if(result[i].Oferta == 1){
+                        can = result[i].montoOferta * cantidades[i];
+                    }else{
+                        can = result[i].monto * cantidades[i];
+                    }
+                    
                     subtotal = subtotal + can;
                 i++;
             });
@@ -310,10 +323,11 @@ function GeneratePDFArticulos(pool, data, callback) {
         </body>
         </html>`;
         const options = { format: 'Letter' };
+        const uniquePDF = Date.now() + '-' + Math.round(Math.random() * 1e9);
         //../client//Cotizacion.pdf
-        pdf.create(html, options).toFile('./CotizacionCarrito.pdf', function (err, res) {
-            if (err) return console.log(err);
-            callback(res);
+        pdf.create(html, options).toFile(`./CotizacionesUnitarias/CotizacionCarrito-${uniquePDF}.pdf`, function (err, res) {
+            if (err) return callback("ErrorPDF");
+            callback(`CotizacionCarrito-${uniquePDF}.pdf`);
         });
         })
     })

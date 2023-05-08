@@ -40,81 +40,80 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
         setMenu(2);
     }, [])
 
-    function message(mess){
+    function message(mess) {
         setNotiCarrito(`${mess}`);
         setActiveNoti(true)
         setTimeout(() => {
             setActiveNoti(false)
         }, 5000);
     }
-    async function save(){
-       if(stokIN === 0 || stokIN === undefined){
-        message("Stock")
-        return;
-       }
-       if(descripcionIN === ""){
-        message("descripcion")
-        return;
-       }
-       if(precioIN === undefined || precioIN === 0){
-        message("Precio")
-        return;
-       }
-       if(nombreIN === ""){
-        message("Nombre")
-        return;
-       }
-       if(TempodeEntregaIN === ""){
-        message("TiempoEN")
-        return;
-       }
-       
+    async function save() {
+        if (stokIN === 0 || stokIN === undefined) {
+            message("Stock")
+            return;
+        }
+        if (descripcionIN === "") {
+            message("descripcion")
+            return;
+        }
+        if (precioIN === undefined || precioIN === 0) {
+            message("Precio")
+            return;
+        }
+        if (nombreIN === "") {
+            message("Nombre")
+            return;
+        }
+        if (TempodeEntregaIN === "") {
+            message("TiempoEN")
+            return;
+        }
+
         let Images = document.getElementById(`Images`);
         let nombre = [];
         for (let i = 0; i < imagesArray.length; i++) {
             let file = imagesArray[i];
-            console.log(file)
             let formData;
-            if(file === undefined){
+            if (file === undefined) {
                 formData = 0;
-            }else{
+            } else {
                 formData = new FormData();
                 formData.set('file', file);
             }
-            if(formData !== 0){
+            if (formData !== 0) {
                 const response = await axios.post(URLServer + 'Images', formData);
                 nombre.push(response.data.filePath);
-                if(nombre.length === imagesArray.length){
+                if (nombre.length === imagesArray.length) {
                     let pdf = document.getElementById(`file${id}`);
                     let file2 = pdf.files[0];
                     let formData2;
-                    if(file2 === undefined){
+                    if (file2 === undefined) {
                         formData2 = 0;
-                    }else{
+                    } else {
                         formData2 = new FormData();
                         formData2.set('file', file2);
                     }
-                    if(formData2 !== 0){
+                    if (formData2 !== 0) {
                         const response2 = await axios.post(URLServer + 'updatePro', formData2);
                         let AllData = {
-                            Categoria:categoriaIN,
-                            Estado:estadoIN,
-                            Estatus:"1",
-                            Oferta:check,
-                            Stock:stokIN,
-                            descripcion:descripcionIN,
-                            empresa:idU,
-                            estrellas:estrellas,
-                            img:nombre,
-                            monto:precioIN,
+                            Categoria: categoriaIN,
+                            Estado: estadoIN,
+                            Estatus: "1",
+                            Oferta: check,
+                            Stock: stokIN,
+                            descripcion: descripcionIN,
+                            empresa: idU,
+                            estrellas: estrellas,
+                            img: nombre,
+                            monto: precioIN,
                             montoOferta: precioOfertaIN,
-                            nombre:nombreIN,
-                            marca:marcaIN,
+                            nombre: nombreIN,
+                            marca: marcaIN,
                             codigo: CodigoProveedorIN,
                             peso: PesoIN,
                             TiempoEn: TempodeEntregaIN,
-                            TiempoEnAg:TempoDdeEntregaAgotadoIN,
-                            PDF:response2?.data?.filePath
+                            TiempoEnAg: TempoDdeEntregaAgotadoIN,
+                            PDF: response2?.data?.filePath
                         }
                         axios.post(URLServer + "InsertarProducto", AllData).then((response) => {
                             if (response.data === "Insertado") {
@@ -125,26 +124,26 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
                                 // }, 5000);
                             }
                         })
-                    }else{
+                    } else {
                         let AllData = {
-                            Categoria:categoriaIN,
-                            Estado:estadoIN,
-                            Estatus:"1",
-                            Oferta:check,
-                            Stock:stokIN,
-                            descripcion:descripcionIN,
-                            empresa:idU,
-                            estrellas:estrellas,
-                            img:nombre,
-                            monto:precioIN,
+                            Categoria: categoriaIN,
+                            Estado: estadoIN,
+                            Estatus: "1",
+                            Oferta: check,
+                            Stock: stokIN,
+                            descripcion: descripcionIN,
+                            empresa: idU,
+                            estrellas: estrellas,
+                            img: nombre,
+                            monto: precioIN,
                             montoOferta: precioOfertaIN,
-                            nombre:nombreIN,
-                            marca:marcaIN,
+                            nombre: nombreIN,
+                            marca: marcaIN,
                             codigo: CodigoProveedorIN,
                             peso: PesoIN,
                             TiempoEn: TempodeEntregaIN,
-                            TiempoEnAg:TempoDdeEntregaAgotadoIN,
-                            PDF:"N/A"
+                            TiempoEnAg: TempoDdeEntregaAgotadoIN,
+                            PDF: "N/A"
                         }
                         axios.post(URLServer + "InsertarProducto", AllData).then((response) => {
                             if (response.data === "Insertado") {
@@ -157,17 +156,17 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
                         })
                     }
                 }
-            }else{
+            } else {
                 //TIEne que inculir al menos una foto
             }
-            
+
         }
-    //     
-        
-    //     saveOne(formData,{
-    
-    //     }
-    //    )
+        //     
+
+        //     saveOne(formData,{
+
+        //     }
+        //    )
     }
 
     //Imagenes
@@ -215,10 +214,10 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
 
     return (
         <>
-            <div className="d-flex divProducto r DiseñoMisProductos " >
-                <div style={{ "width": "60%" }}>
+            <div className="d-flex divNewProducto DiseñoMisProductos " >
+                <div className="imagenesNewProduct">
                     <div class="input-div" onDrop={(e) => inputDivChange(e)} >
-                        <p>Arrastra y suelta tus fotos aquí o <strong style={{ "padding": "5px", "background": "#000", "color": "#fff", "borderRadius": "5px" }}>selecciona el archivo</strong></p>
+                        <p>Arrastra y suelta tus fotos aquí o <button style={{ "padding": "5px", "background": "#000", "color": "#fff", "borderRadius": "5px" }}>selecciona el archivo</button></p>
                         <input onChange={() => inputChange()} id="Images" type="file" class="file" multiple="multiple" accept="image/jpeg, image/png, image/jpg" />
                     </div>
                     <br />
@@ -230,12 +229,12 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
                         }
                     </output>
                 </div>
-                <div className=" ms-3" style={{ "width": "100%" }}>
-                <div className="m-2" style={{ "display": "grid", "gridTemplateColumns": "55% 45% " }}>
+                <div className="DatosNewProduct" >
+                    <div className="m-2 newProducto-gridEstrellas">
                         <div></div>
                         <div style={{ "display": "grid", "gridTemplateColumns": "65% 35% " }}>
                             <div >
-                                <label  style={{"float":"right"}} className="switch2">
+                                <label style={{ "float": "right" }} className="switch2">
                                     <input type="hidden" value={check} id={`ofertaIN${id}`} />
                                     <input type="checkbox" checked={check} name="ofertaIN" onChange={() => setCheck(!check)} />
                                     <div className="slider2">
@@ -254,12 +253,12 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
                             </div>
                         </div>
                     </div>
-                    <div className="m-2" style={{ "display": "grid", "gridTemplateColumns": "32% 2% 32% 2% 32%" }}>
+                    <div className="m-2 newProducto-PrimerosInput">
                         <div className="form-floating " style={{ "width": "100%" }}>
                             <input id={`nombreIN${id}`} name={`nombreIN`} value={nombreIN} onChange={(e) => cambios(e)} type="text" className="form-control" />
                             <label className='fw-bold'>Nombre del producto:</label>
                         </div>
-                        <div></div>
+                        
                         <div className="form-floating " style={{ "width": "100%" }}>
                             <select className="form-select" id={`categoriaIN${id}`} name="categoriaIN" value={categoriaIN} onChange={(e) => cambios(e)} aria-label="Floating label select example">
                                 <option value="Celulares">Celulares</option>
@@ -270,9 +269,7 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
                             </select>
                             <label className='fw-bold'>Categoría del producto:</label>
                         </div>
-                        <div>
-                        </div>
-
+                       
                         <div className="form-floating ">
                             <select className="form-select" id={`estadoIN${id}`} name="estadoIN" onChange={(e) => cambios(e)} value={estadoIN} aria-label="Floating label select example">
                                 <option value="1">Nuevo</option>
@@ -280,8 +277,7 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
                             </select>
                             <label className='fw-bold'>Estado del producto:</label>
                         </div>
-                        {/* <div></div>
-                            */}
+
                     </div>
 
                     <div className="m-2" style={{ "display": "grid", "gridTemplateColumns": "100%" }}>
@@ -292,31 +288,27 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
                                 <label className='fw-bold'>Descripción:</label>
                             </div>
                         </div>
-                        {/* <div></div>
-                        <div style={{ "display": "grid", "gridTemplateColumns": "60% 40%" }}>
-                            
-                            
-                        </div> */}
+
                     </div>
-                    <div className="m-2" style={{ "display": "grid", "gridTemplateColumns": "50% 50%"}}>
+                    <div className="m-2" style={{ "display": "grid", "gridTemplateColumns": "50% 50%" }}>
                         <div className="d-flex">
                             <div className="form-floating col-sm" style={{ "marginRight": "10px" }}>
                                 <input name={`precioIN`} id={`precioIN${id}`} value={precioIN} onChange={(e) => cambios(e)} type="Number" min={1} className="form-control " />
                                 <label className='fw-bold'>Precio:</label>
                             </div>
                             {
-                                check&& (
+                                check && (
                                     <div className="form-floating col-sm" style={{ "marginLeft": "10px", "marginRight": "10px" }}>
                                         <input name={`precioOfertaIN`} id={`precioOfertaIN${id}`} value={precioOfertaIN} onChange={(e) => cambios(e)} type="Number" min={1} className="form-control " />
                                         <label className='fw-bold'>Precio con oferta:</label>
                                     </div>
                                 )
                             }
-                            
+
                         </div>
-                        
+
                         <div className="d-flex">
-                            <div className="form-floating col-sm " style={{"marginLeft": "10px" , "marginRight": "10px" }}>
+                            <div className="form-floating col-sm " style={{ "marginLeft": "10px", "marginRight": "10px" }}>
                                 <input id={`marcaIN${id}`} name={`marcaIN`} value={marcaIN} onChange={(e) => cambios(e)} type="text" className="form-control" />
                                 <label className='fw-bold'>Marca/Fabricante:</label>
                             </div>
@@ -327,29 +319,29 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
                         </div>
                     </div>
                     <div className="m-2" style={{ "display": "grid", "gridTemplateColumns": "25% 25% 25% 25%" }}>
-                       
-                     
+
+
                         <div className="form-floating " style={{ "marginRight": "10px" }}>
                             <input id={`PesoIN${id}`} name={`PesoIN`} value={PesoIN} onChange={(e) => cambios(e)} type="text" className="form-control" />
                             <label className='fw-bold'>Peso:</label>
                         </div>
-                     
-                        <div className="form-floating " style={{ "marginLeft": "10px", "marginRight": "10px"  }}>
+
+                        <div className="form-floating " style={{ "marginLeft": "10px", "marginRight": "10px" }}>
                             <input id={`TempodeEntregaIN${id}`} name={`TempodeEntregaIN`} value={TempodeEntregaIN} onChange={(e) => cambios(e)} type="text" className="form-control" />
                             <label className='fw-bold'>Tiempo de entrega:</label>
                         </div>
-                     
-                        <div className="form-floating " style={{ "marginLeft": "10px", "marginRight": "10px"  }}>
+
+                        <div className="form-floating " style={{ "marginLeft": "10px", "marginRight": "10px" }}>
                             <input id={`TempoDdeEntregaAgotadoIN${id}`} name={`TempoDdeEntregaAgotadoIN`} value={TempoDdeEntregaAgotadoIN} onChange={(e) => cambios(e)} type="text" className="form-control" />
                             <label className='fw-bold'>Tiempo de entrega en caso de agotarse:</label>
                         </div>
-                        <div className="form-floating " style={{ "marginLeft": "10px"}}>
-                                <input name={`stokIN`} value={stokIN} id={`stokIN${id}`} onChange={(e) => cambios(e)} type="Number" min={1} className="form-control" />
-                                <label className='fw-bold'>Stock:</label>
-                            </div>
+                        <div className="form-floating " style={{ "marginLeft": "10px" }}>
+                            <input name={`stokIN`} value={stokIN} id={`stokIN${id}`} onChange={(e) => cambios(e)} type="Number" min={1} className="form-control" />
+                            <label className='fw-bold'>Stock:</label>
+                        </div>
                     </div>
                     <div className="m-2" style={{ "width": "100%" }}>
-                        <div style={{ "display": "grid", "gridTemplateColumns": "70% 15% 15%" }}>
+                        <div className="nuevoProductoGridBTN" >
                             <div></div>
                             <div className="text-center">
                                 <h5 style={{ "visibility": "hidden" }} className="TitulosMenu">Stock:</h5>

@@ -5,14 +5,14 @@ import axios from "axios";
 import { Noti } from "../components/Notificaciones";
 const URLServer = "http://192.168.100.18:3020/"
 export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClickProducto}) => {
-    
 
-    const [imagenes, setImagenes] = useState(`Art${clickProducto}.png`);
+    const [imagenes, setImagenes] = useState(`${clickProducto}`);
     const [onClickImagen, setOnClickImagen] = useState(1);
     const [datosProducto, setDatosProducto] = useState([]);
     const [valueOferta, setValueOferta] = useState(0);
     const [notiCarrito, setNotiCarrito] = useState();
     const [activeNoti, setActiveNoti] = useState();
+    const [arregloImages, setArregloImages] = useState([]);
 
     const { user } = useContext(AuthContext)
     let idU = user?.id;
@@ -26,12 +26,18 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
     },[])
     useEffect(() => {
         if(clickProducto !== undefined){
-            setImagenes(`Art${clickProducto}.png`);
             axios.post(URLServer + "GetProducto", {"idProduct":clickProducto}).then((response) => {
                 setDatosProducto(response.data)
                 console.log(response.data)
-                setValueOferta(response.data[0]?.monto - 1 )
-                
+                let images = response.data[0]?.img?.split(',');
+                setImagenes(images[0]);
+                setOnClickImagen(images[0]);
+                setArregloImages(images)
+                if(response.data[0]?.Oferta == 1){
+                    setValueOferta(response.data[0]?.montoOferta - 1 )
+                }else{
+                    setValueOferta(response.data[0]?.monto - 1 )
+                }
             })
         }
     },[clickProducto]);
@@ -57,27 +63,25 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
        
     function CreatePDF(){
         axios.post(URLServer+"GeneratePDF",{"idProduct":clickProducto, "idUser":idU}).then((response) => {
-            let url = response.data;
-             //Enviamos el mensaje a las notificaciones para mostrar la alerta al usuario
-             setNotiCarrito(response.data)
-             setActiveNoti(true)
-             setTimeout(() => {
-                 setActiveNoti(false)
-             }, 4000);
-            // var a = document.createElement('a');
-            // var linkText = document.createTextNode("my title text");
-            // a.appendChild(linkText);
-            // a.title = "my title text";
-            // a.href = "http://localhost:3000/client/src/CotizacionesUnitarias/Cotizacion.pdf";
-            // a.download = 'file.pdf';
-            // a.dispatchEvent(new MouseEvent('click'));
-            // document.body.appendChild(a);
-            // var link = document.createElement('a');
-            //     link.style.cssText = 'color:red;background-color:yellow; width:100%; z-index:10';
-
-            //     link.href = url;
-            //     link.download = 'file.pdf';
-                //link.dispatchEvent(new MouseEvent('click'));
+            console.log(response.data);
+           
+            axios.post(URLServer+'CotizacionUnitaria',{
+                pdf:response.data
+            }, {
+                responseType: 'blob'
+            }).then(response => {
+              const url = window.URL.createObjectURL(new Blob([response.data]));
+        
+              const link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', 'Cotizacion.pdf');
+                
+              document.body.appendChild(link);
+                
+              link.click();
+            });
+            
+           
         })
     }
     
@@ -104,10 +108,11 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
            <div className="divGrid">
                 <div className="text-center">
                     <div  style={{"display": "flex","flexDirection": "column", "position":"absolute", "zIndex":"1"}}>
-                        <img src={`./assets/Art${clickProducto}.png`} onClick={(e) => {setImagenes(`Art${clickProducto}.png`); setOnClickImagen(1)}} alt="IMGCompra" className={`m-1 imagenesProductos ${onClickImagen === 1 ? "BorderImagenSelect":"" }`}  />
-                        <img src={`./assets/Art${clickProducto}-1.jpg`} onClick={(e) => {setImagenes(`Art${clickProducto}-1.jpg`); setOnClickImagen(2)}} alt="IMGCompra" className={`m-1 imagenesProductos ${onClickImagen === 2 ? "BorderImagenSelect":"" }`}  />
-                        <img src={`./assets/Art${clickProducto}-2.jpg`} onClick={(e) => {setImagenes(`Art${clickProducto}-2.jpg`); setOnClickImagen(3)}} alt="IMGCompra" className={`m-1 imagenesProductos ${onClickImagen === 3 ? "BorderImagenSelect":"" }`}  />
-                        <img src={`./assets/Art${clickProducto}-3.jpg`} onClick={(e) => {setImagenes(`Art${clickProducto}-3.jpg`); setOnClickImagen(4)}} alt="IMGCompra" className={`m-1 imagenesProductos ${onClickImagen ===4 ? "BorderImagenSelect":"" }`}  />
+                    {
+                        arregloImages.map((data) => (
+                            <img src={`./assets/${data}`} onClick={(e) => {setImagenes(`${data}`); setOnClickImagen(`${data}`)}} alt="IMGCompra" className={`m-1 imagenesProductos ${`${onClickImagen}` === `${data}` ? "BorderImagenSelect":"" }`}  />
+                        ))
+                    }
                     </div>
                     <img src={`./assets/${imagenes}`} alt="IMGCompra" className="ProductoImg" />
                 </div>
@@ -134,6 +139,9 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
                         <div>
                             <h6>Precio:</h6>
                             <h4 className="fw-bold">${datosProducto?.[0]?.monto} MXN</h4>
+                            {
+                                datosProducto?.[0]?.Oferta == 1 ? <h4 className="fw-bold"> OFERTA: <b className="text-success">${datosProducto?.[0]?.montoOferta} </b></h4> : <></>
+                            }
                         </div>
                         <div className="text-end">
                             <button className="btn btn-success m-1">¡Cómpralo ahora!</button>

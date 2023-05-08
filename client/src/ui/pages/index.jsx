@@ -8,11 +8,12 @@ import { AuthContext } from '../../auth/AuthContext';
 import { useNavigate } from 'react-router';
 import { CardHorizontal } from '../components/CardsHorizontal';
 import { BtnMisProductos } from '../components/butttonMisProductos';
+import { useForm } from '../../hooks/useForm';
 
 const URLServer = "http://192.168.100.18:3020/"
 
 
-export const Inicio = ({ data = [], setData, NumElementsCarrito = [], dataFiltrado = [], setMenu, ElementsGustos, NumElementsGustos, setClickProducto, acomodoCars, setAcomodoCards }) => {
+export const Inicio = ({ data = [], setData, NumElementsCarrito = [], dataFiltrado = [], setMenu, ElementsGustos, NumElementsGustos, setClickProducto, acomodoCars, setAcomodoCards, setFiltros, filtros }) => {
 
     const [idCard, setIdCard] = useState();
     const [notiCarrito, setNotiCarrito] = useState();
@@ -21,6 +22,10 @@ export const Inicio = ({ data = [], setData, NumElementsCarrito = [], dataFiltra
     let idU = user?.id;
     let tipoUser = user?.tipoUser;
     const navigate = useNavigate(); 
+
+    function Cambio (e){
+        setFiltros({...filtros, Estado : e.target.value})
+    }
     useEffect(() => {
         
         //Comrpobamos que el idCard no venga vacio
@@ -86,16 +91,16 @@ console.log(dataFiltrado)
             </div> */}
            
             <div className="padding4 contendorArticulo" >
-            <button className='btn btn-dark '>Todos</button>
-            <button className='btn btn-dark m-2'>Ofertas</button>
-            {/* <div className="form-floating SelectEstadoProducto" style={{"display":"inline-block","position":"absolute"}}>
-                <select className="form-select" id="floatingSelect" aria-label="Floating label select example">
-                    <option value="1" selected>Cualquier estado</option>
-                    <option value="2">Nuevo</option>
-                    <option value="3">Usado</option>
+            <button className='btn btn-dark' onClick={() => setFiltros({...filtros,Oferta:0 })}>Todos</button>
+            <button className='btn btn-dark m-2' onClick={() => setFiltros({...filtros,Oferta:1 })}>Ofertas</button>
+            <div className="form-floating SelectEstadoProducto" style={{"display":"inline-block","position":"absolute"}}>
+                <select className="form-select" onChange={(e) => Cambio(e)}  aria-label="Floating label select example">
+                    <option value="3" selected>Cualquier estado</option>
+                    <option value="1">Nuevo</option>
+                    <option value="2">Usado</option>
                 </select>
                 <label htmlFor="floatingSelect" className='fw-bold'>Estado del producto:</label>
-            </div> */}
+            </div>
             <div className='OrdenarProductos' >
                 {
                     !acomodoCars ?

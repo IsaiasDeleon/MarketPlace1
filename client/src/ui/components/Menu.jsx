@@ -8,40 +8,22 @@ function valuetext(value) {
     return `${value}`;
 }
 const URLServer = "http://192.168.100.18:3020/"
-export const Menu = ({ estado, setEstadoMenu, setDataFiltrado }) => {
+export const Menu = ({ estado, setEstadoMenu, setFiltros, filtros, setValue, value }) => {
+    const onSubmitHideMenu = () => {
+        setEstadoMenu(false)
+    }
 
-    const [value, setValue] = useState([1000, 4000]);
+    
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    const onSubmitHideMenu = () => {
-        setEstadoMenu(false)
-    }
+    
     const FiltValor = () => {
         setFiltros({ ...filtros, value: (value) })
     }
 
-    //Filtros Object
-    const [filtros, setFiltros] = useState({
-        Bad: true,
-        Apl: false,
-        Celular: false,
-        Pantallas: false,
-        Calzado: false,
-        Muebles: false,
-        Otros: false,
-        value: value
-    });
-    function busquedas(){
-        console.log("Entro")
-        axios.post(URLServer + "PruebasBusqueda", filtros).then((response) => {
-            setDataFiltrado(response.data)
-        });
-    }
-    useEffect(() => {
-        busquedas()
-    }, [filtros])
+  
 
 
 
@@ -117,12 +99,12 @@ export const Menu = ({ estado, setEstadoMenu, setDataFiltrado }) => {
                     <div className="p-3">
                         <p style={{ "margin": "0" }} className="text-white fw-bold mb-4"><i className="bi bi-currency-dollar"></i> Rango de precio</p>
                         <Stack spacing={2} direction="row" sx={{ mb: 1, mt: 4 }} alignItems="center">
-                            <h6 className='text-white text-slider'>$500</h6>
+                            <h6 className='text-white text-slider'>$0</h6>
                             <Slider
 
                                 value={value}
                                 onChange={handleChange}
-                                min={500}
+                                min={1}
                                 max={5000}
                                 valueLabelDisplay="on"
                                 step={50}

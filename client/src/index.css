@@ -529,6 +529,37 @@ code {
   border-bottom: 2px dashed #D7DBDD;
 }
 
+.InputsPrimeroGrid{
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 50% 45%;
+}
+.gridEstado{
+  display: grid;
+  grid-gap: 5%;
+  grid-template-columns: 35% 65%
+}
+.InputsSegundoGrid{
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 58% 42%
+}
+.precioEstralla{
+  display: grid;
+  grid-template-columns: 60% 40%;
+}
+.InputsTerceroGrid{
+  display: grid;
+  grid-template-columns: 40% 60%;
+
+}
+.margin-Inputs{
+  margin: 5px;
+}
+.stockDIV{
+  display: grid;
+  grid-template-columns: 15% 55% 15% 15%; 
+}
 .switch2 {
   font-size: var(--h4-font-size);
   position: relative;
@@ -602,6 +633,32 @@ code {
   display: none;
 }
 /* DIEÑOS PRODUCTO nuevo */
+.divNewProducto{
+  top: 60px;
+  height:auto;
+  position:absolute;
+  padding:50px;
+ }
+.newProducto-gridEstrellas{
+  display: grid;
+  grid-template-columns: 50% 50%; 
+}
+.newProducto-PrimerosInput{
+  display: grid;
+  grid-gap: 5px;
+  grid-template-columns: 33% 33% 33% 
+}
+.nuevoProductoGridBTN{
+  display: grid;
+  grid-template-columns:70% 15% 15%;
+}
+.imagenesNewProduct{
+  width: 33%;
+}
+.DatosNewProduct{
+  width: 66%;
+  margin-left: 15px;
+}
 .input-div {
   width: 100%;
   height: 300px;
@@ -794,6 +851,12 @@ output .span--hidden {
   .divProducto{
     padding:50px 100px;
    }
+   .newProducto-gridEstrellas{
+    grid-template-columns: 30% 70%; 
+  }
+  .nuevoProductoGridBTN{
+    grid-template-columns:50% 25% 25%;
+  }
 }
 
 @media (max-width: 1170px) {
@@ -819,7 +882,21 @@ output .span--hidden {
   .divProducto{
     padding:25px 50px;
    }
-   
+   .InputsPrimeroGrid{
+    grid-gap: 5px;
+    grid-template-columns:45% 52%;
+  }
+  .InputsSegundoGrid{
+    display: block;
+  }
+  .precioEstralla{
+    margin-top: 10px;
+  }
+  .InputsTerceroGrid{
+    display: grid;
+    grid-gap: 5px;
+
+  }
 }
 
 @media (max-width: 1100px) {
@@ -851,6 +928,12 @@ output .span--hidden {
   .ProductoImg {
     max-width: 380px;
     max-height: 380px;
+  }
+  .InputsPrimeroGrid{
+    display: block;
+  }
+  .gridEstado{
+    margin-top: 8px;
   }
 }
 
@@ -929,6 +1012,9 @@ output .span--hidden {
   .SelectEstadoProducto{
     width: 30%;
   }
+  .newProducto-gridEstrellas{
+    grid-template-columns: 10% 90%; 
+  }
 }
 
 @media (max-width: 960px) {
@@ -963,6 +1049,19 @@ output .span--hidden {
   .divGrid{
     display: block;
    }
+   .InputsTerceroGrid{
+    display: block;
+  }
+  .divNewProducto{
+    display: block!important;
+   }
+   .imagenesNewProduct{
+    width: 100%;
+  }
+  .DatosNewProduct{
+    width: 100%;
+    margin-left: 0px;
+  }
 }
 
 @media (max-width: 796px) {
@@ -976,6 +1075,12 @@ output .span--hidden {
   .EstadoProducto{
     font-size: var(--normal-font-size);
   }
+  .stockDIV{
+    grid-template-columns: 15% 45% 20% 20%; 
+  }
+  .divNewProducto{
+    padding:20px;
+   }
 }
 
 @media (max-width: 770px) {
@@ -1026,6 +1131,9 @@ output .span--hidden {
   .contenedorCards{
     grid-template-columns: 50% 50%;
 
+  }
+  .stockDIV{
+    grid-template-columns: 25% 15% 30% 30%; 
   }
 }
 

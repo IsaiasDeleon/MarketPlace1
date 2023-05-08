@@ -1,11 +1,11 @@
 import { useEffect } from "react"
 import { useForm } from "../../hooks/useForm"
 
-export const CardCarrito = ({ id, img, empresa, descripcion, estrellas, monto, DeletItem, variable, Totales, Stock }) => {
+export const CardCarrito = ({ id, img, empresa, descripcion, estrellas, monto, DeletItem, variable, Totales, Stock, montoOferta, Oferta }) => {
     const { onInputChange, v } = useForm({
         v: 1
     })
-
+    let images = img?.split(','); 
     function cambios(e) {
         onInputChange(e)
         Totales(e);
@@ -13,7 +13,7 @@ export const CardCarrito = ({ id, img, empresa, descripcion, estrellas, monto, D
     return (
         <div className="d-flex align-items-center FilaCarritoItem" >
             <div >
-                <img src={`./assets/Art${img}.png`} alt="IMGCompra" className="ImgCard2" />
+                <img src={`./assets/${images[0]}`} alt="IMGCompra" className="ImgCard2" />
             </div>
             <div className=" ms-3" style={{ "width": "100%" }}>
                 <div className="d-flex justify-content-between" style={{ "width": "100%" }}>
@@ -29,6 +29,9 @@ export const CardCarrito = ({ id, img, empresa, descripcion, estrellas, monto, D
                         <div className="col-sm w100">
                             <h5 className="TitulosMenu">Precio C/U:</h5>
                             <h5 className="fw-bold text-success TitulosMenu">${monto} </h5>
+                            {
+                                Oferta == 1 ? <h5> OFERTA: <b className="text-success">${montoOferta} </b></h5> : <></>
+                            }
                         </div>
                         <div className="col-sm w100 divEstrellas">
                             <h5 className="TitulosMenu">Valoración:</h5>

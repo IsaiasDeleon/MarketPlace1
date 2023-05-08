@@ -15,7 +15,8 @@ function readEspesifica(pool, data, callback) {
     let con = "";
     let articulos = "";
     let array = [];
-
+    let Oferta = "";
+    let Estado = "";
     if (data.Bad) {
         con = ` AND empresa = 'Badger'`;
     }
@@ -45,9 +46,15 @@ function readEspesifica(pool, data, callback) {
         articulos = array.toString();
         articulos = ` AND Categoria in (${articulos})`;
     }
+    if(data.Oferta == 1){
+        Oferta = `AND Oferta = 1`;
+    }
+    if(data.Estado == 1 || data.Estado == 2){
+        Estado = `AND Estado = ${data.Estado}`;
+    }
     pool.getConnection(function (err, connection) {
         if (err) throw err;
-        connection.query(`select * from articulos where Estatus = 1 ${con} ${articulos} AND monto between ${data.value[0]} and ${data.value[1]} `, function (err, result) {
+        connection.query(`select * from articulos where Estatus = 1 ${con} ${articulos} AND monto between ${data.value[0]} and ${data.value[1]} ${Oferta} ${Estado}`, function (err, result) {
             if (err) throw err;
             callback(result);
             connection.release();

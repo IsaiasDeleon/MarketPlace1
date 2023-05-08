@@ -1,11 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 
-export const Card = ({ id, img, empresa, descripcion, estrellas, monto, setIdCard, Estado, setClickProducto }) => {
+export const Card = ({ id, img, empresa, descripcion, estrellas, monto, setIdCard, Estado, setClickProducto, montoOferta, Oferta }) => {
     const navigate = useNavigate();
     function Gusto(id) {
         setIdCard(id);
     }
-    
+    let images = img?.split(','); 
     function ProductoShow(id) {
         setClickProducto(id)
         navigate('/Producto', {
@@ -16,7 +16,7 @@ export const Card = ({ id, img, empresa, descripcion, estrellas, monto, setIdCar
         <div className="card contenedorC">
             <h6 style={{"position":"absolute","left":"10px","top":"10px"}} className={`fw-bold ${Estado == "1" ? "text-success" :"text-primary"} `}>{Estado == "1" ? "Nuevo" : "Semi-Nuevo"}</h6>
             <div className="text-center divImgMT">
-                    <img src={`./assets/Art${img}.png`} onClick={() => ProductoShow(id)} alt="IMGCompra" className="ImgCard" />
+                    <img src={`./assets/${images[0]}`} onClick={() => ProductoShow(id)} alt="IMGCompra" className="ImgCard" />
             </div>
             <div className="content-txt TextCard">
                 <div className="TextCardSeccion" >
@@ -32,7 +32,13 @@ export const Card = ({ id, img, empresa, descripcion, estrellas, monto, setIdCar
                 <h6 onClick={() => ProductoShow(id)} style={{"cursor":"pointer"}}>{descripcion}</h6>
                 
                 <div className="d-flex justify-content-between">
-                    <h6 >${monto} </h6>
+                    <div>
+                        <h6 >${monto} </h6>
+                        {
+                            Oferta == 1 ? <h5> OFERTA: <b className="text-success">${montoOferta} </b></h5> : <></>
+                        }
+                    </div>
+                    
                     <div className="text-center text-white IconTextCard">
                         <button onClick={() => { Gusto(id)}} className="btn btn-danger" style={{ "float": "right", "borderRadius": "40px" }}><i class="bi bi-heart-fill"></i></button>
                         {/* <button onClick={() => { Carrito(id) }} className="btnCarrito">

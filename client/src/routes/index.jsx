@@ -48,6 +48,32 @@ export const AppRoute = () => {
 
             //PRODUCTO NUEVO
             const [imagesArray, setImagenesArray] = useState([]);
+
+            
+
+            //FILTROS Object
+            const [value, setValue] = useState([1000, 4000]);
+            const [filtros, setFiltros] = useState({
+                Bad: true,
+                Apl: false,
+                Celular: false,
+                Pantallas: false,
+                Calzado: false,
+                Muebles: false,
+                Otros: false,
+                value: value,
+                Oferta: 0,
+                Estado: 3
+            });
+            function busquedas(){
+                axios.post(URLServer + "PruebasBusqueda", filtros).then((response) => {
+                    setDataFiltrado(response.data)
+                });
+            }
+            useEffect(() => {
+                busquedas()
+            }, [filtros])
+            
            
             function NumElementsGustos(){
                 setNumGustos(0)
@@ -151,7 +177,7 @@ export const AppRoute = () => {
     return (
         <>
             <Routes>
-                <Route path="Inicio" element={<Inicio data={data} dataFiltrado={dataFiltrado} setData={setData} NumElementsCarrito={NumElementsCarrito} setMenu={setMenu} NumElementsGustos={NumElementsGustos} ElementsGustos={ElementsGustos} setClickProducto={setClickProducto} acomodoCars={acomodoCars} setAcomodoCards={setAcomodoCards} />} />
+                <Route path="Inicio" element={<Inicio data={data} dataFiltrado={dataFiltrado} setData={setData} NumElementsCarrito={NumElementsCarrito} setMenu={setMenu} NumElementsGustos={NumElementsGustos} ElementsGustos={ElementsGustos} setClickProducto={setClickProducto} acomodoCars={acomodoCars} setAcomodoCards={setAcomodoCards} setFiltros={setFiltros} filtros={filtros} />} />
                 <Route path="Carrito" element={<Carrito NumElementsCarrito={NumElementsCarrito} setMenu={setMenu} />} />
                 <Route path="Perfil" element={<EditarPerfil numArticulos={numArticulos} setMenu={setMenu} />} />
                 <Route path="Producto" element={<Producto setIdCard={setIdCard} setIdCard2={setIdCard2} clickProducto={clickProducto} setClickProducto={setClickProducto} setMenu={setMenu} />} />
@@ -166,7 +192,7 @@ export const AppRoute = () => {
                 ? (
                     <>
                         <Head setEstadoMenu={setEstadoMenu} numArticulos={numArticulos} numGustos={numGustos} elemntsGustos={elemntsGustos} DeleteItemGustos={DeleteItemGustos} setMenu={setMenu} clickProducto={clickProducto} setClickProducto={setClickProducto}/>
-                        <Menu estado={estadoMenu} setEstadoMenu={setEstadoMenu} setDataFiltrado={setDataFiltrado} />
+                        <Menu estado={estadoMenu} setEstadoMenu={setEstadoMenu} setFiltros={setFiltros} filtros={filtros} setValue={setValue} value={value} />
                     </>
                 )
                 :(

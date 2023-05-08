@@ -8,7 +8,7 @@ function mailNode(pool, data, callback){
     const oferta = data.Oferta;
     pool.getConnection(function ( err, connection) {
         if (err) throw err;
-        connection.query(`SELECT articulos.img, articulos.descripcion, articulos.monto, usuarios.Nombre, usuarios.Correo from articulos, usuarios where articulos.id = ${idProducto} and usuarios.id= ${idUsuario}`, function (err, result) {
+        connection.query(`SELECT articulos.img, articulos.descripcion, articulos.monto, articulos.montoOferta, articulos.Oferta, usuarios.Nombre, usuarios.Correo from articulos, usuarios where articulos.id = ${idProducto} and usuarios.id= ${idUsuario}`, function (err, result) {
             if(err) throw err;
             const transporter = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
@@ -83,7 +83,7 @@ function mailNode(pool, data, callback){
                                     <img src="https://isc.isaiasdeleon.robo-tics-slp.net/resources/Art${result[0].img}.png"style="width:220px;"/>
                                 </div>
                                 <div class="tdTexto">
-                                    <h3>Precio inicial: <b style="color:#2980B9">$${result[0].monto} MXN</b></h3>
+                                    <h3>Precio inicial: <b style="color:#2980B9">$${result[0].Oferta == 1 ? result[0].montoOferta : result[0].monto} MXN</b></h3>
                                     <h3>Precio ofertado: <b style="color:#27AE60">$${oferta} MXN </b></h3>
                                     <a style="padding:10px; font-size:18px; margin:5px; background:#212529; color:#fff; border:none; border-radius:5px; text-decoration:none" href="https://badgerautomation.com/"> Aceptar oferta</a>
                                     <a style="padding:10px; font-size:18px; margin:5px; background:#565e64; color:#fff; border:none; border-radius:5px; text-decoration:none"> Hacer contra oferta </a>
