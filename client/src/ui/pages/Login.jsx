@@ -5,6 +5,9 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 import { Noti } from "../components/Notificaciones";
 const URLServer = "http://192.168.100.18:3020/"
+const HTTP = axios.create({
+    baseURL: "https://badgerautomation.com/MarketPlace/Server/Data.php"
+})
 export const Login = ({setMenu}) => {
     const { Log } = useContext(AuthContext); 
     const navigate = useNavigate(); 
@@ -52,25 +55,22 @@ export const Login = ({setMenu}) => {
             }, 5000);
             return;
        }
-       
-        axios.post(URLServer+"Login",{"user":correo,"pass":pass}).then((response) => {
-            console.log(response.data)
-            if(response.data[0]){
-                const lastPath = localStorage.getItem('lastPath') || '/';
-                let data = response.data[0];
-                console.log(data)
-                Log(data.Nombre, data.id, data.img, data.tipoUser);
-                navigate(lastPath,{
-                    replace:true
-                })
-            }else{
-                setNotiCarrito("UsuarioIncorrecto");
-                setActiveNoti(true)
-                setTimeout(() => {
-                    setActiveNoti(false)
-                }, 5000);
-            }
-        })
+       HTTP.post("/Login",{"user":correo,"pass":pass}).then((response) => {
+        if(response.data[0]){
+            const lastPath = localStorage.getItem('lastPath') || '/';
+            let data = response.data[0];
+            Log(data.Nombre, data.id, data.img, data.tipoUser);
+            navigate(lastPath,{
+                replace:true
+            })
+        }else{
+            setNotiCarrito("UsuarioIncorrecto");
+            setActiveNoti(true)
+            setTimeout(() => {
+                setActiveNoti(false)
+            }, 5000);
+        }
+       })
 
     }
     

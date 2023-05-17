@@ -70,7 +70,7 @@ export const Head = ({ setEstadoMenu, numArticulos, numGustos, elemntsGustos, De
                         <div >
                             <div className="dropdown">
                                 <div className="nav-link  col-2 dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false" title="Articulos que te gustaron">
-                                    <i class="bi bi-heart h5"></i>
+                                    <i className="bi bi-heart h5"></i>
                                     <div className="text-center Notificaciones"><p style={{ "marginTop": "-3px", "color": "#fff" }} > {numGustos} </p>
                                     </div>
                                     <ul style={{"maxHeight":"375px", "overflowY":"auto" }} className="dropdown-menu ulcarrito" aria-labelledby="dropdownMenuButton1">
@@ -124,7 +124,7 @@ export const Head = ({ setEstadoMenu, numArticulos, numGustos, elemntsGustos, De
                                                     <p className="text-secondary OpcionesFont" >Tenis Puma Junior Unisex St Activate Zapato Deportivo Comodo </p>
                                                     <div className="d-flex justify-content-end">
                                                         <div className="d-flex justify-content-around" style={{ "width": "20%" }}>
-                                                            <button className="btn btn-danger" style={{ "float": "right", "borderRadius": "40px" }}><i class="bi bi-heart-fill"></i></button>
+                                                            <button className="btn btn-danger" style={{ "float": "right", "borderRadius": "40px" }}><i className="bi bi-heart-fill"></i></button>
                                                         </div>
 
                                                     </div>

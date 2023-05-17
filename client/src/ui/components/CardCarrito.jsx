@@ -30,7 +30,7 @@ export const CardCarrito = ({ id, img, empresa, descripcion, estrellas, monto, D
                             <h5 className="TitulosMenu">Precio C/U:</h5>
                             <h5 className="fw-bold text-success TitulosMenu">${monto} </h5>
                             {
-                                Oferta == 1 ? <h5> OFERTA: <b className="text-success">${montoOferta} </b></h5> : <></>
+                                Oferta == 1 ? <h6> OFERTA: <b className="text-success">${montoOferta} </b></h6> : <></>
                             }
                         </div>
                         <div className="col-sm w100 divEstrellas">

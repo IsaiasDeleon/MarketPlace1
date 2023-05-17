@@ -4,7 +4,9 @@ import { CardCarrito } from '../components/CardCarrito';
 import { Noti } from '../components/Notificaciones';
 import { AuthContext } from '../../auth/AuthContext';
 const URLServer = "http://192.168.100.18:3020/"
-
+const HTTP = axios.create({
+    baseURL: "https://badgerautomation.com/MarketPlace/Server/Data.php"
+})
 
 export const Carrito = ({ NumElementsCarrito,setMenu }) => {
     const { user } = useContext(AuthContext);
@@ -18,10 +20,11 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
     //Function para obtener los elementos en el carrito
     function getItemCarrito() {
         if( idU !== undefined ){
-            axios.post(URLServer + "readCarrito",{"idU": idU}).then((response) => {
+            HTTP.post("/readCarrito",{"idU": idU}).then((response) => {
+                console.log(response.data)
                 //Si la respuesta es correacta modificaremos el array con los objetos que obtenga desde la busqueda
                 setElementsCarrito(response.data)
-            });
+            })
         }
     }
 
@@ -36,7 +39,8 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
     //Funcion para eliminar elemento del carrito enviamos el id del elemento clickeado
     function DeletItem(id) {
         if( idU !== undefined ){
-            axios.post(URLServer + "deleteItem", {"idU":idU, "id": id }).then((response) => {
+            HTTP.post("/deleteItem", {"idU":idU, "id": id }).then((response) => {
+                console.log(response.data)
                 //Si la operacion se hizo correctamente nos regresara Eliminado
                 if (response.data == "Eliminado") {
                     //Mandamos a llamar a la funcion de getItemCarrito para obtener la actualizacion de los elementos 
@@ -52,13 +56,13 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
                     //Llamamos a la funcion de totales para actualizar la cantida de productos y el total del precio
                     Totales()
                 }
-            });
+            })
+            
         }
     }
     function Totales() {
         if(idU !== undefined){
-            //Hacemos la peticion de los datos al modelo  el cual obtendra los elementos y su precio 
-            axios.post(URLServer + "readCarrito",{"idU":idU}).then((response) => {
+            HTTP.post("/readCarrito",{"idU":idU}).then((response) => {
                 let num = 0;
                 let total = 0;
                 //recorremos los datos que nos arrojo para poder hacer una sumatoria del precio y los elementos ya que el usuario tendra la opcion de elegir la cantidad de stock que necesite
@@ -91,8 +95,9 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
                 })
                 setNumArticulos(num)
                 setTotalPrecio(total)
-
             })
+            //Hacemos la peticion de los datos al modelo  el cual obtendra los elementos y su precio 
+           
         }
        
     }
@@ -105,23 +110,7 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
             cantidadByProducto.push(elements);
         });
         if(idU !== undefined){
-            axios.post(URLServer+"GeneratePDFArticulos",{"idProduct":ids, "cantidades": cantidadByProducto, "idUser": idU}).then((response) => {
-                axios.post(URLServer+'CotizacionUnitaria',{
-                    pdf:response.data
-                }, {
-                    responseType: 'blob'
-                }).then(response => {
-                  const url = window.URL.createObjectURL(new Blob([response.data]));
-            
-                  const link = document.createElement('a');
-                  link.href = url;
-                  link.setAttribute('download', 'Cotizacion.pdf');
-                    
-                  document.body.appendChild(link);
-                    
-                  link.click();
-                });
-            })
+            window.open(`https://badgerautomation.com/MarketPlace/Server/PDF2.php?IP=${ids}&IU=${idU}&cantidades=${cantidadByProducto}`, '_blank');
         }
         
     }

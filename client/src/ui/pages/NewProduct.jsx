@@ -5,6 +5,9 @@ import { AuthContext } from "../../auth/AuthContext";
 import axios from "axios";
 import { Noti } from "../components/Notificaciones";
 const URLServer = "http://192.168.100.18:3020/"
+const HTTP = axios.create({
+    baseURL: "https://badgerautomation.com/MarketPlace/Server/Data.php"
+})
 export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
     let id = "New";
     let estrellas = 5;
@@ -83,79 +86,79 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
             if (formData !== 0) {
                 const response = await axios.post(URLServer + 'Images', formData);
                 nombre.push(response.data.filePath);
-                if (nombre.length === imagesArray.length) {
-                    let pdf = document.getElementById(`file${id}`);
-                    let file2 = pdf.files[0];
-                    let formData2;
-                    if (file2 === undefined) {
-                        formData2 = 0;
-                    } else {
-                        formData2 = new FormData();
-                        formData2.set('file', file2);
-                    }
-                    if (formData2 !== 0) {
-                        const response2 = await axios.post(URLServer + 'updatePro', formData2);
-                        let AllData = {
-                            Categoria: categoriaIN,
-                            Estado: estadoIN,
-                            Estatus: "1",
-                            Oferta: check,
-                            Stock: stokIN,
-                            descripcion: descripcionIN,
-                            empresa: idU,
-                            estrellas: estrellas,
-                            img: nombre,
-                            monto: precioIN,
-                            montoOferta: precioOfertaIN,
-                            nombre: nombreIN,
-                            marca: marcaIN,
-                            codigo: CodigoProveedorIN,
-                            peso: PesoIN,
-                            TiempoEn: TempodeEntregaIN,
-                            TiempoEnAg: TempoDdeEntregaAgotadoIN,
-                            PDF: response2?.data?.filePath
-                        }
-                        axios.post(URLServer + "InsertarProducto", AllData).then((response) => {
-                            if (response.data === "Insertado") {
-                                // setNotiCarrito("ArticuloInsertado");
-                                // setActiveNoti(true)
-                                // setTimeout(() => {
-                                //     setActiveNoti(false)
-                                // }, 5000);
-                            }
-                        })
-                    } else {
-                        let AllData = {
-                            Categoria: categoriaIN,
-                            Estado: estadoIN,
-                            Estatus: "1",
-                            Oferta: check,
-                            Stock: stokIN,
-                            descripcion: descripcionIN,
-                            empresa: idU,
-                            estrellas: estrellas,
-                            img: nombre,
-                            monto: precioIN,
-                            montoOferta: precioOfertaIN,
-                            nombre: nombreIN,
-                            marca: marcaIN,
-                            codigo: CodigoProveedorIN,
-                            peso: PesoIN,
-                            TiempoEn: TempodeEntregaIN,
-                            TiempoEnAg: TempoDdeEntregaAgotadoIN,
-                            PDF: "N/A"
-                        }
-                        axios.post(URLServer + "InsertarProducto", AllData).then((response) => {
-                            if (response.data === "Insertado") {
-                                // setNotiCarrito("ArticuloInsertado");
-                                // setActiveNoti(true)
-                                // setTimeout(() => {
-                                //     setActiveNoti(false)
-                                // }, 5000);
-                            }
-                        })
-                    }
-                }
+                // if (nombre.length === imagesArray.length) {
+                //     let pdf = document.getElementById(`file${id}`);
+                //     let file2 = pdf.files[0];
+                //     let formData2;
+                //     if (file2 === undefined) {
+                //         formData2 = 0;
+                //     } else {
+                //         formData2 = new FormData();
+                //         formData2.set('file', file2);
+                //     }
+                //     if (formData2 !== 0) {
+                //         const response2 = await axios.post(URLServer + 'updatePro', formData2);
+                //         let AllData = {
+                //             Categoria: categoriaIN,
+                //             Estado: estadoIN,
+                //             Estatus: "1",
+                //             Oferta: check,
+                //             Stock: stokIN,
+                //             descripcion: descripcionIN,
+                //             empresa: idU,
+                //             estrellas: estrellas,
+                //             img: nombre,
+                //             monto: precioIN,
+                //             montoOferta: precioOfertaIN,
+                //             nombre: nombreIN,
+                //             marca: marcaIN,
+                //             codigo: CodigoProveedorIN,
+                //             peso: PesoIN,
+                //             TiempoEn: TempodeEntregaIN,
+                //             TiempoEnAg: TempoDdeEntregaAgotadoIN,
+                //             PDF: response2?.data?.filePath
+                //         }
+                //         axios.post(URLServer + "InsertarProducto", AllData).then((response) => {
+                //             if (response.data === "Insertado") {
+                //                 // setNotiCarrito("ArticuloInsertado");
+                //                 // setActiveNoti(true)
+                //                 // setTimeout(() => {
+                //                 //     setActiveNoti(false)
+                //                 // }, 5000);
+                //             }
+                //         })
+                //     } else {
+                //         let AllData = {
+                //             Categoria: categoriaIN,
+                //             Estado: estadoIN,
+                //             Estatus: "1",
+                //             Oferta: check,
+                //             Stock: stokIN,
+                //             descripcion: descripcionIN,
+                //             empresa: idU,
+                //             estrellas: estrellas,
+                //             img: nombre,
+                //             monto: precioIN,
+                //             montoOferta: precioOfertaIN,
+                //             nombre: nombreIN,
+                //             marca: marcaIN,
+                //             codigo: CodigoProveedorIN,
+                //             peso: PesoIN,
+                //             TiempoEn: TempodeEntregaIN,
+                //             TiempoEnAg: TempoDdeEntregaAgotadoIN,
+                //             PDF: "N/A"
+                //         }
+                //         axios.post(URLServer + "InsertarProducto", AllData).then((response) => {
+                //             if (response.data === "Insertado") {
+                //                 // setNotiCarrito("ArticuloInsertado");
+                //                 // setActiveNoti(true)
+                //                 // setTimeout(() => {
+                //                 //     setActiveNoti(false)
+                //                 // }, 5000);
+                //             }
+                //         })
+                //     }
+                // }
             } else {
                 //TIEne que inculir al menos una foto
             }

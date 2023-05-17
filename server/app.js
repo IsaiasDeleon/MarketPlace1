@@ -260,7 +260,7 @@ app.post('/download', function (req, res) {
 
 //DESCARGAR PDF COTIZACION
 app.post('/CotizacionUnitaria', function (req, res) {
-    let enlace = req.body?.pdf;
+    let enlace = req.body.pdf;
     console.log(enlace)
     if (enlace !== undefined) {
         const filePath = `./CotizacionesUnitarias/${enlace}`;

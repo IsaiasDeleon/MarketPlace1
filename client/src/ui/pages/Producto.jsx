@@ -4,6 +4,9 @@ import { useEffect } from "react";
 import axios from "axios";
 import { Noti } from "../components/Notificaciones";
 const URLServer = "http://192.168.100.18:3020/"
+const HTTP = axios.create({
+    baseURL: "https://badgerautomation.com/MarketPlace/Server/Data.php"
+})
 export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClickProducto}) => {
 
     const [imagenes, setImagenes] = useState(`${clickProducto}`);
@@ -26,9 +29,9 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
     },[])
     useEffect(() => {
         if(clickProducto !== undefined){
-            axios.post(URLServer + "GetProducto", {"idProduct":clickProducto}).then((response) => {
-                setDatosProducto(response.data)
+            HTTP.post("/GetProducto", {"idProduct":clickProducto}).then((response) => {
                 console.log(response.data)
+                setDatosProducto(response.data)
                 let images = response.data[0]?.img?.split(',');
                 setImagenes(images[0]);
                 setOnClickImagen(images[0]);
@@ -62,27 +65,10 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
     }
        
     function CreatePDF(){
-        axios.post(URLServer+"GeneratePDF",{"idProduct":clickProducto, "idUser":idU}).then((response) => {
-            console.log(response.data);
-           
-            axios.post(URLServer+'CotizacionUnitaria',{
-                pdf:response.data
-            }, {
-                responseType: 'blob'
-            }).then(response => {
-              const url = window.URL.createObjectURL(new Blob([response.data]));
-        
-              const link = document.createElement('a');
-              link.href = url;
-              link.setAttribute('download', 'Cotizacion.pdf');
-                
-              document.body.appendChild(link);
-                
-              link.click();
-            });
-            
-           
-        })
+        window.open(`https://badgerautomation.com/MarketPlace/Server/PDF.php?IP=${clickProducto}&IU=${idU}`, '_blank');
+        // HTTP.post("/GeneratePDF",{"idProduct":clickProducto, "idUser":idU}).then((response) => {
+        //     console.log(response.data);
+        // })
     }
     
     const handleDownload = () => {
@@ -102,7 +88,7 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
           link.click();
         });
       }
-    return (
+      return (
         <>
          <div className="divProducto">
            <div className="divGrid">
@@ -137,18 +123,21 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
                     <hr/>
                     <div className="contenedorBotones">
                         <div>
-                            <h6>Precio:</h6>
-                            <h4 className="fw-bold">${datosProducto?.[0]?.monto} MXN</h4>
-                            {
+                        <h4> Precio: <b className="text-success">${datosProducto?.[0]?.monto} MXN</b></h4>
+                            {/* {
                                 datosProducto?.[0]?.Oferta == 1 ? <h4 className="fw-bold"> OFERTA: <b className="text-success">${datosProducto?.[0]?.montoOferta} </b></h4> : <></>
-                            }
+                            } */}
                         </div>
                         <div className="text-end">
-                            <button className="btn btn-success m-1">¡Cómpralo ahora!</button>
-                            <button className="btn btn-primary m-1"  data-bs-toggle="modal" data-bs-target="#exampleModal">Hacer oferta</button>
+                            {/* <button className="btn btn-success m-1">¡Cómpralo ahora!</button> */}
+                            {/* <button className="btn btn-primary m-1"  data-bs-toggle="modal" data-bs-target="#exampleModal">Hacer oferta</button> */}
                             <button className="btn btn-dark m-1" onClick={(e) => {setIdCard2(clickProducto)}}>Agregar al carrito de compras</button>
                             <button className="btn btn-secondary m-1" onClick={(e) => { setIdCard(clickProducto)}}>Agregar a lista de favoritos</button>
-                            <button className="btn btn-secondary m-1" onClick={() => CreatePDF()}>Cotizar</button>
+                            {
+                                idU && (
+                                    <button className="btn btn-success m-1" onClick={() => CreatePDF()}>Cotizar</button>
+                                )
+                            } 
                         </div>
                         
                     </div>
@@ -182,7 +171,6 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
                 </div>
             </div>
             </div>
-           {/* <a href={`https://isc.isaiasdeleon.robo-tics-slp.net/resources/Cotizacion.pdf`} download={"file.pdf"}>Descargar</a> */}
          </div>
          <Noti notiCarrito={notiCarrito} activeNoti={activeNoti} />
         </>

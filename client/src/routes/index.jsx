@@ -14,7 +14,9 @@ import { Login } from "../ui/pages/Login";
 import { MyProducts } from "../ui/pages/myProducts";
 import { NewProduct } from "../ui/pages/NewProduct";
 const URLServer = "http://192.168.100.18:3020/"
-
+const HTTP = axios.create({
+    baseURL: "https://badgerautomation.com/MarketPlace/Server/Data.php"
+})
 export const AppRoute = () => { 
             //Obtenemos el id logueado
             const { user } = useContext( AuthContext );
@@ -66,9 +68,9 @@ export const AppRoute = () => {
                 Estado: 3
             });
             function busquedas(){
-                axios.post(URLServer + "PruebasBusqueda", filtros).then((response) => {
+                HTTP.post("/PruebasBusqueda",filtros).then((response) => {
                     setDataFiltrado(response.data)
-                });
+                })
             }
             useEffect(() => {
                 busquedas()
@@ -78,7 +80,7 @@ export const AppRoute = () => {
             function NumElementsGustos(){
                 setNumGustos(0)
                 if(idU !== undefined){
-                    axios.post(URLServer + "GetNumGustos",{"id":idU}).then((response) => {
+                    HTTP.post("/GetNumGustos",{"id":idU}).then((response) => {
                         setNumGustos(response.data)
                     })
                 }
@@ -88,15 +90,15 @@ export const AppRoute = () => {
                 setNumArticulos(0)
                 if(idU !== undefined){
                     //Peticion para obtener el numero de productosque tiene en el carrito
-                    axios.post(URLServer + "GetNumCarrito",{"id":idU}).then((response) => {
+                    HTTP.post("/GetNumCarrito",{"id":idU}).then((response) => {
                         setNumArticulos(response.data)
-                    })
+                    })   
                 } 
             }
             function ElementsGustos(){
                 setElementsGustos([])
                 if(idU !== undefined){
-                    axios.post(URLServer + "GetElementsGustos", {"id":idU}).then((response) => {
+                    HTTP.post("/GetElementsGustos", {"id":idU}).then((response) => {
                         setElementsGustos(response.data);
                     })
                 }
