@@ -110,7 +110,34 @@ export const Noti = ({ notiCarrito, activeNoti }) => {
         color="warning"
     }else if(notiCarrito == "TiempoEN"){
         message ="El campo Tiempo de entrega es un campo obligatorio.";
-        color="warning"
+        color="warning";
+    }else if(notiCarrito == "IncluirFoto"){
+        message = "Debes incluir almenos una foto del producto";
+        color="warning";
+    }else if(notiCarrito == "MarcaEN"){
+        message = "El campo Marca es un campo obligatorio";
+        color="warning";
+    }else if(notiCarrito == "CodigoProveedor"){
+        message = "El campo Código es un campo obligatorio";
+        color="warning";
+    }else if(notiCarrito == "PesoIN"){
+        message = "El campo Peso es un campo obligatorio";
+        color="warning";
+    }else if(notiCarrito == "TempoDdeEntregaAgotadoIN"){
+        message = "El campo Tiempo de entrega en caso de agotarse es un campo obligatorio.";
+        color="warning";
+    }else if(notiCarrito == "identificadorAIN"){
+        message = "El campo Identificador almacen es un campo obligatorio";
+        color="warning";
+    }else if(notiCarrito == "numParteIN"){
+        message = "El campo Número de parte es un campo obligatorio";
+        color="warning";
+    }else if(notiCarrito == "ArticuloInsertado"){
+        message = "Muy bien, el producto fue regitsrado";
+        color="success";
+    }else if(notiCarrito === "Imagenactualizadas"){
+        message = "Imagenes actualizadas";
+        color="success";
     }
     
     

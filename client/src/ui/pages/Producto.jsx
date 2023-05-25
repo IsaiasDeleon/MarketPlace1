@@ -33,7 +33,14 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
                 console.log(response.data)
                 setDatosProducto(response.data)
                 let images = response.data[0]?.img?.split(',');
-                setImagenes(images[0]);
+                let valueImagen = "";
+                if(images?.[0] == undefined){
+                    valueImagen = "Box.jpg"
+                }else{
+                    valueImagen = images[0]
+                }
+                
+                setImagenes(valueImagen);
                 setOnClickImagen(images[0]);
                 setArregloImages(images)
                 if(response.data[0]?.Oferta == 1){
@@ -66,9 +73,6 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
        
     function CreatePDF(){
         window.open(`https://badgerautomation.com/MarketPlace/Server/PDF.php?IP=${clickProducto}&IU=${idU}`, '_blank');
-        // HTTP.post("/GeneratePDF",{"idProduct":clickProducto, "idUser":idU}).then((response) => {
-        //     console.log(response.data);
-        // })
     }
     
     const handleDownload = () => {
@@ -96,11 +100,11 @@ export const Producto = ({setIdCard, setIdCard2, clickProducto, setMenu, setClic
                     <div  style={{"display": "flex","flexDirection": "column", "position":"absolute", "zIndex":"1"}}>
                     {
                         arregloImages.map((data) => (
-                            <img src={`./assets/${data}`} onClick={(e) => {setImagenes(`${data}`); setOnClickImagen(`${data}`)}} alt="IMGCompra" className={`m-1 imagenesProductos ${`${onClickImagen}` === `${data}` ? "BorderImagenSelect":"" }`}  />
+                            <img src={`https://badgerautomation.com/MarketPlace/Server/Images/${data}`} onClick={(e) => {setImagenes(`${data}`); setOnClickImagen(`${data}`)}} alt="IMGCompra" className={`m-1 imagenesProductos ${`${onClickImagen}` === `${data}` ? "BorderImagenSelect":"" }`}  />
                         ))
                     }
                     </div>
-                    <img src={`./assets/${imagenes}`} alt="IMGCompra" className="ProductoImg" />
+                    <img src={`https://badgerautomation.com/MarketPlace/Server/Images/${imagenes}`} alt="IMGCompra" className="ProductoImg" />
                 </div>
                 <div className="mt-2">
                     <h4>{datosProducto?.[0]?.descripcion}</h4>

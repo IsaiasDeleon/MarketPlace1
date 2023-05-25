@@ -6,6 +6,12 @@ export const CardHorizontal = ({ id, img, empresa, descripcion, estrellas, monto
         setIdCard(id);
     }
     let images = img?.split(','); 
+    let imagenes = "";
+    if(images?.[0] === undefined){
+       imagenes = "Box.jpg"
+    }else{
+        imagenes = images?.[0]
+    }
     function ProductoShow(id) {
         setClickProducto(id)
         navigate('/Producto', {
@@ -18,7 +24,7 @@ export const CardHorizontal = ({ id, img, empresa, descripcion, estrellas, monto
             <div className="contenedorC">
             <h5 style={{"float":"left"}} className={`fw-bold ${Estado == "1" ? "text-success" :"text-primary"} `}>{Estado == "1" ? "Nuevo" : "Semi-Nuevo"}</h5>
             <h5 style={{"float":"right"}}className={`fw-bold text-secondary `}>Stock: {Stock}</h5>
-                <img onClick={() => ProductoShow(id)} src={`./assets/${images[0]}`} alt="IMGCompra" className="ImgCard2" />
+                <img onClick={() => ProductoShow(id)} src={`https://badgerautomation.com/MarketPlace/Server/Images/${imagenes}`} alt="IMGCompra" className="ImgCard2" />
             </div>
             <div className=" ms-3" style={{ "width": "100%" }}>
                 <div className="d-flex justify-content-between" style={{ "width": "100%" }}>

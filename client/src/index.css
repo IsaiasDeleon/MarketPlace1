@@ -169,17 +169,7 @@ code {
   margin-top: -40px;
   height: 150px;
 }
-.DescripcionCard{
-  line-height: 1.2em;
-  height: 3.8em;
-  overflow: hidden;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
 
-}
 .ImgCard {
   max-width: 50%;
   max-height: 180px;
@@ -365,6 +355,11 @@ code {
   max-height: 220px;
   filter: drop-shadow(2px 5px 2px rgba(68, 68, 68, .8))
 }
+.ImgMisProductos {
+  max-width: 100%;
+  max-height: 100px;
+  filter: drop-shadow(2px 5px 2px rgba(68, 68, 68, .8))
+}
 .GustosIMG {
   max-width: 100px;
   max-height: 100px;
@@ -412,7 +407,17 @@ code {
 .ulcarrito{
   width: 500px;
 }
+.Pruebaas{
+  line-height: 1.2em;
+  height: 3.8em;
+  overflow: hidden;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 
+}
 /* Track */
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
@@ -644,9 +649,9 @@ code {
 }
 /* DIEÑOS PRODUCTO nuevo */
 .divNewProducto{
-  top: 60px;
+  margin-top: 60px;
   height:auto;
-  position:absolute;
+  /* position:absolute; */
   padding:50px;
  }
 .newProducto-gridEstrellas{
@@ -660,7 +665,7 @@ code {
 }
 .nuevoProductoGridBTN{
   display: grid;
-  grid-template-columns:70% 15% 15%;
+  grid-template-columns:50% 25% 25%;
 }
 .imagenesNewProduct{
   width: 33%;
@@ -681,7 +686,18 @@ code {
   background-color: white;
   position: relative;
 }
-
+.input-div2{
+  width: 100%;
+  height: 100px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border: 2px dotted black;
+  background-color: white;
+  position: relative;
+}
 .file {
   width: 100%;
   height: 100%;

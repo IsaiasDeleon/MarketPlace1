@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react"
-import { useForm } from "../../hooks/useForm"
+import axios from "axios";
 
+import { useForm } from "../../hooks/useForm"
+import { Noti } from "./Notificaciones";
+
+const HTTP = axios.create({
+    baseURL: "https://badgerautomation.com/MarketPlace/Server/Data.php"
+})
 export const CardMisProductos = ({ id, img, descripcion, estrellas, monto, montoOferta, Stock, Estado, Estatus, nombre = "", Categoria, Oferta, saveOne, Fecha, empresa, Marca, CodigoProveedor, Peso, TempodeEntrega, TempoDdeEntregaAgotado, PDF }) => {
     const { onInputChange, nombreIN, descripcionIN, precioIN, precioOfertaIN, stokIN, estadoIN, categoriaIN, marcaIN, CodigoProveedorIN, PesoIN, TempodeEntregaIN, TempoDdeEntregaAgotadoIN } = useForm({
         nombreIN: nombre,
@@ -19,6 +25,9 @@ export const CardMisProductos = ({ id, img, descripcion, estrellas, monto, monto
     const [check, setCheck] = useState(Oferta)
     const [file, setFile] = useState(null);
 
+    const [notiCarrito, setNotiCarrito] = useState();
+    const [activeNoti, setActiveNoti] = useState();
+
     const handleChange = (event) => {
         setFile(event.target.files[0]);
     }
@@ -28,6 +37,7 @@ export const CardMisProductos = ({ id, img, descripcion, estrellas, monto, monto
     function save(id) {
         let pdf = document.getElementById(`file${id}`);
         let file = pdf.files[0];
+        
         let formData;
         if (file === undefined) {
             formData = 0;
@@ -47,7 +57,7 @@ export const CardMisProductos = ({ id, img, descripcion, estrellas, monto, monto
             empresa,
             estrellas: estrellas,
             id,
-            img,
+           
             monto: precioIN,
             montoOferta: precioOfertaIN,
             nombre: nombreIN,
@@ -61,11 +71,91 @@ export const CardMisProductos = ({ id, img, descripcion, estrellas, monto, monto
         )
 
     }
-    let images = img?.split(','); 
+    let images = img?.split(',');
+    let imagenes = img?.split(',');
+
+    
+    function deleteImage(e,image,id) {
+        HTTP.post("/deleteImagen",{"img":image, "id":id}).then((response) => {
+            console.log(response.data)
+            let element = e.target;
+            let elementPadre = element.parentNode;
+            elementPadre.remove();
+        })
+    }
+    function inputDivChange(e,id) {
+        const files = e.dataTransfer.files
+        for (let i = 0; i < files.length; i++) {
+            let file = files[i];
+            let formData;
+            if (file === undefined) {
+                formData = 0;
+            } else {
+                formData = new FormData();
+                formData.set('file', file);
+            }
+            if (formData !== 0) {
+                HTTP.post("/Images",formData).then((response) => {
+                    HTTP.post("/UpdateImagesA",{"NameImg":response.data,"idA":id}).then((response) => {
+                        setNotiCarrito(response.data);
+                        setActiveNoti(true)
+                        setTimeout(() => {
+                            setActiveNoti(false)
+                        }, 5000);
+                    })
+                })
+            }
+        }
+    }
+    function inputChange(id){
+        let Images = document.getElementById(`Images${id}`);
+        const files = Images?.files;
+        for (let i = 0; i < files.length; i++) {
+            let file = files[i];
+            let formData;
+            if (file === undefined) {
+                formData = 0;
+            } else {
+                formData = new FormData();
+                formData.set('file', file);
+            }
+            if (formData !== 0) {
+                HTTP.post("/Images",formData).then((response) => {
+                    HTTP.post("/UpdateImagesA",{"NameImg":response.data,"idA":id}).then((response) => {
+                        setNotiCarrito(response.data);
+                        setActiveNoti(true)
+                        setTimeout(() => {
+                            setActiveNoti(false)
+                        }, 5000);
+                    })
+                })
+            }
+        }
+    }
     return (
-        <div className="d-flex align-items-center DiseñoMisProductos " >
-            <div >
-                <img src={`./assets/${images[0]}`} alt="IMGCompra" className="ImgCard2" />
+        <> 
+            <div className="d-flex align-items-center DiseñoMisProductos " >
+            <div style={{"maxWidth":"20%", "width":"30%"}}>
+                    <div class="input-div2" onDrop={(e) => inputDivChange(e,id)} >
+                        <p>Arrastra y suelta tus fotos aquí o <button style={{ "padding": "5px", "background": "#000", "color": "#fff", "borderRadius": "5px" }}>selecciona el archivo</button></p>
+                        <input onChange={() => inputChange(id)} id={`Images${id}`} type="file" class="file Images" multiple="multiple" accept="image/jpeg, image/png, image/jpg" />
+                    </div>
+                    <br />
+                {
+                    
+                    imagenes?.map((image, index) => (
+                        image != "" ?(
+                            <div style={{"width":"47%","display":"inline-block","border":"2px dashed #D7DBDD","margin":"3px"}} className="image" key={index}>
+                            <img src={`./assets/${image}`} alt="IMGCompra"  className="ImgMisProductos" />
+                            <i style={{"float":"right","margin":"0"}} onClick={(e) => deleteImage(e, image, id)} className="bi bi-trash-fill h4"></i>
+                        </div>
+                        ):(
+                            <></>
+                        )
+                       
+                    ))
+                }
+                
             </div>
             <div className=" ms-3" style={{ "width": "100%" }}>
                 <div className="m-2 InputsPrimeroGrid">
@@ -165,7 +255,7 @@ export const CardMisProductos = ({ id, img, descripcion, estrellas, monto, monto
                             <label className='fw-bold'>Tiempo de entrega en caso de agotarse:</label>
                         </div>
                     </div>
-                   
+                
                 </div>
                 <div className="m-2" style={{ "width": "100%" }}>
                     <div className="stockDIV">
@@ -190,6 +280,9 @@ export const CardMisProductos = ({ id, img, descripcion, estrellas, monto, monto
                 </div>
             </div>
 
-        </div>
+            </div>
+            <Noti notiCarrito={notiCarrito} activeNoti={activeNoti} />
+        </>
+       
     )
 }

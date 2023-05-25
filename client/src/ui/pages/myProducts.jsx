@@ -6,6 +6,9 @@ import { BtnProducto } from "../components/buttonProducto";
 import { BtnSaveAll } from "../components/btnSaveAllProducts";
 import { Noti } from "../components/Notificaciones";
 const URLServer = "http://192.168.100.18:3020/"
+const HTTP = axios.create({
+    baseURL: "https://badgerautomation.com/MarketPlace/Server/Data.php"
+})
 export const MyProducts = ({ setMenu }) => {
     const { user } = useContext(AuthContext);
     let idU = user?.id;
@@ -18,11 +21,12 @@ export const MyProducts = ({ setMenu }) => {
 
 
     function getMyProducts() {
-        axios.post(URLServer + "getMyProducts", { "idU": idU }).then((response) => {
+        HTTP.post("/getMyProducts",{"idU": idU }).then((response) => {
             //Si la respuesta es correacta modificaremos el array con los objetos que obtenga desde la busqueda
             setProductos(response.data)
             console.log(response.data)
-        });
+        })
+        
     }
     useEffect(() => {
         setMenu(2);
@@ -34,9 +38,11 @@ export const MyProducts = ({ setMenu }) => {
     async function saveOne(data, datos) {
         if (data !== 0) {
             try {
-                const response = await axios.post(URLServer + 'updatePro', data);
-                let Alldata = { ...datos, PDF: response.data.filePath }
-                axios.post(URLServer + "updateProducto", Alldata).then((response) => {
+                const response = await HTTP.post("/updatePro",data);
+                //const response = await axios.post(URLServer + 'updatePro', data);
+                let Alldata = { ...datos, PDF: response.data }
+                console.log(Alldata)
+                HTTP.post("/updateProducto",Alldata).then((response) => {
                     if (response.data === "Actualizado") {
                         setNotiCarrito("ArticuloUpdate");
                         setActiveNoti(true)
@@ -49,7 +55,8 @@ export const MyProducts = ({ setMenu }) => {
                 console.error(error);
             }
         } else {
-            axios.post(URLServer + "updateProducto", datos).then((response) => {
+            console.log(datos);
+            HTTP.post("/updateProducto",datos).then((response) => {
                 if (response.data === "Actualizado") {
                     setNotiCarrito("ArticuloUpdate");
                     setActiveNoti(true)
@@ -82,13 +89,15 @@ export const MyProducts = ({ setMenu }) => {
             let TempoDdeEntregaAgotado = document.getElementById(`TempoDdeEntregaAgotadoIN${id}`).value;
             let pdf = document.getElementById(`file${id}`);
             let file = pdf.files[0];
+            console.log(file + "-" + id)
             let arr;
             if (file !== undefined) {
                 try {
                     let formData = new FormData();
                     formData.set('file', file);
-                    const response = await axios.post(URLServer + 'updatePro', formData);
-                    arr = { Nombre, Categoria, Estado, Oferta, Descripcion, Precio, PrecioOferta, Stock, id, Marca, CodigoProveedor, Peso, TempodeEntrega, TempoDdeEntregaAgotado, PDF: response.data.filePath };
+                    const response = await HTTP.post("/updatePro",formData);
+                    //const response = await axios.post(URLServer + 'updatePro', formData);
+                    arr = { Nombre, Categoria, Estado, Oferta, Descripcion, Precio, PrecioOferta, Stock, id, Marca, CodigoProveedor, Peso, TempodeEntrega, TempoDdeEntregaAgotado, PDF: response.data };
                     datos.push(arr)
                 } catch (error) {
                     console.error(error);
@@ -99,14 +108,15 @@ export const MyProducts = ({ setMenu }) => {
             }
         
             if(datos.length === productos.length){
-                axios.post(URLServer + "updateProductos", datos).then((response) => {
+                console.log(datos)
+                HTTP.post("/updateProductos", datos).then((response) => {
                     if(response.data === "ElementosActualizados")
                         setNotiCarrito("ElementosActualizados");
                         setActiveNoti(true)
                         setTimeout(() => {
                             setActiveNoti(false)
                         }, 5000);
-                }) 
+                })
             }
         });
         

@@ -75,7 +75,7 @@ export const Head = ({ setEstadoMenu, numArticulos, numGustos, elemntsGustos, De
                                     </div>
                                     <ul style={{"maxHeight":"375px", "overflowY":"auto" }} className="dropdown-menu ulcarrito" aria-labelledby="dropdownMenuButton1">
                                        {
-                                        elemntsGustos.map((data) => (
+                                        elemntsGustos?.map((data) => (
                                             <CardGustos key={data.id} {...data} DeleteItemGustos={DeleteItemGustos} setClickProducto={setClickProducto} />
                                         ))
                                        }

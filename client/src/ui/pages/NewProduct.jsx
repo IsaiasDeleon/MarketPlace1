@@ -1,4 +1,6 @@
 import { useContext, useEffect, useState } from "react";
+import * as XLSX from 'xlsx';
+
 import { useForm } from "../../hooks/useForm"
 import { Fotos } from "../components/fotos";
 import { AuthContext } from "../../auth/AuthContext";
@@ -13,7 +15,7 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
     let estrellas = 5;
     const { user } = useContext(AuthContext);
     let idU = user?.id;
-    const { onInputChange, nombreIN, descripcionIN, precioIN, precioOfertaIN, stokIN, estadoIN, categoriaIN, marcaIN, CodigoProveedorIN, PesoIN, TempodeEntregaIN, TempoDdeEntregaAgotadoIN } = useForm({
+    const { onInputChange, nombreIN, descripcionIN, precioIN, precioOfertaIN, stokIN, estadoIN, categoriaIN, marcaIN, CodigoProveedorIN, PesoIN, TempodeEntregaIN, TempoDdeEntregaAgotadoIN, identificadorAIN, numParteIN } = useForm({
         nombreIN: "",
         descripcionIN: "",
         precioIN: 0,
@@ -25,7 +27,9 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
         CodigoProveedorIN: "",
         PesoIN: "0 KG",
         TempodeEntregaIN: "1",
-        TempoDdeEntregaAgotadoIN: "1"
+        TempoDdeEntregaAgotadoIN: "1",
+        identificadorAIN:"",
+        numParteIN:""
     })
     const [check, setCheck] = useState(false)
     const [file, setFile] = useState(null);
@@ -71,6 +75,30 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
             message("TiempoEN")
             return;
         }
+        if(marcaIN === ""){
+            message("MarcaEN");
+            return;
+        }
+        if(CodigoProveedorIN === ""){
+            message("CodigoProveedor");
+            return;
+        }
+        if(PesoIN === ""){
+            message("PesoIN");
+            return;
+        }
+        if(TempoDdeEntregaAgotadoIN === ""){
+            message("TempoDdeEntregaAgotadoIN");
+            return;
+        }
+        if(identificadorAIN === ""){
+            message("identificadorAIN");
+            return;
+        }
+        if(numParteIN === ""){
+            message("numParteIN");
+            return;
+        }
 
         let Images = document.getElementById(`Images`);
         let nombre = [];
@@ -84,92 +112,108 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
                 formData.set('file', file);
             }
             if (formData !== 0) {
-                const response = await axios.post(URLServer + 'Images', formData);
-                nombre.push(response.data.filePath);
-                // if (nombre.length === imagesArray.length) {
-                //     let pdf = document.getElementById(`file${id}`);
-                //     let file2 = pdf.files[0];
-                //     let formData2;
-                //     if (file2 === undefined) {
-                //         formData2 = 0;
-                //     } else {
-                //         formData2 = new FormData();
-                //         formData2.set('file', file2);
-                //     }
-                //     if (formData2 !== 0) {
-                //         const response2 = await axios.post(URLServer + 'updatePro', formData2);
-                //         let AllData = {
-                //             Categoria: categoriaIN,
-                //             Estado: estadoIN,
-                //             Estatus: "1",
-                //             Oferta: check,
-                //             Stock: stokIN,
-                //             descripcion: descripcionIN,
-                //             empresa: idU,
-                //             estrellas: estrellas,
-                //             img: nombre,
-                //             monto: precioIN,
-                //             montoOferta: precioOfertaIN,
-                //             nombre: nombreIN,
-                //             marca: marcaIN,
-                //             codigo: CodigoProveedorIN,
-                //             peso: PesoIN,
-                //             TiempoEn: TempodeEntregaIN,
-                //             TiempoEnAg: TempoDdeEntregaAgotadoIN,
-                //             PDF: response2?.data?.filePath
-                //         }
-                //         axios.post(URLServer + "InsertarProducto", AllData).then((response) => {
-                //             if (response.data === "Insertado") {
-                //                 // setNotiCarrito("ArticuloInsertado");
-                //                 // setActiveNoti(true)
-                //                 // setTimeout(() => {
-                //                 //     setActiveNoti(false)
-                //                 // }, 5000);
-                //             }
-                //         })
-                //     } else {
-                //         let AllData = {
-                //             Categoria: categoriaIN,
-                //             Estado: estadoIN,
-                //             Estatus: "1",
-                //             Oferta: check,
-                //             Stock: stokIN,
-                //             descripcion: descripcionIN,
-                //             empresa: idU,
-                //             estrellas: estrellas,
-                //             img: nombre,
-                //             monto: precioIN,
-                //             montoOferta: precioOfertaIN,
-                //             nombre: nombreIN,
-                //             marca: marcaIN,
-                //             codigo: CodigoProveedorIN,
-                //             peso: PesoIN,
-                //             TiempoEn: TempodeEntregaIN,
-                //             TiempoEnAg: TempoDdeEntregaAgotadoIN,
-                //             PDF: "N/A"
-                //         }
-                //         axios.post(URLServer + "InsertarProducto", AllData).then((response) => {
-                //             if (response.data === "Insertado") {
-                //                 // setNotiCarrito("ArticuloInsertado");
-                //                 // setActiveNoti(true)
-                //                 // setTimeout(() => {
-                //                 //     setActiveNoti(false)
-                //                 // }, 5000);
-                //             }
-                //         })
-                //     }
-                // }
+                HTTP.post("/Images",formData).then((response) => {
+                    
+                    nombre.push(response.data);
+                    if (nombre.length === imagesArray.length) {
+                        let pdf = document.getElementById(`file${id}`);
+                        let file2 = pdf.files[0];
+                        let formData2;
+                        if (file2 === undefined) {
+                            formData2 = 0;
+                        } else {
+                            formData2 = new FormData();
+                            formData2.set('file', file2);
+                        }
+                        if (formData2 !== 0) {
+
+                            HTTP.post("/updatePro",formData2).then((response2) => {
+                                let AllData = {
+                                Categoria: categoriaIN,
+                                Estado: estadoIN,
+                                Estatus: "1",
+                                Oferta: check ? 1:0,
+                                Stock: stokIN,
+                                descripcion: descripcionIN,
+                                empresa: idU,
+                                estrellas: estrellas,
+                                img: nombre,
+                                monto: precioIN,
+                                montoOferta: precioOfertaIN,
+                                nombre: nombreIN,
+                                marca: marcaIN,
+                                codigo: CodigoProveedorIN,
+                                peso: PesoIN,
+                                TiempoEn: TempodeEntregaIN,
+                                TiempoEnAg: TempoDdeEntregaAgotadoIN,
+                                PDF: response2.data,
+                                identificadorA:identificadorAIN,
+                                numParte:numParteIN
+                            }
+                          
+                            HTTP.post("/InsertarProducto", AllData).then((response3) => {
+                               
+                                if (response3.data === "Insertado") {
+                                    setNotiCarrito("ArticuloInsertado");
+                                    setActiveNoti(true)
+                                    setTimeout(() => {
+                                        setActiveNoti(false)
+                                    }, 5000);
+                                }
+                            })
+                          
+                        })  
+                        } else {
+                            let AllData = {
+                                Categoria: categoriaIN,
+                                Estado: estadoIN,
+                                Estatus: "1",
+                                Oferta: check ? 1:0,
+                                Stock: stokIN,
+                                descripcion: descripcionIN,
+                                empresa: idU,
+                                estrellas: estrellas,
+                                img: nombre,
+                                monto: precioIN,
+                                montoOferta: precioOfertaIN,
+                                nombre: nombreIN,
+                                marca: marcaIN,
+                                codigo: CodigoProveedorIN,
+                                peso: PesoIN,
+                                TiempoEn: TempodeEntregaIN,
+                                TiempoEnAg: TempoDdeEntregaAgotadoIN,
+                                PDF: "N/A",
+                                identificadorA:identificadorAIN,
+                                numParte:numParteIN
+                            }
+                            HTTP.post("/InsertarProducto", AllData).then((response3) => {
+                                if (response3.data === "Insertado") {
+                                    setNotiCarrito("ArticuloInsertado");
+                                    setActiveNoti(true)
+                                    setTimeout(() => {
+                                        setActiveNoti(false)
+                                    }, 5000);
+                                }
+                            })
+                        }
+                    }
+                })
             } else {
-                //TIEne que inculir al menos una foto
+                setNotiCarrito("IncluirFoto");
+                setActiveNoti(true)
+                setTimeout(() => {
+                    setActiveNoti(false)
+                }, 5000);
             }
 
         }
-        //     
-
-        //     saveOne(formData,{
-
-        //     }
-        //    )
+        if(imagesArray.length === 0){
+            setNotiCarrito("IncluirFoto");
+            setActiveNoti(true)
+            setTimeout(() => {
+                setActiveNoti(false)
+            }, 5000);
+        }
     }
 
     //Imagenes
@@ -196,7 +240,6 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
 
     }
     function inputDivChange(e) {
-        console.log("Holaaa")
         e.preventDefault()
         let eF = [];
         const files = e.dataTransfer.files
@@ -214,6 +257,104 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
         }
 
     }
+    function excelLoad(e){
+        const file = e.target.files[0]; // Obtener el archivo Excel desde un input
+        const reader = new FileReader();
+
+        reader.onload = (evt) => {
+        const data = evt.target.result;
+        const workbook = XLSX.read(data, {type: 'binary'});
+        const sheetName = workbook.SheetNames[0]; // Obtener el nombre de la primera hoja del libro
+        const sheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(sheet); // Convertir la hoja a un objeto JSON
+        let dataExcel = [];
+        let InicioCelda = 7;
+        for(let i = 1; i < jsonData.length; i++){
+            if( i >= 2){
+                let D1 = sheet[`A${InicioCelda}`]?.v;
+                let D2 = sheet[`B${InicioCelda}`]?.v;
+                let D3 = sheet[`C${InicioCelda}`]?.v;
+                let D4 = sheet[`D${InicioCelda}`]?.v
+                let D5 = sheet[`E${InicioCelda}`]?.v
+                let D6 = sheet[`F${InicioCelda}`]?.v
+                let D7 = sheet[`G${InicioCelda}`]?.v
+                let D8 = sheet[`H${InicioCelda}`]?.v
+                let D9 = sheet[`I${InicioCelda}`]?.v
+                let D10 = sheet[`J${InicioCelda}`]?.v
+                let D11 = sheet[`K${InicioCelda}`]?.v
+                let D12 = sheet[`L${InicioCelda}`]?.v
+                let D13 = sheet[`M${InicioCelda}`]?.v
+                let D14 = sheet[`N${InicioCelda}`]?.v
+                if(D1 === undefined){
+                    alert(`La celda A${InicioCelda} se encuentra vacia favor de verificar su información`)
+                    return;
+                }
+                if(D2 === undefined){
+                    alert(`La celda B${InicioCelda} se encuentra vacia favor de verificar su información`)
+                    return;
+                }
+                if(D3 === undefined){
+                    alert(`La celda C${InicioCelda} se encuentra vacia favor de verificar su información`)
+                    return;
+                }
+                if(D4 === undefined){
+                    alert(`La celda D${InicioCelda} se encuentra vacia favor de verificar su información`)
+                    return;
+                }
+                if(D5 === undefined){
+                    alert(`La celda E${InicioCelda} se encuentra vacia favor de verificar su información`)
+                    return;
+                }
+                if(D6 === undefined){
+                    alert(`La celda F${InicioCelda} se encuentra vacia favor de verificar su información`)
+                    return;
+                }
+                if(D7 === undefined){
+                    D7 = "";
+                }
+                if(D8 === undefined){
+                    alert(`La celda H${InicioCelda} se encuentra vacia favor de verificar su información`)
+                    return;
+                }
+                if(D9 === undefined){
+                    alert(`La celda I${InicioCelda} se encuentra vacia favor de verificar su información`)
+                    return;
+                }
+                if(D10 === undefined){
+                    D10 = "";
+                }
+                if(D11 === undefined){
+                    D11 = "";
+                }
+                if(D12 === undefined){
+                    alert(`La celda L${InicioCelda} se encuentra vacia favor de verificar su información`)
+                    return;
+                }
+                if(D13 === undefined){
+                    alert(`La celda M${InicioCelda} se encuentra vacia favor de verificar su información`)
+                    return;
+                }
+                if(D14 === undefined){
+                    alert(`La celda N${InicioCelda} se encuentra vacia favor de verificar su información`)
+                    return;
+                }
+               
+                let datos={D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12,D13,D14,idU};
+                dataExcel.push(datos);
+                InicioCelda= InicioCelda+1;
+           
+            }
+                
+        }
+        if(dataExcel.length > 0){
+            HTTP.post("/DataExcel",dataExcel).then((response) => {
+                alert(`${response.data} registros insertados`)
+            })
+        }
+        };
+
+        reader.readAsBinaryString(file);
+    }
 
     return (
         <>
@@ -221,7 +362,7 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
                 <div className="imagenesNewProduct">
                     <div class="input-div" onDrop={(e) => inputDivChange(e)} >
                         <p>Arrastra y suelta tus fotos aquí o <button style={{ "padding": "5px", "background": "#000", "color": "#fff", "borderRadius": "5px" }}>selecciona el archivo</button></p>
-                        <input onChange={() => inputChange()} id="Images" type="file" class="file" multiple="multiple" accept="image/jpeg, image/png, image/jpg" />
+                        <input onChange={() => inputChange()} id="Images" name="Images" type="file" class="file" multiple="multiple" accept="image/jpeg, image/png, image/jpg" />
                     </div>
                     <br />
                     <output>
@@ -323,24 +464,37 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
                     </div>
                     <div className="m-2" style={{ "display": "grid", "gridTemplateColumns": "25% 25% 25% 25%" }}>
 
-
                         <div className="form-floating " style={{ "marginRight": "10px" }}>
+                            <input id={`identificadorAIN${id}`} name={`identificadorAIN`} value={identificadorAIN} onChange={(e) => cambios(e)} type="text" className="form-control" />
+                            <label className='fw-bold'>Identificador almacen:</label>
+                        </div>
+
+
+                        <div className="form-floating " style={{ "marginLeft": "10px", "marginRight": "10px" }}>
+                            <input name={`numParteIN`} value={numParteIN} id={`numParteIN${id}`} onChange={(e) => cambios(e)} type="text" className="form-control" />
+                            <label className='fw-bold'>Número de parte:</label>
+                        </div>
+
+                        <div className="form-floating "  style={{ "marginLeft": "10px", "marginRight": "10px" }}>
                             <input id={`PesoIN${id}`} name={`PesoIN`} value={PesoIN} onChange={(e) => cambios(e)} type="text" className="form-control" />
                             <label className='fw-bold'>Peso:</label>
                         </div>
 
-                        <div className="form-floating " style={{ "marginLeft": "10px", "marginRight": "10px" }}>
+
+                        <div className="form-floating " style={{ "marginLeft": "10px" }}>
+                            <input name={`stokIN`} value={stokIN} id={`stokIN${id}`} onChange={(e) => cambios(e)} type="Number" min={1} className="form-control" />
+                            <label className='fw-bold'>Stock:</label>
+                        </div>
+                        </div>
+                    <div className="m-2" style={{"display":"grid","gridTemplateColumns":"50% 50%"}}>
+                        <div className="form-floating " style={{ "marginRight": "10px" }}>
                             <input id={`TempodeEntregaIN${id}`} name={`TempodeEntregaIN`} value={TempodeEntregaIN} onChange={(e) => cambios(e)} type="text" className="form-control" />
                             <label className='fw-bold'>Tiempo de entrega:</label>
                         </div>
 
-                        <div className="form-floating " style={{ "marginLeft": "10px", "marginRight": "10px" }}>
+                        <div className="form-floating " style={{ "marginLeft": "10px" }}>
                             <input id={`TempoDdeEntregaAgotadoIN${id}`} name={`TempoDdeEntregaAgotadoIN`} value={TempoDdeEntregaAgotadoIN} onChange={(e) => cambios(e)} type="text" className="form-control" />
                             <label className='fw-bold'>Tiempo de entrega en caso de agotarse:</label>
-                        </div>
-                        <div className="form-floating " style={{ "marginLeft": "10px" }}>
-                            <input name={`stokIN`} value={stokIN} id={`stokIN${id}`} onChange={(e) => cambios(e)} type="Number" min={1} className="form-control" />
-                            <label className='fw-bold'>Stock:</label>
                         </div>
                     </div>
                     <div className="m-2" style={{ "width": "100%" }}>
@@ -348,11 +502,11 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
                             <div></div>
                             <div className="text-center">
                                 <h5 style={{ "visibility": "hidden" }} className="TitulosMenu">Stock:</h5>
-                                <label htmlFor={`file${id}`} className='btn btn-danger btn-lg'><i className="bi bi-file-earmark-pdf-fill"></i> PDF</label>
+                                <label htmlFor={`file${id}`} className='btn btn-danger btn-lg'><i className="bi bi-file-earmark-pdf-fill"></i> Subir datasheet</label>
                                 <input type="file" onChange={handleChange} style={{ "display": "none" }} name="upload" id={`file${id}`} accept="application/pdf" />
 
                             </div>
-                            <div >
+                            <div className="text-end">
                                 <h5 style={{ "visibility": "hidden" }} className="TitulosMenu">Stock:</h5>
                                 <button onClick={() => save(id)} className='btn btn-primary btn-lg'><i className="bi bi-cloud-download-fill"></i> Guardar</button>
                             </div>
@@ -361,6 +515,10 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
                     </div>
                 </div>
 
+            </div>
+            <div className="m-2 text-center">
+                <label htmlFor={`ExcelFile`} className="btn btn-success mt-3">Carga de datos masivos</label>
+                <input onChange={(e) => excelLoad(e)} id="ExcelFile" type="file" style={{ "display": "none" }} accept=".xlsx, .xls, .csv"/>
             </div>
             <Noti notiCarrito={notiCarrito} activeNoti={activeNoti} />
         </>

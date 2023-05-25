@@ -81,7 +81,10 @@ export const AppRoute = () => {
                 setNumGustos(0)
                 if(idU !== undefined){
                     HTTP.post("/GetNumGustos",{"id":idU}).then((response) => {
-                        setNumGustos(response.data)
+                        if(response.data !== ""){
+                            setNumGustos(response.data)
+                        }
+                        
                     })
                 }
                
@@ -91,7 +94,9 @@ export const AppRoute = () => {
                 if(idU !== undefined){
                     //Peticion para obtener el numero de productosque tiene en el carrito
                     HTTP.post("/GetNumCarrito",{"id":idU}).then((response) => {
-                        setNumArticulos(response.data)
+                        if(response.data !== ""){
+                            setNumArticulos(response.data)
+                        }
                     })   
                 } 
             }
@@ -99,7 +104,9 @@ export const AppRoute = () => {
                 setElementsGustos([])
                 if(idU !== undefined){
                     HTTP.post("/GetElementsGustos", {"id":idU}).then((response) => {
-                        setElementsGustos(response.data);
+                        if(response.data !== ""){
+                            setElementsGustos(response?.data);
+                        }
                     })
                 }
             }

@@ -21,9 +21,10 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
     function getItemCarrito() {
         if( idU !== undefined ){
             HTTP.post("/readCarrito",{"idU": idU}).then((response) => {
-                console.log(response.data)
-                //Si la respuesta es correacta modificaremos el array con los objetos que obtenga desde la busqueda
-                setElementsCarrito(response.data)
+                if(response.data !== ""){
+                    //Si la respuesta es correacta modificaremos el array con los objetos que obtenga desde la busqueda
+                    setElementsCarrito(response.data)
+                }
             })
         }
     }
@@ -40,7 +41,6 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
     function DeletItem(id) {
         if( idU !== undefined ){
             HTTP.post("/deleteItem", {"idU":idU, "id": id }).then((response) => {
-                console.log(response.data)
                 //Si la operacion se hizo correctamente nos regresara Eliminado
                 if (response.data == "Eliminado") {
                     //Mandamos a llamar a la funcion de getItemCarrito para obtener la actualizacion de los elementos 
@@ -63,40 +63,41 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
     function Totales() {
         if(idU !== undefined){
             HTTP.post("/readCarrito",{"idU":idU}).then((response) => {
-                let num = 0;
-                let total = 0;
-                //recorremos los datos que nos arrojo para poder hacer una sumatoria del precio y los elementos ya que el usuario tendra la opcion de elegir la cantidad de stock que necesite
-                response.data.map((elementsCarrito) => {
-                    let element;
-                    try {
-                        element = document.getElementById(`VItem${elementsCarrito.id}`).value;
-                    } catch (error) {
-                        element = 1;
-                    }
-
-                    //Validamos que no venga vacio
-                    if (element == "") {
-                        element = 0;
-                    }
-
-                    // Lo parseamos ya que necesitamos un tipo numerico
-                    element = parseInt(element);
-                    let multi = 0;
-                    if(elementsCarrito.Oferta === 1){
-                        multi = elementsCarrito.montoOferta * element;
-                    }else{
-                        multi =  elementsCarrito.monto * element;
-                    }
-                    
-                    total = total + multi;
-
-                    //Sumamos las cantidades que se píden 
-                    num = num + element;
-                })
-                setNumArticulos(num)
-                setTotalPrecio(total)
+                if(response.data !== ""){
+                    let num = 0;
+                    let total = 0;
+                    //recorremos los datos que nos arrojo para poder hacer una sumatoria del precio y los elementos ya que el usuario tendra la opcion de elegir la cantidad de stock que necesite
+                    response.data.map((elementsCarrito) => {
+                        let element;
+                        try {
+                            element = document.getElementById(`VItem${elementsCarrito.id}`).value;
+                        } catch (error) {
+                            element = 1;
+                        }
+    
+                        //Validamos que no venga vacio
+                        if (element == "") {
+                            element = 0;
+                        }
+    
+                        // Lo parseamos ya que necesitamos un tipo numerico
+                        element = parseInt(element);
+                        let multi = 0;
+                        if(elementsCarrito.Oferta === 1){
+                            multi = elementsCarrito.montoOferta * element;
+                        }else{
+                            multi =  elementsCarrito.monto * element;
+                        }
+                        
+                        total = total + multi;
+    
+                        //Sumamos las cantidades que se píden 
+                        num = num + element;
+                    })
+                    setNumArticulos(num)
+                    setTotalPrecio(total)
+                }  
             })
-            //Hacemos la peticion de los datos al modelo  el cual obtendra los elementos y su precio 
            
         }
        
@@ -110,7 +111,7 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
             cantidadByProducto.push(elements);
         });
         if(idU !== undefined){
-            window.open(`https://badgerautomation.com/MarketPlace/Server/PDF2.php?IP=${ids}&IU=${idU}&cantidades=${cantidadByProducto}`, '_blank');
+            window.open(`https://badgerautomation.com/MarketPlace/Server/Script.php?IP=${ids}&IU=${idU}&cantidades=${cantidadByProducto.toString()}`, '_blank');
         }
         
     }
