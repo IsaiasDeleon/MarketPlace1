@@ -10,7 +10,7 @@ const URLServer = "http://192.168.100.18:3020/"
 const HTTP = axios.create({
     baseURL: "https://badgerautomation.com/MarketPlace/Server/Data.php"
 })
-export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
+export const NewProduct = ({ setMenu, setImagenesArray, imagesArray,busquedas }) => {
     let id = "New";
     let estrellas = 5;
     const { user } = useContext(AuthContext);
@@ -155,6 +155,7 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
                                
                                 if (response3.data === "Insertado") {
                                     setNotiCarrito("ArticuloInsertado");
+                                    busquedas()
                                     setActiveNoti(true)
                                     setTimeout(() => {
                                         setActiveNoti(false)
@@ -188,6 +189,7 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
                             }
                             HTTP.post("/InsertarProducto", AllData).then((response3) => {
                                 if (response3.data === "Insertado") {
+                                    busquedas()
                                     setNotiCarrito("ArticuloInsertado");
                                     setActiveNoti(true)
                                     setTimeout(() => {
@@ -349,6 +351,7 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray }) => {
         if(dataExcel.length > 0){
             HTTP.post("/DataExcel",dataExcel).then((response) => {
                 alert(`${response.data} registros insertados`)
+                busquedas()
             })
         }
         };

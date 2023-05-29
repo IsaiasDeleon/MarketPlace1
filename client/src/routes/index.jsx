@@ -193,7 +193,7 @@ export const AppRoute = () => {
                 <Route path="/*" element={<Navigate to={"Inicio"} />} />
                 <Route path="/Login" element={<Login setMenu={setMenu}/>} />
                 <Route path="MisProductos" element={<MyProducts setMenu={setMenu}/>}/>
-                <Route path="ProductoNuevo" element={<NewProduct imagesArray={imagesArray} setImagenesArray={setImagenesArray} setMenu={setMenu}/>} />
+                <Route path="ProductoNuevo" element={<NewProduct imagesArray={imagesArray} setImagenesArray={setImagenesArray} setMenu={setMenu} busquedas={busquedas} />} />
             </Routes>
             {
                 

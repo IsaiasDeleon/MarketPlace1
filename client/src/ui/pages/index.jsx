@@ -24,7 +24,6 @@ export const Inicio = ({ data = [], setData, NumElementsCarrito = [], dataFiltra
     const navigate = useNavigate();
 
     function Cambio(e) {
-        console.log("Entro")
         setFiltros({ ...filtros, Estado: e.target.value })
     }
     useEffect(() => {
@@ -81,7 +80,7 @@ export const Inicio = ({ data = [], setData, NumElementsCarrito = [], dataFiltra
                 <button className='btn btn-dark' onClick={() => setFiltros({ ...filtros, Oferta: 0 })}>Todos</button>
                 <button className='btn btn-dark m-2' onClick={() => setFiltros({ ...filtros, Oferta: 1 })}>Ofertas</button>
                 <div className="form-floating SelectEstadoProducto" style={{ "display": "inline-block", "position": "absolute" }}>
-                    <select value="3" className="form-select" onChange={(e) => Cambio(e)} aria-label="Floating label select example">
+                    <select className="form-select" onChange={(e) => Cambio(e)} aria-label="Floating label select example">
                         <option value="3" selected>Cualquier estado</option>
                         <option value="1">Nuevo</option>
                         <option value="2">Usado</option>
