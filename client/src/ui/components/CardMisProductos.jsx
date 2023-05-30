@@ -146,7 +146,7 @@ export const CardMisProductos = ({ id, img, descripcion, estrellas, monto, monto
                     imagenes?.map((image, index) => (
                         image != "" ?(
                             <div style={{"width":"47%","display":"inline-block","border":"2px dashed #D7DBDD","margin":"3px"}} className="image" key={index}>
-                            <img src={`./assets/${image}`} alt="IMGCompra"  className="ImgMisProductos" />
+                            <img src={`https://badgerautomation.com/MarketPlace/Server/Images/${image}`} alt="IMGCompra"  className="ImgMisProductos" />
                             <i style={{"float":"right","margin":"0"}} onClick={(e) => deleteImage(e, image, id)} className="bi bi-trash-fill h4"></i>
                         </div>
                         ):(

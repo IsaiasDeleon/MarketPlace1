@@ -16,6 +16,7 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
     const [totalPrecio, setTotalPrecio] = useState(0);
     const [notiCarrito, setNotiCarrito] = useState();
     const [activeNoti, setActiveNoti] = useState();
+    const [imgProducts, setImgProducts] = useState(true);
 
     //Function para obtener los elementos en el carrito
     function getItemCarrito() {
@@ -23,7 +24,10 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
             HTTP.post("/readCarrito",{"idU": idU}).then((response) => {
                 if(response.data !== ""){
                     //Si la respuesta es correacta modificaremos el array con los objetos que obtenga desde la busqueda
-                    setElementsCarrito(response.data)
+                    setElementsCarrito(response.data);
+                    setImgProducts(false);
+                }else{
+                    setImgProducts(true);
                 }
             })
         }
@@ -121,6 +125,17 @@ export const Carrito = ({ NumElementsCarrito,setMenu }) => {
                 {elementsCarrito.map((elementsCarrito) => (
                     <CardCarrito key={elementsCarrito.id} {...elementsCarrito} DeletItem={DeletItem} variable={`VItem${elementsCarrito.id}`} Totales={Totales} />
                 ))}
+                {
+                  imgProducts  && (
+                    <div className='CarritoVacio'>
+                        <img src={`https://badgerautomation.com/MarketPlace/Server/Images/CarritoVacio.png`} alt="IMGVacio" />
+                        <h3>No hay productos agregados</h3>
+                        <button className='btn btn-dark'>Agregar nuevo producto</button>
+                    </div>
+
+                    
+                  )
+                }
             </div>
             <div className='ContenedorBottonTotales'>
                 <hr style={{ "width": "95%", "margin": "0", "marginLeft": "2.5%" }} />

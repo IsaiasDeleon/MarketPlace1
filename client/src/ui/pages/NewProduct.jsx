@@ -342,6 +342,7 @@ export const NewProduct = ({ setMenu, setImagenesArray, imagesArray,busquedas })
                 }
                
                 let datos={D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12,D13,D14,idU};
+                console.log(datos)
                 dataExcel.push(datos);
                 InicioCelda= InicioCelda+1;
            

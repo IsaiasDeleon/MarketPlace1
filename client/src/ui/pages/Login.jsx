@@ -101,9 +101,10 @@ export const Login = ({setMenu}) => {
             }, 5000);
             return;
        }
-       axios.post(URLServer+"Registrar",{"nombre":nombre,"correo":correo,"pass":pass}).then((response) => {
-        console.log(response)
-       })
+       HTTP.post("/Registrar",{"nombre":nombre,"correo":correo,"pass":pass}).then((response => {
+            console.log(response)
+       }))
+       
     }
     useEffect(() => {
         setMenu(3)
